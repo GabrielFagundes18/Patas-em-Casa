@@ -1,0 +1,243 @@
+.form-shell {
+  min-height: 100vh;
+  background: var(--bg);
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.form-card {
+  width: min(100%, 860px);
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  box-shadow: 0 16px 40px rgba(32, 40, 31, 0.08);
+  padding: 28px;
+}
+
+.form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.form-title {
+  font-family: 'Fraunces', serif;
+  font-size: 28px;
+  margin-top: 6px;
+  color: var(--ink);
+}
+
+.form-subtitle {
+  color: var(--ink-soft);
+  margin-top: 8px;
+  font-size: 14px;
+}
+
+.progress-pill {
+  background: var(--sage-pale);
+  color: var(--sage-dark);
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.step-indicator {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+
+.step-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 8px 10px;
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+
+.step-circle {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  background: var(--paper);
+  border: 1px solid var(--line);
+}
+
+.step-circle.step-active {
+  background: var(--sage);
+  color: #fff;
+  border-color: var(--sage);
+}
+
+.step-circle.step-done {
+  background: var(--amber);
+  color: #221604;
+  border-color: var(--amber);
+}
+
+.form-step h2 {
+  font-size: 20px;
+  margin-bottom: 16px;
+}
+
+.field-group {
+  margin-bottom: 14px;
+}
+
+.field-label {
+  display: block;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-bottom: 7px;
+}
+
+.required {
+  color: var(--brick);
+  margin-left: 2px;
+}
+
+.field-error {
+  color: var(--brick);
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+.text-input {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font: inherit;
+  background: #fff;
+}
+
+.text-input:focus {
+  outline: 2px solid rgba(226, 150, 59, 0.35);
+  border-color: var(--amber);
+}
+
+.input-error {
+  border-color: var(--brick);
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.radio-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.radio-option {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 8px 12px;
+  background: #fff;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.radio-option-active {
+  background: var(--sage);
+  color: #fff;
+  border-color: var(--sage);
+}
+
+.review-list {
+  display: grid;
+  gap: 8px;
+}
+
+.review-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--line);
+}
+
+.review-label {
+  color: var(--ink-soft);
+  font-size: 13px;
+}
+
+.review-value {
+  color: var(--ink);
+  font-size: 13px;
+  text-align: right;
+}
+
+.review-note {
+  margin-top: 14px;
+  color: var(--ink-soft);
+  font-size: 13px;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-top: 22px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+
+.primary-btn,
+.secondary-btn {
+  border: none;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.primary-btn {
+  background: var(--sage);
+  color: #fff;
+}
+
+.primary-btn-amber {
+  background: var(--amber);
+  color: #221604;
+}
+
+.secondary-btn {
+  background: var(--paper);
+  color: var(--ink-soft);
+  border: 1px solid var(--line);
+}
+
+.secondary-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.thank-you-shell {
+  background: linear-gradient(135deg, #f3efe2 0%, var(--bg) 100%);
+}
