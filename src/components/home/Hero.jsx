@@ -1,12 +1,27 @@
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 
+const storyRotation = [
+  { name: 'Bento', note: 'Cachorro feliz, muito sociável e pronto para brincar' },
+  { name: 'Luna', note: 'Gata curiosa, carinhosa e observadora do jardim' },
+  { name: 'Milo', note: 'Pequeno companheiro cheio de energia e afeto' },
+];
+
 function Hero() {
+  const [storyIndex, setStoryIndex] = useState(0);
+
+  useEffect(() => {
+    const intervalId = window.setInterval(() => {
+      setStoryIndex((current) => (current + 1) % storyRotation.length);
+    }, 3500);
+
+    return () => window.clearInterval(intervalId);
+  }, []);
+
+  const activeStory = storyRotation[storyIndex];
+
   return (
     <section className="hero" aria-label="Seção principal da ONG Patas em Casa">
-      {/**
-       * A imagem é decorativa porque todo o contexto visual da mensagem já está
-       * no texto sobreposto. Mantemos o contraste acessível por meio do overlay.
-       */}
       <motion.img
         className="hero-bg"
         src="fundo.jpeg"
@@ -59,12 +74,23 @@ function Hero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.28, ease: 'easeOut' }}
           >
-            <a href="#adotar" className="btn btn-primary">
+            <a href="/adotar" className="btn btn-primary">
               Quero adotar →
             </a>
             <a href="#ajudar" className="btn btn-secondary">
               Quero ajudar
             </a>
+          </motion.div>
+
+          <motion.div
+            className="story-card"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.45, delay: 0.35, ease: 'easeOut' }}
+          >
+            <span className="story-label">História em destaque</span>
+            <strong>{activeStory.name}</strong>
+            <small>{activeStory.note}</small>
           </motion.div>
         </motion.div>
       </div>

@@ -18,8 +18,7 @@ function Donation() {
       await navigator.clipboard.writeText(pixKey);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
-    } catch (error) {
-      console.error('Falha ao copiar a chave PIX:', error);
+    } catch {
       setCopied(false);
     }
   };

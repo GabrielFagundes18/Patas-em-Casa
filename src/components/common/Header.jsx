@@ -25,9 +25,6 @@ function Header() {
     <header className={scrolled ? 'scrolled' : ''}>
       <nav className="nav">
         <a href="#main-content" className="logo" aria-label="Ir para o início">
-          <span className="logo-mark" aria-hidden="true">
-            🐾
-          </span>{' '}
           Patas em Casa
         </a>
 
@@ -40,7 +37,7 @@ function Header() {
         </div>
 
         <div className="nav-actions">
-          <a className="nav-cta nav-mobile-hide-cta" href="#adotar">
+          <a className="nav-cta nav-mobile-hide-cta" href="/adotar">
             Quero adotar
           </a>
           <button
@@ -70,7 +67,7 @@ function Header() {
             {link.label}
           </a>
         ))}
-        <a href="#adotar" className="mobile-cta" onClick={() => setIsOpen(false)}>
+        <a href="/adotar" className="mobile-cta" onClick={() => setIsOpen(false)}>
           Quero adotar →
         </a>
       </div>

@@ -2,9 +2,51 @@ import '@testing-library/jest-dom';
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import App from './App';
-import Hero from './components/Hero';
+import Hero from './components/home/Hero';
+import { buscarTodoAnimais } from './components/home/PetSectionContainer';
 
-test('renders the landing page hero and opens the adoption form', () => {
+jest.mock('./components/home/PetSectionContainer', () => {
+  const actual = jest.requireActual('./components/home/PetSectionContainer');
+
+  return {
+    __esModule: true,
+    ...actual,
+    buscarTodoAnimais: jest.fn(),
+  };
+});
+
+const mockAnimal = {
+  id: 'nino-001',
+  nome: 'Nino',
+  especie: 'cachorro',
+  raca: 'Vira-lata',
+  sexo: 'macho',
+  idade_anos: 2,
+  porte: 'medio',
+  status: 'disponivel',
+  descricao: 'Nino e um cachorro carinhoso.',
+  foto_url: 'https://example.com/nino.jpg',
+  castrado: true,
+  vacinado: true,
+};
+
+beforeAll(() => {
+  global.IntersectionObserver = class IntersectionObserver {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  };
+});
+
+beforeEach(() => {
+  buscarTodoAnimais.mockResolvedValue([mockAnimal]);
+});
+
+afterEach(() => {
+  jest.clearAllMocks();
+});
+
+test('renders the landing page and links to the adoption catalog', async () => {
   render(
     <MemoryRouter initialEntries={['/']}>
       <App />
@@ -15,23 +57,31 @@ test('renders the landing page hero and opens the adoption form', () => {
     screen.getByRole('heading', { name: /Cada focinho tem uma/i })
   ).toBeInTheDocument();
 
-  fireEvent.click(screen.getByRole('button', { name: /Quero adotar/i }));
+  expect(screen.getByRole('link', { name: 'Quero adotar' })).toHaveAttribute(
+    'href',
+    '/adotar'
+  );
 
-  expect(
-    screen.getByRole('heading', { name: /Formulário de pré-adoção/i })
-  ).toBeInTheDocument();
+  await screen.findByRole('heading', { name: /Quem está esperando por você/i });
 });
 
-test('opens the admin panel without crashing when storage is unavailable', () => {
+test('opens the adoption form from a pet detail in the catalog', async () => {
   render(
-    <MemoryRouter initialEntries={['/']}>
+    <MemoryRouter initialEntries={['/adotar']}>
       <App />
     </MemoryRouter>
   );
 
-  fireEvent.click(screen.getByRole('button', { name: /Painel admin/i }));
+  const petButton = await screen.findByRole('button', { name: /Ver ficha/i });
+  fireEvent.click(petButton);
 
-  expect(screen.getByRole('heading', { name: /Visão geral/i })).toBeInTheDocument();
+  fireEvent.click(
+    await screen.findByRole('button', { name: /Quero adotar o\(a\) Nino/i })
+  );
+
+  expect(
+    screen.getByRole('heading', { name: /Quero adotar Nino/i })
+  ).toBeInTheDocument();
 });
 
 test('rotates the hero story automatically', () => {

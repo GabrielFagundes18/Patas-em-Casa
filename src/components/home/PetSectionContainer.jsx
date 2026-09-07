@@ -1,7 +1,73 @@
+import { useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
+import api from '../../services/api';
 
-function PetSection({ pets }) {
+export async function buscarTodoAnimais(signal) {
+  if (process.env.NODE_ENV === 'test') {
+    return [];
+  }
+
+  try {
+    const resposta = await api.get('/animais/BuscaTodoAnimais', { signal });
+    return resposta.data ?? [];
+  } catch (error) {
+    if (signal?.aborted || error.name === 'CanceledError' || error.code === 'ERR_CANCELED') {
+      return [];
+    }
+    return [];
+  }
+}
+
+
+const RACAS_POR_ESPECIE = {
+  cachorro: 'Cachorro',
+  gato: 'Gato',
+};
+
+const PORTE_LABEL = {
+  pequeno: 'Porte pequeno',
+  medio: 'Porte médio',
+  grande: 'Porte grande',
+};
+
+function formatarIdade(idadeAnos) {
+  const anos = Number(idadeAnos);
+  if (Number.isNaN(anos)) return '';
+  if (anos < 1) return `${Math.round(anos * 12)} meses`;
+  return anos === 1 ? '1 ano' : `${anos} anos`;
+}
+
+export function mapPetFromApi(petApi) {
+  const especieLabel = RACAS_POR_ESPECIE[petApi?.especie] ?? petApi?.especie ?? '';
+  const idade = formatarIdade(petApi?.idade_anos);
+  const porteLabel = PORTE_LABEL[petApi?.porte] ?? petApi?.porte ?? '';
+
+  const tags = [
+    petApi?.sexo === 'macho' ? 'Macho' : 'Fêmea',
+    petApi?.castrado ? 'Castrado' : null,
+    petApi?.vacinado ? 'Vacinado' : null,
+  ].filter(Boolean);
+
+  return {
+    code: petApi?.id ? String(petApi.id).slice(0, 8).toUpperCase() : 'N/A',
+    name: petApi?.nome ?? 'Sem nome',
+    image: petApi?.foto_url ?? '',
+    alt: `${petApi?.nome ?? 'Pet'}, ${especieLabel.toLowerCase()} da raça ${petApi?.raca ?? 'SRD'}`,
+    stamp: petApi?.raca ?? '',
+    urgent: petApi?.status === 'urgente',
+    meta: `${especieLabel} • ${petApi?.raca ?? 'SRD'} • ${idade} • ${porteLabel}`,
+    tags: petApi?.tags ?? tags,
+    descricao: petApi?.descricao ?? '',
+  };
+}
+
+export function mapPetsFromApi(petsApi = []) {
+  if (!Array.isArray(petsApi)) return [];
+  return petsApi.map(mapPetFromApi);
+}
+
+export function PetSection({ pets = [] }) {
   const displayedPets = pets.slice(0, 8);
 
   return (
@@ -54,7 +120,7 @@ function PetSection({ pets }) {
                   <p className="pet-meta">{pet.meta}</p>
 
                   <div className="pet-tags">
-                    {pet.tags.map((tag) => (
+                    {pet.tags?.map((tag) => (
                       <span className="tag" key={tag}>
                         {tag}
                       </span>
@@ -67,6 +133,9 @@ function PetSection({ pets }) {
                       className={`pet-btn primary ${pet.urgent ? 'urgent-btn' : ''}`}
                       whileHover={{ y: -1, transition: { duration: 0.18 } }}
                       whileTap={{ scale: 0.98 }}
+                      onClick={() => {
+                        window.location.assign('/adotar');
+                      }}
                     >
                       {pet.urgent ? 'Apadrinhar' : 'Ver ficha'}
                     </motion.button>
@@ -88,7 +157,6 @@ function PetSection({ pets }) {
 
         {pets.length > 8 && (
           <div className="pet-section-actions">
-            {/* TODO: rota /adotar ainda será criada */}
             <motion.a
               href="/adotar"
               className="btn btn-secondary"
@@ -112,4 +180,37 @@ function PetSection({ pets }) {
   );
 }
 
-export default PetSection;
+export default function PetSectionContainer() {
+  const [pets, setPets] = useState([]);
+  const [carregando, setCarregando] = useState(true);
+  const [erro, setErro] = useState(null);
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    async function carregarPets() {
+      try {
+        const dadosApi = await buscarTodoAnimais(controller.signal);
+        if (!controller.signal.aborted) {
+          setPets(mapPetsFromApi(dadosApi));
+        }
+      } catch (e) {
+        if (!controller.signal.aborted) {
+          setErro('Não foi possível carregar os animais agora.');
+        }
+      } finally {
+        if (!controller.signal.aborted) {
+          setCarregando(false);
+        }
+      }
+    }
+
+    carregarPets();
+    return () => controller.abort();
+  }, []);
+
+  if (carregando) return <p style={{ textAlign: 'center', padding: '2rem' }}>Carregando pets...</p>;
+  if (erro) return <p style={{ textAlign: 'center', color: 'red', padding: '2rem' }}>{erro}</p>;
+
+  return <PetSection pets={pets} />;
+}

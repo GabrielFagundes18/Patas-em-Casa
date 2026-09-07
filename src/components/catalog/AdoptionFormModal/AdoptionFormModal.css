@@ -1,0 +1,10 @@
+.adoption-form-modal {
+  isolation: isolate;
+}
+
+.catalog-adoption-form input:focus-visible,
+.catalog-adoption-form textarea:focus-visible,
+.adoption-form-modal button:focus-visible {
+  outline: 2px solid var(--amber);
+  outline-offset: 2px;
+}

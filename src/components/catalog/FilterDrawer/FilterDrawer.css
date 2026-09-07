@@ -1,0 +1,10 @@
+.filter-drawer {
+  overscroll-behavior: contain;
+}
+
+.filter-drawer button:focus-visible,
+.filter-drawer input:focus-visible,
+.filter-drawer select:focus-visible {
+  outline: 2px solid var(--amber);
+  outline-offset: 2px;
+}

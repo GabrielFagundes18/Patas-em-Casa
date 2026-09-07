@@ -1,0 +1,7 @@
+.catalog-pet-card {
+  isolation: isolate;
+}
+
+.catalog-pet-card img {
+  will-change: transform;
+}

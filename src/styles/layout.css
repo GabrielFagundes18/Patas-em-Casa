@@ -51,25 +51,6 @@ header.scrolled .nav {
   transform: scale(1.02);
 }
 
-.logo-mark {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  box-shadow: 0 10px 20px rgba(63, 92, 78, 0.18);
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
-}
-
-.logo:hover .logo-mark {
-  transform: scale(1.08);
-  box-shadow: 0 12px 22px rgba(63, 92, 78, 0.26);
-}
 
 .nav-links {
   display: flex;
