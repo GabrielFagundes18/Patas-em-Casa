@@ -1,16 +1,31 @@
 :root {
-  --bg: #f6f4ec;
-  --paper: #fbfaf4;
-  --ink: #20281f;
-  --ink-soft: #4a5148;
-  --sage: #3f5c4e;
-  --sage-dark: #28382f;
-  --sage-pale: #e4ebe4;
-  --amber: #e2963b;
-  --amber-dark: #b9721e;
-  --brick: #b8543e;
-  --line: #d9d3c2;
-  --card: #ffffff;
+  --bg-primary: #f3efe6;
+  --bg-secondary: #e7dcc6;
+  --bg-card: #fffaf3;
+  --bg-glass: rgba(255, 255, 255, 0.42);
+  --text-main: #1f2a24;
+  --text-muted: #58675f;
+  --text-accent: #35564b;
+  --border-color: rgba(31, 42, 36, 0.12);
+  --color-primary: #d88b3d;
+  --color-secondary: #2f5a4b;
+  --accent-glow: rgba(216, 139, 61, 0.17);
+  --radius-md: 14px;
+  --radius-lg: 24px;
+  --shadow-main: 0 26px 60px rgba(31, 42, 36, 0.12);
+
+  --bg: var(--bg-primary);
+  --paper: var(--bg-card);
+  --ink: var(--text-main);
+  --ink-soft: var(--text-muted);
+  --sage: var(--color-secondary);
+  --sage-dark: #223d34;
+  --sage-pale: #edf4ee;
+  --amber: var(--color-primary);
+  --amber-dark: #b86d1d;
+  --brick: #b2614c;
+  --line: var(--border-color);
+  --card: var(--bg-card);
 }
 
 * {

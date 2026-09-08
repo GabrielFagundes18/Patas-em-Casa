@@ -10,7 +10,7 @@ import { Route, Routes } from 'react-router-dom';
 
 function App() {
   return (
-    <Routes>
+    <Routes>  
       <Route path="/adotar" element={<AdoptionCatalog />} />
       <Route path="*" element={<LandingPage />} />
     </Routes>

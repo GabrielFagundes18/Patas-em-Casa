@@ -209,8 +209,8 @@ export default function PetSectionContainer() {
     return () => controller.abort();
   }, []);
 
-  if (carregando) return <p style={{ textAlign: 'center', padding: '2rem' }}>Carregando pets...</p>;
-  if (erro) return <p style={{ textAlign: 'center', color: 'red', padding: '2rem' }}>{erro}</p>;
+  if (carregando) return <p className="pet-section-state">Carregando pets...</p>;
+  if (erro) return <p className="pet-section-state pet-section-state--error">{erro}</p>;
 
   return <PetSection pets={pets} />;
 }

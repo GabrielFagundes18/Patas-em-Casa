@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
+import SgvOndaInvertida from '../svg/SvgOndaInvertida';
 
 const stats = [
   { value: '+150', label: 'ANIMAIS RESGATADOS' },
@@ -55,6 +56,10 @@ function StatsStrip() {
 
   return (
     <div className="stats-strip" ref={ref}>
+   
+      
+     
+     <SgvOndaInvertida/>
       <div className="wrap stats-grid">
         {stats.map((stat, index) => (
           <motion.div

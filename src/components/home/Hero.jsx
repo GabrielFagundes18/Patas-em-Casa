@@ -1,100 +1,103 @@
-import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-
-const storyRotation = [
-  { name: 'Bento', note: 'Cachorro feliz, muito sociável e pronto para brincar' },
-  { name: 'Luna', note: 'Gata curiosa, carinhosa e observadora do jardim' },
-  { name: 'Milo', note: 'Pequeno companheiro cheio de energia e afeto' },
-];
+import { ArrowRight, Dog, Heart, HeartPulse, PawPrint } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import Fundo from '../../assets/fundo.png';
+import SvgOnda from '../svg/SvgOnda';
 
 function Hero() {
-  const [storyIndex, setStoryIndex] = useState(0);
-
-  useEffect(() => {
-    const intervalId = window.setInterval(() => {
-      setStoryIndex((current) => (current + 1) % storyRotation.length);
-    }, 3500);
-
-    return () => window.clearInterval(intervalId);
-  }, []);
-
-  const activeStory = storyRotation[storyIndex];
-
   return (
-    <section className="hero" aria-label="Seção principal da ONG Patas em Casa">
-      <motion.img
-        className="hero-bg"
-        src="fundo.jpeg"
-        alt=""
-        aria-hidden="true"
-        loading="eager"
-        fetchPriority="high"
-        initial={{ opacity: 0, scale: 1.06 }}
-        animate={{ opacity: 1, scale: 1.02 }}
-        transition={{ duration: 1.1, ease: 'easeOut' }}
-      />
-
-      <div className="wrap hero-grid">
-        <motion.div
-          className="hero-copy"
-          initial={{ opacity: 0, y: 22 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: 'easeOut' }}
-        >
-          <motion.span
-            className="eyebrow"
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.45, delay: 0.08, ease: 'easeOut' }}
-          >
-            ONG de proteção animal · desde 2019
-          </motion.span>
-
-          <motion.h1
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.55, delay: 0.12, ease: 'easeOut' }}
-          >
-            Cada focinho tem uma <em>história</em> esperando um novo capítulo.
-          </motion.h1>
-
-          <motion.p
-            className="lead"
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.55, delay: 0.2, ease: 'easeOut' }}
-          >
-            Resgatamos, cuidamos e encontramos lares responsáveis para cães e
-            gatos. Adote com consciência ou ajude quem ainda está esperando.
-          </motion.p>
-
+    <div className="home-wrapper">
+      <section className="hero-section" aria-labelledby="hero-title">
+        <div className="wrap hero-container">
           <motion.div
-            className="hero-actions"
-            initial={{ opacity: 0, y: 14 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.28, ease: 'easeOut' }}
+            className="hero-left"
+            initial={{ opacity: 0, x: -30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6 }}
           >
-            <a href="/adotar" className="btn btn-primary">
-              Quero adotar →
-            </a>
-            <a href="#ajudar" className="btn btn-secondary">
-              Quero ajudar
-            </a>
+            <span className="hero-kicker"><PawPrint size={15} /> Adoção responsável, todos os dias</span>
+            <h1 id="hero-title" className="hero-title">
+              Um lar muda tudo.
+              <strong>Comece por uma história.</strong>
+            </h1>
+
+            <p className="hero-description">
+              Encontre cães e gatos resgatados que esperam por uma família. A equipe acompanha cada encontro para que a adoção seja leve, segura e duradoura.
+            </p>
+
+            <div className="hero-actions">
+              <Link to="/adotar" className="btn-hero-pill">
+                Encontrar um companheiro <ArrowRight size={18} />
+              </Link>
+              <a href="#como-funciona" className="hero-text-link">Entender o processo</a>
+            </div>
+
+            <div className="hero-note">
+              <span className="hero-note-icon"><Heart size={16} /></span>
+              <span><strong>+120 encontros felizes</strong><br />e ainda há histórias esperando por você.</span>
+            </div>
           </motion.div>
 
           <motion.div
-            className="story-card"
-            initial={{ opacity: 0, y: 12 }}
+            className="hero-right"
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.45, delay: 0.35, ease: 'easeOut' }}
+            transition={{ duration: 0.7 }}
           >
-            <span className="story-label">História em destaque</span>
-            <strong>{activeStory.name}</strong>
-            <small>{activeStory.note}</small>
+            <img src={Fundo} alt="Animaizinhos" className="hero-cutout-img" />
+            <div className="hero-orbit hero-orbit-one" aria-hidden="true" />
+            <div className="hero-orbit hero-orbit-two" aria-hidden="true" />
           </motion.div>
-        </motion.div>
-      </div>
-    </section>
+        </div>
+        <SvgOnda/>
+      </section>
+
+      <section className="features-section">
+        <div className="wrap">
+          <div className="features-heading">
+            <span className="eyebrow">O cuidado antes do encontro</span>
+            <h2 className="features-title">Cada adoção começa bem antes do abraço.</h2>
+          </div>
+
+          <div className="features-grid">
+            <div className="feature-card">
+              <div className="feature-icon icon-yellow">
+                <Dog size={24} strokeWidth={2.2} />
+              </div>
+              <div className="feature-text">
+                <h3>São muitos</h3>
+                <p>
+                  Cães e gatos com perfis diferentes, prontos para encontrar a rotina certa.
+                </p>
+              </div>
+            </div>
+
+            <div className="feature-card">
+              <div className="feature-icon icon-green">
+                <HeartPulse size={24} strokeWidth={2.2} />
+              </div>
+              <div className="feature-text">
+                <h3>Eles são saudáveis</h3>
+                <p>Vacinação, avaliação e acompanhamento fazem parte de cada resgate.</p>
+              </div>
+            </div>
+
+            <div className="feature-card">
+              <div className="feature-icon icon-pink">
+                <Heart size={24} strokeWidth={2.2} />
+              </div>
+              <div className="feature-text">
+                <h3>Eles são amados</h3>
+                <p>
+                  Eles recebem presença, cuidado e respeito enquanto esperam por um lar.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <SvgOnda color="var(--sage-dark)" />
+      </section>
+    </div>
   );
 }
 

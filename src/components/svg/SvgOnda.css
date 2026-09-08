@@ -1,0 +1,23 @@
+.hero-wave {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  overflow: hidden;
+  line-height: 0;
+  z-index: 2;
+}
+
+.hero-wave svg {
+  position: relative;
+  display: block;
+  width: calc(100% + 1.3px);
+  height: 80px;
+}
+
+/* Onda Invertida na parte inferior da seção */
+.hero-wave.wave-bottom {
+  top: 100%; /* Cola exatamente na parte de baixo da seção */
+  bottom: auto;
+  transform: scaleY(-1);
+}

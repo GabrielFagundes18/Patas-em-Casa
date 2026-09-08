@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-
+import { Link } from 'react-router-dom';
 const navLinks = [
   { href: '#adotar', label: 'Adotar' },
   { href: '#como-funciona', label: 'Como funciona' },
@@ -37,9 +37,9 @@ function Header() {
         </div>
 
         <div className="nav-actions">
-          <a className="nav-cta nav-mobile-hide-cta" href="/adotar">
-            Quero adotar
-          </a>
+          <Link to="/adotar" className="nav-cta">
+            Ver animais para adoção
+          </Link>
           <button
             type="button"
             className="menu-toggle"
@@ -67,9 +67,9 @@ function Header() {
             {link.label}
           </a>
         ))}
-        <a href="/adotar" className="mobile-cta" onClick={() => setIsOpen(false)}>
+        <Link to="/adotar" className="mobile-cta" onClick={() => setIsOpen(false)}>
           Quero adotar →
-        </a>
+        </Link>
       </div>
     </header>
   );
