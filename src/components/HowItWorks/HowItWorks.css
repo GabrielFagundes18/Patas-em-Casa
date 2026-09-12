@@ -1,3 +1,6 @@
+/* O quê: define a faixa do processo de adoção e o mock de conversa.
+  Como: cards, bolhas e flex controlam hierarquia, alinhamento e contraste.
+  Para quê: representar as etapas como uma conversa fácil de escanear. */
 .how {
   padding: 6rem 0;
   background: var(--bg-primary);
@@ -91,6 +94,9 @@
   gap: 10px;
 }
 
+/* O quê: estiliza estados de mensagem recebida, enviada e final.
+  Como: cores, raios assimétricos e limites de largura distinguem os papéis na conversa.
+  Para quê: reforçar a sequência do processo e o destaque da conclusão. */
 .bubble {
   max-width: 78%;
   padding: 10px 14px;
@@ -185,6 +191,9 @@
   height: 15px;
 }
 
+/* O quê: aumenta a área útil das bolhas em celulares.
+  Como: o breakpoint amplia a largura máxima sem alterar o fluxo vertical.
+  Para quê: aproveitar melhor telas estreitas mantendo respiro lateral. */
 @media (max-width: 480px) {
   .bubble {
     max-width: 88%;

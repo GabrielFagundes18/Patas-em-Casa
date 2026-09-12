@@ -1,16 +1,28 @@
+// O quê: importa estado, animação, ícones e estilos do formulário.
+// Como: useState controla a transição entre formulário e confirmação, e motion anima o modal.
+// Para quê: coletar a solicitação de adoção de um animal específico.
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { ArrowLeft, Check } from "lucide-react";
 import "./AdoptionFormModal.css";
 
 export function AdoptionFormModal({ pet, onClose }) {
+  // O quê: armazena se o formulário já foi enviado.
+  // Como: um booleano controla a renderização alternativa de sucesso.
+  // Para quê: impedir novo preenchimento após a submissão e informar o próximo passo.
   const [submitted, setSubmitted] = useState(false);
 
+  // O quê: intercepta o envio nativo do formulário.
+  // Como: preventDefault evita recarregar a página e setSubmitted altera a etapa exibida.
+  // Para quê: simular o aceite da solicitação dentro do fluxo React.
   function handleSubmit(event) {
     event.preventDefault();
     setSubmitted(true);
   }
 
+  // O quê: renderiza o modal de pré-adoção e seus dois estados possíveis.
+  // Como: a condição submitted alterna entre confirmação e formulário associado ao pet recebido.
+  // Para quê: concluir a jornada iniciada no detalhe do animal.
   return (
     <motion.div
       className="pet-detail-backdrop"

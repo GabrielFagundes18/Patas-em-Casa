@@ -1,3 +1,6 @@
+/* O quê: define a faixa de métricas, a vitrine, cards, tags e estados responsivos.
+  Como: grid, aspect-ratio, flex e transições mantêm cards uniformes enquanto Framer Motion anima o conteúdo.
+  Para quê: apresentar uma amostra dos animais e encaminhar para o catálogo completo. */
 .stats-strip {
   position: relative;
   background: var(--sage-dark);

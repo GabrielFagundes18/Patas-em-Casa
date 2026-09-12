@@ -1,12 +1,21 @@
+// O quê: importa hooks, animação, ícones e estilos do card de catálogo.
+// Como: useRef mede o card para o efeito de inclinação e useState armazena o deslocamento da imagem.
+// Para quê: combinar dados do pet com interação visual e ações do catálogo.
 import { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { PawPrint, Share2 } from "lucide-react";
 import "./PetCard.css";
 
 export function PetCard({ pet, onOpen, onShare }) {
+  // O quê: mantém referência ao card e o deslocamento aplicado à imagem.
+  // Como: a referência acessa getBoundingClientRect e o estado reage ao ponteiro.
+  // Para quê: criar um efeito de movimento sutil sem alterar o modelo do animal.
   const cardRef = useRef(null);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
 
+  // O quê: calcula a posição relativa do ponteiro dentro do card.
+  // Como: compara o centro do retângulo com as coordenadas do evento e divide o deslocamento para suavizar.
+  // Para quê: produzir a sensação de paralaxe na imagem do animal.
   function handlePointerMove(event) {
     const rect = cardRef.current?.getBoundingClientRect();
     if (!rect) return;
@@ -17,6 +26,9 @@ export function PetCard({ pet, onOpen, onShare }) {
     });
   }
 
+  // O quê: renderiza foto, status, metadados, tags e ações do animal.
+  // Como: motion.article e motion.img controlam animações, enquanto callbacks delegam abertura e compartilhamento.
+  // Para quê: oferecer uma unidade reutilizável de descoberta no catálogo.
   return (
     <motion.article
       ref={cardRef}

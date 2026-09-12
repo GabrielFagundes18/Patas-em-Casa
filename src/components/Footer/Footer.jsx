@@ -1,6 +1,12 @@
+// O quê: importa estilos e ícones usados no rodapé.
+// Como: os ícones são referências de componentes e podem ser renderizados dinamicamente nas listas.
+// Para quê: estruturar informações institucionais, navegação e contato com pouca duplicação.
 import './Footer.css';
 import { Clock3, Heart, Mail, MapPin, PawPrint, Phone, Send } from 'lucide-react';
 
+// O quê: define links e dados de contato exibidos no rodapé.
+// Como: arrays de objetos são percorridos com map e usam chaves estáveis para cada item.
+// Para quê: separar conteúdo configurável da marcação visual.
 const navLinks = [
   { label: 'Adotar', href: '#adotar' },
   { label: 'Como funciona', href: '#como-funciona' },
@@ -20,6 +26,9 @@ const visitItems = [
 ];
 
 function Footer() {
+  // O quê: renderiza as colunas informativas e a assinatura final da página.
+  // Como: listas dinâmicas associam cada item a um link, ícone ou texto sem repetir estrutura.
+  // Para quê: oferecer referências institucionais e canais de contato ao final da navegação.
   return (
     <footer className="footer">
       <div className="wrap">

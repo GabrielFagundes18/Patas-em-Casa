@@ -1,3 +1,6 @@
+// O quê: importa animação, ícones, helpers de apresentação e estilos do detalhe.
+// Como: Framer Motion controla a entrada do backdrop e do painel, enquanto helpers derivam espécie e porte.
+// Para quê: mostrar informações completas sem duplicar regras de normalização.
 import { motion } from "framer-motion";
 import {
   ArrowLeft,
@@ -9,8 +12,14 @@ import { getSize, getSpecies } from "../../utils/petHelpers";
 import "./PetDetail.css";
 
 export function PetDetail({ pet, onClose, onAdopt }) {
+  // O quê: cria a lista de miniaturas associadas ao animal selecionado.
+  // Como: repete a imagem disponível para manter a estrutura de galeria mesmo com uma única foto.
+  // Para quê: reservar a área de navegação visual de imagens no detalhe.
   const thumbnails = [pet.image, pet.image, pet.image];
 
+  // O quê: renderiza o backdrop e o painel detalhado do pet.
+  // Como: usa layoutId para conectar a foto ao card e callbacks para fechar ou iniciar adoção.
+  // Para quê: aprofundar a decisão do usuário antes do preenchimento do formulário.
   return (
     <motion.div
       className="pet-detail-backdrop"

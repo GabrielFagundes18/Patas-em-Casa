@@ -1,3 +1,6 @@
+/* O quê: cria a faixa de doação e o quadro central da campanha.
+  Como: contraste, grid e sombras destacam conteúdo e chave PIX.
+  Para quê: transformar a seção de ajuda em um ponto de ação evidente. */
 .donate-section {
   padding: 96px 24px;
   background: var(--sage-dark);
@@ -31,6 +34,9 @@
   box-shadow: 0 8px 14px rgba(184, 109, 29, 0.35);
 }
 
+/* O quê: organiza necessidades à esquerda e identificação PIX à direita.
+  Como: listas flexíveis e a etiqueta inclinada separam informação e ação.
+  Para quê: explicar o impacto da doação e facilitar sua execução. */
 .donate-grid {
   display: grid;
   grid-template-columns: 1.15fr 0.85fr;
@@ -93,6 +99,9 @@
   margin-top: 1px;
 }
 
+/* O quê: estiliza a chave, o botão de cópia e a nota de identificação.
+  Como: quebra de palavra e estados hover/active suportam uso em telas pequenas.
+  Para quê: manter a chave legível e copiável sem overflow. */
 .pix-tag {
   position: relative;
   background: var(--sage-dark);
@@ -181,6 +190,9 @@
   text-align: center;
 }
 
+/* O quê: adapta o quadro para telas estreitas.
+  Como: o grid vira uma coluna e a etiqueta perde a rotação decorativa.
+  Para quê: priorizar legibilidade e área de toque no mobile. */
 @media (max-width: 820px) {
   .donate-board {
     padding: 48px 24px 32px;

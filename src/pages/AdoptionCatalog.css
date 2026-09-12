@@ -1,3 +1,6 @@
+/* O quê: organiza a superfície, cabeçalho e controles do catálogo.
+  Como: flex, grid e variáveis de tema distribuem breadcrumb, busca, filtros e ordenação.
+  Para quê: criar um ponto de descoberta claro para os animais disponíveis. */
 .catalog-page {
   min-height: 100vh;
   background: var(--bg);
@@ -147,6 +150,9 @@
   color: var(--brick);
   font-size: 13px;
 }
+/* O quê: define a grade e a aparência dos cards de animais.
+  Como: colunas responsivas, overflow e transições mantêm imagens e metadados uniformes.
+  Para quê: permitir comparação rápida entre perfis. */
 .catalog-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -291,6 +297,9 @@
 .catalog-card-actions .catalog-primary-button {
   flex: 1;
 }
+/* O quê: apresenta estados de espera e ausência de resultados.
+  Como: o skeleton usa gradiente animado e o estado vazio centraliza orientação e ação.
+  Para quê: comunicar claramente tanto carregamento quanto filtros sem correspondência. */
 .catalog-skeleton {
   height: 400px;
   border-radius: 20px;
@@ -345,6 +354,9 @@
 .catalog-empty p {
   margin-bottom: 22px;
 }
+/* O quê: cria as camadas independentes do drawer e do detalhe do animal.
+  Como: position fixed, overflow, backdrop e z-index separam overlays do fluxo principal.
+  Para quê: editar filtros ou ler um perfil sem perder a posição do catálogo. */
 .drawer-overlay {
   position: fixed;
   inset: 0;

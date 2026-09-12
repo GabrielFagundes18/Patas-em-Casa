@@ -1,3 +1,6 @@
+/* O quê: isola o contexto de pintura do card e prepara transformações da imagem.
+  Como: isolation cria stacking context e will-change sinaliza uma propriedade animada.
+  Para quê: evitar interferências de camadas durante o efeito de movimento do catálogo. */
 .catalog-pet-card {
   isolation: isolate;
 }

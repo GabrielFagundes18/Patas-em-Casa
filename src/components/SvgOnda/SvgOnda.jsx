@@ -1,4 +1,10 @@
+// O quê: importa o estilo do divisor ondulado.
+// Como: o componente combina SVG responsivo e cor recebida por prop.
+// Para quê: separar visualmente seções da página sem repetir o path.
 import './SvgOnda.css';
+// O quê: renderiza uma onda SVG com cor configurável.
+// Como: preserveAspectRatio none permite preencher a largura e fill recebe o valor da prop.
+// Para quê: criar uma transição decorativa reutilizável entre blocos da landing page.
 function SvgOnda({ color = "var(--sage-dark)" }) {
   return (
    <div className="hero-wave">

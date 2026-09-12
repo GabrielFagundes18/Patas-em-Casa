@@ -1,7 +1,13 @@
+// O quê: importa estilos, animação de entrada e o hook de visibilidade.
+// Como: useInView informa quando a seção aparece e motion controla a sequência das bolhas.
+// Para quê: explicar o processo de adoção em uma interface progressiva.
 import './HowItWorks.css';
 import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
 
+// O quê: associa chaves de etapa a representações SVG de ícones.
+// Como: o objeto permite selecionar uma figura por nome sem condicionais repetidos.
+// Para quê: manter a apresentação das etapas configurável pelos dados recebidos.
 const ICONS = {
   search: (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
@@ -36,12 +42,21 @@ const ICONS = {
   ),
 };
 
+// O quê: define uma ordem de fallback para etapas sem ícone explícito.
+// Como: o índice da etapa é usado com módulo para repetir opções quando necessário.
+// Para quê: garantir que toda bolha tenha uma representação visual.
 const DEFAULT_ICON_ORDER = ['search', 'heart', 'clipboard', 'home'];
 
 function HowItWorks({ steps, shelterName = 'Patas em Casa' }) {
+  // O quê: cria a referência da seção e registra se ela está visível.
+  // Como: useRef fornece o elemento observado e useInView mantém a detecção uma única vez.
+  // Para quê: iniciar as animações somente quando o conteúdo entra na viewport.
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, amount: 0.3 });
 
+  // O quê: renderiza o mock de conversa que descreve o caminho da adoção.
+  // Como: cada step é mapeado para uma bolha alternada, com atraso proporcional ao índice.
+  // Para quê: transformar um processo sequencial em uma leitura visual simples.
   return (
     <section id="como-funciona" className="how" ref={ref}>
       <div className="wrap">
@@ -63,6 +78,9 @@ function HowItWorks({ steps, shelterName = 'Patas em Casa' }) {
 
           <div className="chat-thread">
             {steps.map((step, index) => {
+              // O quê: calcula propriedades visuais derivadas da posição da etapa.
+              // Como: compara o índice, usa paridade e escolhe o ícone informado ou um fallback.
+              // Para quê: alternar remetentes, destacar a última mensagem e preservar a apresentação mesmo com dados incompletos.
               const isLast = index === steps.length - 1;
               const isSent = index % 2 === 1;
               const iconKey = step.icon || DEFAULT_ICON_ORDER[index % DEFAULT_ICON_ORDER.length];

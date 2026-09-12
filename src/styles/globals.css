@@ -1,5 +1,11 @@
+/* O quê: importa as famílias tipográficas usadas pela interface.
+  Como: Google Fonts fornece pesos específicos para títulos, corpo e identificadores monoespaçados.
+  Para quê: estabelecer a hierarquia visual compartilhada por todas as páginas. */
 @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&family=Work+Sans:wght@400;500;600&display=swap');
 
+/* O quê: declara variáveis de cor, tipografia, borda, sombra e raio.
+  Como: :root disponibiliza custom properties para toda a árvore do documento.
+  Para quê: centralizar o design system e permitir ajustes visuais sem repetir valores. */
 :root {
   /* Backgrounds */
   --bg-primary: #f3efe6;
@@ -28,6 +34,9 @@
   --radius-lg: 24px;
 }
 
+/* O quê: define regras globais de reset, foco, tipografia e layout.
+  Como: box-sizing, margens zeradas e classes utilitárias criam uma base previsível.
+  Para quê: reduzir diferenças entre navegadores e manter consistência entre páginas. */
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
@@ -187,6 +196,9 @@ section {
   line-height: 1.7;
 }
 
+/* O quê: configura cartões, modais e formulários compartilhados.
+  Como: grid, flex, backdrop-filter e variáveis de tema organizam superfícies e controles.
+  Para quê: fornecer padrões visuais reutilizáveis para conteúdo e diálogos. */
 .story-card {
   display: inline-flex;
   flex-direction: column;
@@ -327,6 +339,9 @@ section {
   font-size: clamp(1.6rem, 3vw, 2.1rem);
 }
 
+/* O quê: define a animação de revelação e sua alternativa acessível.
+  Como: classes controlam opacity/transform e a media query reduz transições para quem prefere menos movimento.
+  Para quê: melhorar a entrada de conteúdo sem prejudicar conforto ou navegação. */
 .reveal {
   opacity: 1;
   transform: translateY(18px);

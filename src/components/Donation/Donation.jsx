@@ -1,8 +1,14 @@
+// O quê: importa estilos, animação, ícones e estado local da doação.
+// Como: Framer Motion controla entrada na viewport e useState registra o resultado da cópia do PIX.
+// Para quê: apresentar necessidades da ONG e permitir copiar a chave de contribuição.
 import './Donation.css';
 import { motion } from 'framer-motion';
 import { Check, Copy, HeartHandshake, PawPrint, Package, ShieldPlus, Users } from 'lucide-react';
 import { useState } from 'react';
 
+// O quê: lista necessidades que podem ser apoiadas pela campanha.
+// Como: cada item associa um componente de ícone a um texto e é renderizado por map.
+// Para quê: tornar transparente como a contribuição é utilizada.
 const donationNeeds = [
   { icon: Package, text: '50 kg de ração para cães castrados' },
   { icon: ShieldPlus, text: 'Areia higiênica e produtos de limpeza' },
@@ -11,9 +17,15 @@ const donationNeeds = [
 ];
 
 function Donation() {
+  // O quê: define a chave PIX e o estado de confirmação da cópia.
+  // Como: a string é usada pela Clipboard API e copied alterna o ícone, texto e rótulo acessível.
+  // Para quê: dar feedback imediato ao usuário após a ação de contribuição.
   const pixKey = 'doacoes@patasemcasa.org';
   const [copied, setCopied] = useState(false);
 
+  // O quê: tenta copiar a chave PIX para a área de transferência.
+  // Como: aguarda navigator.clipboard.writeText, ativa o feedback por 2 segundos e trata falhas.
+  // Para quê: reduzir erros de digitação no momento de realizar a doação.
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(pixKey);
@@ -24,6 +36,9 @@ function Donation() {
     }
   };
 
+  // O quê: renderiza a seção de apoio financeiro e voluntário.
+  // Como: lista necessidades e alterna o estado do botão de cópia com renderização condicional.
+  // Para quê: transformar interesse em uma ação concreta de suporte à ONG.
   return (
     <section id="ajudar" className="donate-section">
       <motion.div

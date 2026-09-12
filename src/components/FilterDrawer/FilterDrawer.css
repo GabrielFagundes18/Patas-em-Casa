@@ -1,3 +1,6 @@
+/* O quê: evita que a rolagem do drawer atravesse para a página.
+  Como: overscroll-behavior contain limita o encadeamento e as regras seguintes padronizam foco.
+  Para quê: manter o usuário no contexto de filtros, inclusive com teclado. */
 .filter-drawer {
   overscroll-behavior: contain;
 }

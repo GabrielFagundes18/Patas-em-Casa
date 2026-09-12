@@ -1,3 +1,6 @@
+/* O quê: posiciona a onda SVG na borda inferior da seção.
+  Como: absolute, overflow e width fluida fazem o divisor ocupar toda a área disponível.
+  Para quê: criar uma transição decorativa responsiva entre blocos. */
 .hero-wave {
   position: absolute;
   bottom: 0;

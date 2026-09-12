@@ -1,6 +1,12 @@
+// O quê: importa estilos, hooks e componentes de navegação.
+// Como: useEffect observa a rolagem, useState controla o menu e Link usa o roteador sem recarregar a aplicação.
+// Para quê: construir a navegação responsiva e o acesso ao catálogo.
 import './Header.css';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+// O quê: define os destinos da navegação principal.
+// Como: cada item combina href e label para ser iterado em desktop e mobile.
+// Para quê: manter os menus sincronizados e evitar duplicação de conteúdo.
 const navLinks = [
   { href: '#adotar', label: 'Adotar' },
   { href: '#como-funciona', label: 'Como funciona' },
@@ -9,9 +15,15 @@ const navLinks = [
 ];
 
 function Header() {
+  // O quê: armazena se o drawer mobile está aberto e se a página foi rolada.
+  // Como: estados booleanos alteram atributos acessíveis e classes CSS.
+  // Para quê: controlar a visibilidade do menu e a aparência persistente do cabeçalho.
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
+  // O quê: acompanha a rolagem para atualizar o estado visual do header.
+  // Como: compara scrollY com 20 pixels, registra listener passivo e remove-o no cleanup.
+  // Para quê: aplicar o estilo compacto somente após o usuário começar a navegar pela página.
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
@@ -22,6 +34,9 @@ function Header() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // O quê: renderiza cabeçalho desktop, ações e drawer mobile.
+  // Como: map percorre navLinks e expressões condicionais refletem isOpen/scrolled no DOM.
+  // Para quê: oferecer navegação consistente em diferentes larguras de tela.
   return (
     <header className={scrolled ? 'scrolled' : ''}>
       <nav className="nav">

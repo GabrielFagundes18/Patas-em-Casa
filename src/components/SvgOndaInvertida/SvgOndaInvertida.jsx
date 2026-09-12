@@ -1,5 +1,11 @@
+// O quê: importa o estilo da onda invertida.
+// Como: o SVG usa a mesma abordagem do divisor comum, com path orientado para a base.
+// Para quê: oferecer uma variação visual para o início ou fim de faixas coloridas.
 import './SvgOndaInvertida.css';
 
+// O quê: renderiza a onda invertida com uma cor configurável.
+// Como: aplica a prop color ao fill do path e preserva a proporção responsiva.
+// Para quê: conectar visualmente a faixa de estatísticas às seções adjacentes.
 function SvgOndaInvertida({ color = "var(--sage-dark)" }) {
   return (
     <div className="hero-wave wave-bottom">

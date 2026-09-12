@@ -1,0 +1,3 @@
+/* O quê: reserva o módulo de estilos da seção de histórias.
+	Como: o componente é carregado com este arquivo e pode receber regras específicas dos cards de impacto.
+	Para quê: manter a responsabilidade visual isolada mesmo quando a seção usa estilos globais. */

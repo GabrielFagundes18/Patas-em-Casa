@@ -1,8 +1,14 @@
+// O quê: importa hooks, animação e o divisor visual da seção.
+// Como: useInView controla o contador e motion anima cada estatística.
+// Para quê: comunicar resultados da ONG com uma entrada progressiva.
 import { useEffect, useRef, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
 import './StatsStrip.css';
 import SgvOndaInvertida from '../SvgOndaInvertida/SvgOndaInvertida';
 
+// O quê: define os números e rótulos exibidos na faixa de impacto.
+// Como: cada objeto separa o valor formatado da legenda semântica.
+// Para quê: centralizar as métricas que alimentam os componentes de apresentação.
 const stats = [
   { value: '+150', label: 'ANIMAIS RESGATADOS' },
   { value: '+120', label: 'ADOÇÕES REALIZADAS' },
@@ -11,12 +17,21 @@ const stats = [
 ];
 
 function CountUp({ value, inView }) {
+  // O quê: mantém o número atualmente exibido pelo contador.
+  // Como: o valor é atualizado a cada frame enquanto a animação progride.
+  // Para quê: criar a transição visual entre zero e a métrica final.
   const [displayValue, setDisplayValue] = useState(0);
+  // O quê: separa número, prefixo e sufixo do valor textual recebido.
+  // Como: regex extrai dígitos e verificações de string preservam “+” e “anos”.
+  // Para quê: animar somente o trecho numérico sem perder a formatação de negócio.
   const parsed = value.match(/\d+(?:[.,]\d+)?/g)?.[0]?.replace(',', '.') ?? '0';
   const numericValue = Number(parsed);
   const prefix = value.startsWith('+') ? '+' : '';
   const suffix = value.includes('anos') ? ' anos' : '';
 
+  // O quê: inicia e encerra a animação do contador quando o item entra na viewport.
+  // Como: requestAnimationFrame calcula progresso limitado, aplica easing cúbico e agenda o próximo frame.
+  // Para quê: produzir uma contagem suave e cancelar o callback se o componente sair da tela.
   useEffect(() => {
     if (!inView) {
       return undefined;
@@ -42,6 +57,9 @@ function CountUp({ value, inView }) {
     return () => cancelAnimationFrame(frameId);
   }, [inView, numericValue]);
 
+  // O quê: renderiza prefixo, número animado e sufixo.
+  // Como: fragment evita um elemento extra na árvore e preserva a composição textual.
+  // Para quê: exibir a métrica no formato original durante e após a animação.
   return (
     <>
       {prefix}
@@ -52,9 +70,15 @@ function CountUp({ value, inView }) {
 }
 
 function StatsStrip() {
+  // O quê: observa a faixa para disparar a animação de entrada e os contadores.
+  // Como: useRef conecta o DOM ao useInView com execução única.
+  // Para quê: evitar iniciar métricas antes de o usuário alcançá-las.
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, amount: 0.4 });
 
+  // O quê: renderiza a faixa e uma célula para cada estatística.
+  // Como: map cria elementos animados com atraso baseado no índice e CountUp recebe o estado de visibilidade.
+  // Para quê: apresentar as métricas de impacto em uma sequência visual coerente.
   return (
     <div className="stats-strip" ref={ref}>
    

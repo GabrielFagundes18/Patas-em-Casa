@@ -1,3 +1,6 @@
+/* O quê: fixa o cabeçalho e define sua aparência translúcida antes e depois da rolagem.
+  Como: sticky, blur, sombra e a classe scrolled ajustam profundidade sem retirar o header do fluxo.
+  Para quê: manter a navegação disponível durante a exploração da página. */
 header {
   position: sticky;
   top: 0;
@@ -19,6 +22,9 @@ header.scrolled {
   border-color: var(--border-color);
 }
 
+/* O quê: organiza logo, links e ações em uma barra de navegação.
+  Como: flex distribui os grupos e as pseudo-classes criam indicadores de foco e hover.
+  Para quê: oferecer navegação desktop legível e orientada a ações. */
 .nav {
   display: flex;
   align-items: center;
@@ -218,6 +224,9 @@ header.scrolled .nav {
   transform: rotate(-45deg);
 }
 
+/* O quê: transforma o menu em drawer mobile e anima sua abertura.
+  Como: display, opacity, transform e aria-expanded trabalham junto com o estado React.
+  Para quê: preservar acesso aos destinos em telas estreitas. */
 .mobile-drawer {
   display: none;
   flex-direction: column;
@@ -287,6 +296,9 @@ header.scrolled .nav {
   font-weight: 700;
 }
 
+/* O quê: define acessibilidade e feedback de rolagem.
+  Como: skip-link fica fora da tela até foco e scroll-progress expõe largura percentual.
+  Para quê: facilitar teclado e percepção de progresso na landing page. */
 .skip-link {
   position: absolute;
   left: -999px;

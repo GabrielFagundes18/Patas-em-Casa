@@ -1,3 +1,6 @@
+/* O quê: estrutura o wrapper, hero, colunas e elementos decorativos principais.
+  Como: grid, posicionamento absoluto e z-index separam texto, imagem e onda.
+  Para quê: construir a primeira impressão sem bloquear as ações do usuário. */
 /* WRAPPER PRINCIPAL */
 .home-wrapper {
   width: 100%;
@@ -21,6 +24,9 @@
   z-index: 2;
 }
 
+/* O quê: estiliza título, descrição e chamadas de ação do hero.
+  Como: tipografia responsiva, cores de contraste e flex agrupam a mensagem principal.
+  Para quê: comunicar adoção responsável e encaminhar para o catálogo. */
 /* COLUNA ESQUERDA */
 .hero-left {
   display: flex;
@@ -130,6 +136,9 @@
   background: var(--bg-glass);
 }
 
+/* O quê: define a imagem recortada, a curva SVG e a seção de diferenciais.
+  Como: object-fit, overflow e camadas z-index conectam as áreas visualmente.
+  Para quê: destacar animais e conduzir o visitante para os benefícios do serviço. */
 /* COLUNA DIREITA (POSICIONAMENTO DOS PETS) */
 .hero-right {
   position: relative;
@@ -258,6 +267,9 @@
 }
 
 
+/* O quê: adapta hero e diferenciais para notebook, tablet e celular.
+  Como: media queries reduzem dimensões e convertem a grade em coluna única.
+  Para quê: evitar sobreposição e preservar legibilidade em diferentes larguras. */
 /* RESPONSIVIDADE */
 /* ==========================================================================
    RESPONSIVIDADE E ADAPTAÇÃO PARA DISPOSITIVOS MOVEIS

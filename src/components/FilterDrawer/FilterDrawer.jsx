@@ -1,3 +1,6 @@
+// O quê: importa animação, ícones, opções do domínio, grupo reutilizável e estilos.
+// Como: o drawer recebe estado controlado do catálogo e usa callbacks para alterá-lo.
+// Para quê: encapsular todos os critérios de refinamento da busca.
 import { motion } from "framer-motion";
 import { Check, Heart, X } from "lucide-react";
 import {
@@ -10,6 +13,9 @@ import { FilterGroup } from "../FilterGroup/FilterGroup";
 import "./FilterDrawer.css";
 
 export function FilterDrawer({ filters, setFilters, onClose, onClear }) {
+  // O quê: alterna uma opção dentro de um filtro de seleção múltipla.
+  // Como: atualização funcional lê o estado atual, remove o valor existente ou cria novo array com spread.
+  // Para quê: evitar mutação direta e manter espécie, porte e sexo independentes.
   const toggleValue = (key, value) =>
     setFilters((current) => ({
       ...current,
@@ -19,6 +25,9 @@ export function FilterDrawer({ filters, setFilters, onClose, onClear }) {
     }));
 
   return (
+    // O quê: renderiza o painel lateral de refinamento.
+    // Como: motion.aside anima a entrada e os grupos mapeiam opções para controles controlados.
+    // Para quê: permitir combinar critérios e aplicar a seleção ao catálogo.
     <motion.aside
       className="filter-drawer"
       initial={{ x: "100%" }}

@@ -1,3 +1,6 @@
+// O quê: importa animações, ícones, roteamento, imagem principal e a onda decorativa.
+// Como: Framer Motion anima blocos, Link navega internamente e os demais módulos compõem a identidade visual.
+// Para quê: apresentar a proposta de adoção e o principal caminho para encontrar um animal.
 import { motion } from 'framer-motion';
 import { ArrowRight, Dog, Heart, HeartPulse, PawPrint } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -6,6 +9,9 @@ import './Hero.css';
 import SvgOnda from '../SvgOnda/SvgOnda';
 
 function Hero() {
+  // O quê: renderiza o hero e a seção de benefícios iniciais.
+  // Como: agrupa texto, chamadas para ação, imagem e cards em seções sem estado local.
+  // Para quê: comunicar o propósito da plataforma e preparar o visitante para o fluxo de adoção.
   return (
     <div className="home-wrapper">
       <section className="hero-section" aria-labelledby="hero-title">

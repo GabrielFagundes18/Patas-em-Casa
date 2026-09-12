@@ -1,0 +1,3 @@
+/* O quê: reserva o módulo de estilos da faixa de estatísticas.
+	Como: as regras compartilhadas da faixa estão no stylesheet da vitrine; este arquivo mantém o escopo do componente.
+	Para quê: permitir evolução visual local sem misturar responsabilidade com a lógica React. */

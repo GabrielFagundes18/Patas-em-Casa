@@ -1,3 +1,6 @@
+// O quê: importa hooks e seções que compõem a página inicial.
+// Como: cada seção é um componente independente, enquanto useEffect controla observadores e scroll.
+// Para quê: organiza a experiência institucional e de descoberta de adoção em uma única página.
 import { useEffect, useState } from 'react';
 import Header from '../components/Header/Header';
 import Hero from '../components/Hero/Hero';
@@ -11,8 +14,9 @@ import Stories from '../components/Stories/Stories';
 import Footer from '../components/Footer/Footer';
 import PetSectionContainer from '../components/PetSectionContainer/PetSectionContainer';
 
-
-
+// O quê: descreve as etapas apresentadas na seção “Como funciona”.
+// Como: cada objeto reúne título, explicação e chave de ícone consumidos pelo componente filho.
+// Para quê: mantém conteúdo e renderização separados, facilitando a evolução do fluxo de adoção.
 const steps=[
     { title: 'Encontre', description: 'Navegue pelos pets disponíveis perto de você.', icon: 'search' },
     { title: 'Conecte-se', description: 'Converse com o abrigo e conheça a história dele.', icon: 'heart' },
@@ -21,9 +25,15 @@ const steps=[
   ]
 
 function LandingPage() {
+  // O quê: declara o progresso de rolagem e a visibilidade da barra correspondente.
+  // Como: useState preserva os valores entre eventos de scroll e renderizações.
+  // Para quê: dá ao visitante uma indicação visual de quanto falta para concluir a página.
   const [scrollProgress, setScrollProgress] = useState(0);
   const [showProgressBar, setShowProgressBar] = useState(false);
 
+  // O quê: prepara a animação de revelação das seções ao entrarem na viewport.
+  // Como: respeita prefers-reduced-motion e usa IntersectionObserver para adicionar classes uma única vez.
+  // Para quê: cria movimento progressivo sem impor animações a usuários que solicitaram redução de movimento.
   useEffect(() => {
     const prefersReducedMotion = typeof window.matchMedia === 'function'
       ? window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -52,6 +62,9 @@ function LandingPage() {
     revealTargets.forEach((element) => element.classList.add('is-visible'));
   }, []);
 
+  // O quê: acompanha a posição vertical da janela e calcula o percentual percorrido.
+  // Como: mede scrollHeight menos innerHeight, limita o resultado entre 0 e 100 e registra listener passivo.
+  // Para quê: alimenta a barra de progresso sem bloquear a rolagem do navegador.
   useEffect(() => {
     const handleScroll = () => {
       const scrollTop = window.scrollY;
@@ -67,6 +80,9 @@ function LandingPage() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // O quê: renderiza a estrutura completa da landing page.
+  // Como: combina navegação, hero, estatísticas, vitrine, processo, doação, histórias e rodapé.
+  // Para quê: apresentar a proposta da ONG e conduzir o usuário ao catálogo de adoção.
   return (
     <div className="app-shell">
       <div className={`scroll-progress ${showProgressBar ? 'visible' : ''}`} aria-hidden="true">

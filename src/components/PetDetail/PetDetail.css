@@ -1,3 +1,6 @@
+/* O quê: isola o painel de detalhes e define o foco visível das miniaturas.
+  Como: isolation cria contexto próprio e outline-offset separa o indicador do botão.
+  Para quê: preservar a composição do modal e manter navegação por teclado perceptível. */
 .pet-detail {
   isolation: isolate;
 }

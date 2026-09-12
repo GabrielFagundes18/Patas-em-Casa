@@ -1,3 +1,6 @@
+/* O quê: define a base visual e a grade informativa do rodapé.
+  Como: grid, tipografia monoespaçada e ícones agrupam marca, navegação e contatos.
+  Para quê: encerrar a página com informações institucionais acessíveis. */
 .footer {
   background: var(--bg-primary);
   color: var(--text-main);
@@ -75,6 +78,9 @@
   color: var(--text-main);
 }
 
+/* O quê: estiliza os links e a linha final do rodapé.
+  Como: transições, flex e bordas fornecem feedback e separam copyright da assinatura.
+  Para quê: fechar a hierarquia visual sem perder caminhos de navegação. */
 .footer a {
   color: var(--text-accent);
   text-decoration: none;
@@ -120,6 +126,9 @@
   color: var(--brick);
 }
 
+/* O quê: reorganiza as colunas em telas menores.
+  Como: breakpoints reduzem o número de colunas e empilham o rodapé inferior.
+  Para quê: manter leitura e toque confortáveis no mobile. */
 @media (max-width: 820px) {
   .footer-grid {
     grid-template-columns: 1fr 1fr;

@@ -1,5 +1,11 @@
+// O quê: importa os estilos da seção de histórias.
+// Como: o componente usa apenas dados estáticos e marcação sem estado local.
+// Para quê: separar conteúdo de impacto social da estrutura visual.
 import './Stories.css';
 
+// O quê: reúne imagem, texto alternativo, depoimento e autoria de cada história.
+// Como: a lista é percorrida para gerar cards com chaves estáveis.
+// Para quê: apresentar evidências do impacto da adoção e do apadrinhamento.
 const stories = [
   {
     image:
@@ -25,6 +31,9 @@ const stories = [
 ];
 
 function Stories() {
+  // O quê: renderiza o título da seção e os cards de depoimentos.
+  // Como: map transforma cada objeto de stories em uma composição de imagem e texto.
+  // Para quê: mostrar resultados concretos da atuação da organização.
   return (
     <section id="historias">
       <div className="wrap">

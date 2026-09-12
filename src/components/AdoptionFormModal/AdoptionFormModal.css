@@ -1,3 +1,6 @@
+/* O quê: isola o modal e define indicadores de foco dos controles do formulário.
+  Como: isolation cria contexto de pintura e outline visível usa a cor de destaque.
+  Para quê: evitar conflitos de camadas e garantir feedback de navegação acessível. */
 .adoption-form-modal {
   isolation: isolate;
 }
