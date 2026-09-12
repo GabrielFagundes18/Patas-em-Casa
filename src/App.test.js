@@ -2,11 +2,11 @@ import '@testing-library/jest-dom';
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import App from './App';
-import Hero from './components/home/Hero';
-import { buscarTodoAnimais } from './components/home/PetSectionContainer';
+import Hero from './components/Hero/Hero';
+import { buscarTodoAnimais } from './components/PetSectionContainer/PetSectionContainer';
 
-jest.mock('./components/home/PetSectionContainer', () => {
-  const actual = jest.requireActual('./components/home/PetSectionContainer');
+jest.mock('./components/PetSectionContainer/PetSectionContainer', () => {
+  const actual = jest.requireActual('./components/PetSectionContainer/PetSectionContainer');
 
   return {
     __esModule: true,

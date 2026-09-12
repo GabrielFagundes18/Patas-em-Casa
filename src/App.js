@@ -1,9 +1,4 @@
-import './styles/root.css';
-import './styles/layout.css';
-import './styles/hero.css';
-import './styles/cards.css';
-import './styles/donation.css';
-import './styles/footer.css';
+import './styles/globals.css';
 import LandingPage from './pages/LandingPage';
 import AdoptionCatalog from './pages/AdoptionCatalog';
 import { Route, Routes } from 'react-router-dom';

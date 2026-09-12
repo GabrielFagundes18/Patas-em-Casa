@@ -7,17 +7,17 @@ import {
   SlidersHorizontal,
   X,
 } from "lucide-react";
-import { AdoptionFormModal } from "../components/catalog/AdoptionFormModal/AdoptionFormModal";
-import { FilterDrawer } from "../components/catalog/FilterDrawer/FilterDrawer";
-import { PetCard } from "../components/catalog/PetCard/PetCard";
-import { PetDetail } from "../components/catalog/PetDetail/PetDetail";
+import { AdoptionFormModal } from "../components/AdoptionFormModal/AdoptionFormModal";
+import { FilterDrawer } from "../components/FilterDrawer/FilterDrawer";
+import { PetCard } from "../components/PetCard/PetCard";
+import { PetDetail } from "../components/PetDetail/PetDetail";
 import { PAGE_SIZE } from "../constants/catalogOptions";
 import {
   buscarTodoAnimais,
   mapPetsFromApi,
-} from "../components/home/PetSectionContainer";
+} from "../components/PetSectionContainer/PetSectionContainer";
 import { getAge, getSize, getSpecies } from "../utils/petHelpers";
-import "../styles/adoption-catalog.css";
+import "./AdoptionCatalog.css";
 
 const initialFilters = {
   species: [],

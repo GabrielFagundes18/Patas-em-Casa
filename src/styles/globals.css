@@ -1,0 +1,357 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&family=Work+Sans:wght@400;500;600&display=swap');
+
+:root {
+  /* Backgrounds */
+  --bg-primary: #f3efe6;
+  --bg-secondary: #e7dcc6;
+  --bg-card: #fffaf3;
+  --bg-glass: rgba(255, 255, 255, 0.42);
+
+  /* Typography */
+  --text-main: #1f2a24;
+  --text-muted: #58675f;
+  --text-accent: #35564b;
+
+  /* Palette & Accents */
+  --amber: #d88b3d;
+  --amber-dark: #b86d1d;
+  --sage: #2f5a4b;
+  --sage-dark: #223d34;
+  --sage-pale: #edf4ee;
+  --brick: #b2614c;
+  --accent-glow: rgba(216, 139, 61, 0.17);
+
+  /* UI Elements */
+  --border-color: rgba(31, 42, 36, 0.12);
+  --shadow-main: 0 26px 60px rgba(31, 42, 36, 0.12);
+  --radius-md: 14px;
+  --radius-lg: 24px;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--bg-primary);
+  color: var(--text-main);
+  font-family: 'Inter', sans-serif;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  color: inherit;
+}
+
+button,
+a {
+  font: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--amber-dark);
+  outline-offset: 3px;
+}
+
+.app-shell {
+  min-height: 100vh;
+  position: relative;
+}
+
+.wrap {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 24px;
+  
+}
+
+h1,
+h2,
+h3 {
+  font-family: 'Fraunces', serif;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--text-main);
+}
+
+.eyebrow {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--sage);
+  font-weight: 500;
+}
+
+.mono {
+  font-family: 'IBM Plex Mono', monospace;
+}
+
+.btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 24px;
+  border-radius: 7px;
+  font-weight: 600;
+  font-size: 15px;
+  text-decoration: none;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+  overflow: hidden;
+}
+
+.btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, transparent 0%, var(--bg-glass) 35%, transparent 70%);
+  transform: translateX(-130%);
+  transition: transform 0.7s ease;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  filter: saturate(1.06);
+}
+
+.btn:hover::before {
+  transform: translateX(130%);
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+.btn-primary {
+  background: var(--amber);
+  color: var(--text-main);
+  box-shadow: var(--shadow-main);
+}
+
+.btn-primary:hover {
+  background: var(--amber-dark);
+  box-shadow: var(--shadow-main);
+}
+
+.btn-secondary {
+  background: transparent;
+  border-color: var(--sage);
+  color: var(--sage-dark);
+}
+
+.btn-secondary:hover {
+  background: var(--sage-pale);
+}
+
+section {
+  padding: 76px 0;
+}
+
+.section-head {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  max-width: 640px;
+  margin-bottom: 26px;
+}
+
+.section-head h2 {
+  font-size: clamp(2.2rem, 4vw, 3.25rem);
+  line-height: 1.05;
+  letter-spacing: -0.045em;
+}
+
+.section-head p {
+  color: var(--text-muted);
+  max-width: 620px;
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+.story-card {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-top: 18px;
+  padding: 14px 16px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-glass);
+  backdrop-filter: blur(8px);
+  border-radius: 12px;
+  max-width: 300px;
+  color: var(--text-muted);
+}
+
+.story-card .story-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--sage);
+}
+
+.story-card strong {
+  color: var(--text-main);
+  font-size: 1.1rem;
+}
+
+.story-card small {
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: color-mix(in srgb, var(--sage-dark) 56%, transparent);
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  z-index: 120;
+}
+
+.modal-card {
+  width: min(560px, 100%);
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-main);
+  padding: 24px;
+}
+
+.admin-card {
+  width: min(700px, 100%);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.modal-header h2 {
+  margin-top: 8px;
+  font-size: clamp(2rem, 5vw, 2.5rem);
+}
+
+.close-button {
+  border: 1px solid var(--border-color);
+  background: transparent;
+  color: var(--text-main);
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  font-size: 1.6rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.adoption-form {
+  display: grid;
+  gap: 16px;
+}
+
+.adoption-form label {
+  display: grid;
+  gap: 8px;
+  font-size: 0.92rem;
+  color: var(--text-muted);
+}
+
+.adoption-form input,
+.adoption-form textarea {
+  width: 100%;
+  border: 1px solid var(--border-color);
+  background: var(--bg-card);
+  border-radius: 10px;
+  padding: 12px 14px;
+  color: var(--text-main);
+  font: inherit;
+}
+
+.adoption-form textarea {
+  resize: vertical;
+  min-height: 110px;
+}
+
+.adoption-form .btn {
+  width: fit-content;
+  margin-top: 8px;
+}
+
+.admin-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.admin-grid article {
+  background: var(--sage-pale);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 18px;
+  display: grid;
+  gap: 8px;
+}
+
+.admin-grid span {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-family: 'IBM Plex Mono', monospace;
+}
+
+.admin-grid strong {
+  color: var(--sage-dark);
+  font-size: clamp(1.6rem, 3vw, 2.1rem);
+}
+
+.reveal {
+  opacity: 1;
+  transform: translateY(18px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+  will-change: opacity, transform;
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  * {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}

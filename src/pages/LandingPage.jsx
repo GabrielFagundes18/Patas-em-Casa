@@ -1,39 +1,24 @@
 import { useEffect, useState } from 'react';
-import Header from '../components/common/Header';
-import Hero from '../components/home/Hero';
-import StatsStrip from '../components/home/StatsStrip';
-
-
-import HowItWorks from '../components/home/HowItWorks';
-import Donation from '../components/home/Donation';
-import Stories from '../components/home/Stories';
-import Footer from '../components/common/Footer';
-import PetSectionContainer from '../components/home/PetSectionContainer';
+import Header from '../components/Header/Header';
+import Hero from '../components/Hero/Hero';
+import StatsStrip from '../components/StatsStrip/StatsStrip';
 
 
 
-const steps = [
-  {
-    title: 'Escolha',
-    description:
-      'Navegue pela vitrine e encontre um animal com o perfil que combina com sua rotina.',
-  },
-  {
-    title: 'Formulário',
-    description:
-      'Responda o questionário de posse responsável — leva cerca de 5 minutos.',
-  },
-  {
-    title: 'Entrevista',
-    description:
-      'Nossa equipe entra em contato para uma conversa rápida e, se preciso, visita ao lar.',
-  },
-  {
-    title: 'Adoção',
-    description:
-      'Assinatura do termo de adoção responsável e boas-vindas ao novo lar.',
-  },
-];
+import HowItWorks from '../components/HowItWorks/HowItWorks';
+import Donation from '../components/Donation/Donation';
+import Stories from '../components/Stories/Stories';
+import Footer from '../components/Footer/Footer';
+import PetSectionContainer from '../components/PetSectionContainer/PetSectionContainer';
+
+
+
+const steps=[
+    { title: 'Encontre', description: 'Navegue pelos pets disponíveis perto de você.', icon: 'search' },
+    { title: 'Conecte-se', description: 'Converse com o abrigo e conheça a história dele.', icon: 'heart' },
+    { title: 'Cadastre-se', description: 'Preencha um formulário rápido de responsabilidade.', icon: 'clipboard' },
+    { title: 'Leve para casa', description: 'Combine a retirada e comece a nova vida juntos.', icon: 'home' },
+  ]
 
 function LandingPage() {
   const [scrollProgress, setScrollProgress] = useState(0);
