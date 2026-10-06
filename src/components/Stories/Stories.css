@@ -1,3 +1,110 @@
-/* O quê: reserva o módulo de estilos da seção de histórias.
-	Como: o componente é carregado com este arquivo e pode receber regras específicas dos cards de impacto.
-	Para quê: manter a responsabilidade visual isolada mesmo quando a seção usa estilos globais. */
+/* O quê: histórias de adoção: uma em destaque (foto + citação) e até duas em cartões menores.
+  Como: o destaque é uma linha flexível que empilha no celular; os demais formam uma grade de 2 colunas.
+  Para quê: dar peso a uma história real em vez de uma grade de cartões iguais. */
+.home-stories-head {
+  margin-bottom: 40px;
+}
+
+.home-story-featured {
+  display: flex;
+  flex-wrap: wrap;
+  border: 1px solid var(--border-color);
+  border-radius: 28px;
+  background: var(--bg-card);
+  overflow: hidden;
+}
+
+.home-story-photo {
+  flex: 1 1 340px;
+  min-height: 320px;
+  background: var(--bg-secondary);
+}
+
+.home-story-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.home-story-photo .pet-photo-placeholder {
+  min-height: 320px;
+  background: var(--bg-secondary);
+  color: var(--text-muted);
+}
+
+.home-story-body {
+  display: flex;
+  flex: 1 1 420px;
+  flex-direction: column;
+  justify-content: center;
+  gap: 18px;
+  min-width: 0;
+  padding: clamp(28px, 4vw, 52px);
+}
+
+.home-story-mark {
+  color: var(--amber);
+  font-family: 'Fraunces', serif;
+  font-size: 88px;
+  line-height: 0.6;
+}
+
+.home-story-quote {
+  margin: 0;
+  font-family: 'Fraunces', serif;
+  font-size: clamp(22px, 2.3vw, 30px);
+  font-style: italic;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.home-story-who {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 15px;
+}
+
+.home-story-who strong {
+  color: var(--text-main);
+}
+
+.home-story-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+  margin-top: 24px;
+}
+
+.home-story-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 28px;
+  border: 1px solid var(--border-color);
+  border-radius: 22px;
+  background: var(--bg-card);
+}
+
+.home-story-card-quote {
+  margin: 0;
+  font-family: 'Fraunces', serif;
+  font-size: 19px;
+  font-style: italic;
+  line-height: 1.4;
+}
+
+@media (max-width: 720px) {
+  .home-story-photo,
+  .home-story-photo .pet-photo-placeholder {
+    min-height: 220px;
+  }
+
+  .home-story-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .home-story-card {
+    padding: 22px;
+  }
+}

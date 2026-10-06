@@ -1,157 +1,157 @@
-/* O quê: define a base visual e a grade informativa do rodapé.
-  Como: grid, tipografia monoespaçada e ícones agrupam marca, navegação e contatos.
-  Para quê: encerrar a página com informações institucionais acessíveis. */
+/* O quê: rodapé verde-escuro com marca, dois grupos de links, contato e a linha final.
+  Como: grade de 4 colunas que vira 2 e depois 1; todas as regras ficam dentro de .footer.
+  Para quê: fechar as páginas com as informações da ONG sem interferir no resto do site. */
 .footer {
-  background: var(--bg-primary);
-  color: var(--text-main);
-  padding: 52px 0 28px;
-  border-top: 1px solid var(--border-color);
+  padding: 64px 0 28px;
+  background: var(--sage-dark);
+  color: var(--bg-primary);
 }
 
-.footer-grid {
+.footer-top {
   display: grid;
-  grid-template-columns: 1.4fr 1fr 1fr 1fr;
-  gap: 28px;
-  margin-bottom: 30px;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 2fr) minmax(0, 1.3fr);
+  gap: 40px 56px;
+  padding-bottom: 40px;
+  border-bottom: 1px solid rgba(243, 239, 230, 0.16);
 }
 
-.footer-col {
-  padding: 4px 0;
-}
-
-.brand-col {
-  padding-right: 12px;
-}
-
-.logo {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-
-  color: var(--text-main);
-  font-weight: 600;
-  letter-spacing: -0.02em;
-}
-
-.logo-mark {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 10px;
-  background: var(--accent-glow);
-  color: var(--amber-dark);
-}
-
-.footer p {
-  max-width: 26rem;
-  font-size: 14px;
-  line-height: 1.7;
-  color: var(--text-muted);
-}
-
-.footer h4 {
-  margin-bottom: 14px;
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--text-muted);
-}
-
-.footer ul {
-  list-style: none;
+.footer-brand {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  margin: 0;
-  padding: 0;
+  gap: 16px;
 }
 
-.footer li {
-  display: flex;
+.footer-logo {
+  display: inline-flex;
   align-items: center;
-  gap: 9px;
-  font-size: 14px;
-  line-height: 1.5;
-  color: var(--text-main);
-}
-
-/* O quê: estiliza os links e a linha final do rodapé.
-  Como: transições, flex e bordas fornecem feedback e separam copyright da assinatura.
-  Para quê: fechar a hierarquia visual sem perder caminhos de navegação. */
-.footer a {
-  color: var(--text-accent);
+  gap: 10px;
+  color: var(--bg-primary);
+  font-family: 'Fraunces', serif;
+  font-size: 22px;
+  font-weight: 600;
   text-decoration: none;
-  transition: color 0.2s ease;
 }
 
-.footer a:hover,
-.footer a:focus-visible {
+.footer-logo-mark {
+  display: inline-grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: var(--bg-primary);
   color: var(--sage-dark);
 }
 
-.info-icon {
+.footer p {
+  max-width: 24rem;
+  margin: 0;
+  color: rgba(243, 239, 230, 0.78);
+  font-size: 15px;
+}
+
+.footer .footer-cnpj {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+}
+
+.footer-nav {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 32px;
+}
+
+.footer .footer-heading {
+  margin: 0 0 14px;
+  color: var(--amber-light);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.footer ul {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.footer-nav a {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
-  border-radius: 8px;
-  background: var(--accent-glow);
-  color: var(--amber-dark);
-  border: 1px solid var(--border-color);
-  flex-shrink: 0;
+  min-height: 36px;
+  color: var(--bg-primary);
+  font-size: 15px;
+  text-decoration: none;
+}
+
+.footer-nav a:hover {
+  color: var(--amber-light);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.footer-contact li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 5px 0;
+  font-size: 15px;
+  overflow-wrap: anywhere;
+}
+
+.footer-contact svg {
+  flex: 0 0 auto;
+  margin-top: 3px;
+  color: var(--amber-light);
+}
+
+.footer-contact a {
+  color: var(--bg-primary);
 }
 
 .footer-bottom {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
-  align-items: center;
   gap: 12px;
-  padding-top: 18px;
-  border-top: 1px solid var(--border-color);
-  font-size: 12px;
-  color: var(--text-muted);
+  padding-top: 24px;
+  color: rgba(243, 239, 230, 0.72);
+  font-size: 13px;
 }
 
-.footer-heartline {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
+.footer-bottom a {
+  color: rgba(243, 239, 230, 0.85);
 }
 
-.footer-heart {
-  color: var(--brick);
+.footer a:focus-visible {
+  outline-color: var(--amber-light);
 }
 
-/* O quê: reorganiza as colunas em telas menores.
-  Como: breakpoints reduzem o número de colunas e empilham o rodapé inferior.
-  Para quê: manter leitura e toque confortáveis no mobile. */
-@media (max-width: 820px) {
-  .footer-grid {
-    grid-template-columns: 1fr 1fr;
+@media (max-width: 960px) {
+  .footer-top {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  .footer-brand {
+    grid-column: 1 / -1;
   }
 }
 
 @media (max-width: 560px) {
   .footer {
-    padding-top: 42px;
+    padding-top: 48px;
   }
 
-  .footer-grid {
-    grid-template-columns: 1fr;
-    gap: 18px;
-    margin-bottom: 22px;
+  .footer-top {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 32px;
   }
 
-  .brand-col {
-    padding-right: 0;
-  }
-
-  .footer-bottom {
-    flex-direction: column;
-    align-items: flex-start;
+  .footer-nav {
+    gap: 24px 16px;
   }
 }

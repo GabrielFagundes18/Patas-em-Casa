@@ -1,0 +1,113 @@
+/* O quê: seção de voluntariado da Home: chamada à esquerda, formulário em cartão à direita.
+  Como: duas colunas que empilham no celular; as áreas são caixas de seleção em formato de pílula.
+  Para quê: inscrição rápida, com áreas fáceis de tocar no celular. */
+.home-volunteer {
+  background: var(--sage-pale);
+}
+
+.home-volunteer-layout {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 40px 72px;
+}
+
+.home-volunteer-layout > .home-head {
+  flex: 1 1 360px;
+  max-width: 440px;
+}
+
+.home-volunteer-card {
+  position: relative;
+  display: flex;
+  flex: 999 1 520px;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 0;
+  padding: clamp(22px, 3vw, 36px);
+  border: 1px solid rgba(31, 42, 36, 0.1);
+  border-radius: 28px;
+  background: var(--bg-card);
+}
+
+.home-volunteer-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.home-volunteer-fields .is-wide {
+  grid-column: 1 / -1;
+}
+
+.home-volunteer-trap {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.home-volunteer-areas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.home-volunteer-areas label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 14px;
+  border: 1.5px solid rgba(31, 42, 36, 0.2);
+  border-radius: 999px;
+  background: #ffffff;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.home-volunteer-areas label.is-selected {
+  border-color: var(--sage);
+  background: var(--sage-pale);
+}
+
+.home-volunteer-areas input {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  accent-color: var(--sage);
+}
+
+.home-volunteer-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 20px;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.home-volunteer-actions .home-btn:disabled {
+  opacity: 0.7;
+  cursor: progress;
+}
+
+@media (max-width: 640px) {
+  .home-volunteer-layout > .home-head {
+    max-width: none;
+  }
+
+  .home-volunteer-fields {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .home-volunteer-actions .home-btn {
+    width: 100%;
+  }
+
+  .home-volunteer-areas label {
+    padding: 0 12px;
+  }
+}

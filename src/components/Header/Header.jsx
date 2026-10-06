@@ -4,6 +4,7 @@
 import './Header.css';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { PawPrint } from 'lucide-react';
 // O quê: define os destinos da navegação principal.
 // Como: cada item combina href e label para ser iterado em desktop e mobile.
 // Para quê: manter os menus sincronizados e evitar duplicação de conteúdo.
@@ -13,6 +14,7 @@ const navLinks = [
   { href: '/como-funciona', label: 'Como funciona' },
   { href: '/doar', label: 'Doar' },
   { href: '/#historias', label: 'Histórias' },
+  { href: '/#voluntariado', label: 'Voluntariado' },
 ];
 
 // Âncoras da Home usam <a> (o navegador rola até a seção); páginas usam Link (sem recarregar).
@@ -49,6 +51,9 @@ function Header() {
     <header className={scrolled ? 'scrolled' : ''}>
       <nav className="nav">
         <Link to="/" className="logo" aria-label="Patas em Casa — página inicial">
+          <span className="logo-mark" aria-hidden="true">
+            <PawPrint size={20} />
+          </span>
           Patas em Casa
         </Link>
 
@@ -58,7 +63,7 @@ function Header() {
 
         <div className="nav-actions">
           <Link to="/adotar" className="nav-cta">
-            Ver animais para adoção
+            Quero adotar
           </Link>
           <button
             type="button"

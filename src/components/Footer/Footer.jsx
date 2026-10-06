@@ -1,86 +1,79 @@
-// O quê: importa estilos e ícones usados no rodapé.
-// Como: os ícones são referências de componentes e podem ser renderizados dinamicamente nas listas.
-// Para quê: estruturar informações institucionais, navegação e contato com pouca duplicação.
+// O quê: rodapé do site: marca, links (Adote / Ajude), contato e acesso da equipe.
+// Como: os dados de contato vêm de ORGANIZACAO (constants/organizacao.js), o único lugar a atualizar.
+// Para quê: encerrar todas as páginas públicas com os mesmos caminhos e canais de contato.
 import './Footer.css';
-import { Clock3, Heart, Mail, MapPin, PawPrint, Phone, Send } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { AtSign, Clock3, Mail, MapPin, PawPrint, Phone } from 'lucide-react';
 import { ORGANIZACAO } from '../../constants/organizacao';
 
-// O quê: define links e dados de contato exibidos no rodapé.
-// Como: arrays de objetos são percorridos com map e usam chaves estáveis para cada item.
-// Para quê: separar conteúdo configurável da marcação visual.
-const navLinks = [
-  { label: 'Adotar', href: '/adotar' },
-  { label: 'Como funciona', href: '/como-funciona' },
-  { label: 'Doar', href: '/doar' },
-  { label: 'Histórias', href: '/#historias' },
+const linkGroups = [
+  {
+    title: 'Adote',
+    links: [
+      { label: 'Animais para adoção', to: '/adotar' },
+      { label: 'Como funciona', to: '/como-funciona' },
+      { label: 'Histórias', href: '/#historias' },
+    ],
+  },
+  {
+    title: 'Ajude',
+    links: [
+      { label: 'Doar agora', to: '/doar' },
+      { label: 'Doação mensal', to: '/doar?tipo=recorrente' },
+      { label: 'Seja voluntário', href: '/#voluntariado' },
+    ],
+  },
 ];
 
 const contactItems = [
-  { icon: Mail, label: ORGANIZACAO.email },
+  { icon: Mail, label: ORGANIZACAO.email, href: `mailto:${ORGANIZACAO.email}` },
   { icon: Phone, label: ORGANIZACAO.telefone },
   { icon: MapPin, label: ORGANIZACAO.endereco },
+  { icon: Clock3, label: ORGANIZACAO.horario },
+  { icon: AtSign, label: ORGANIZACAO.instagram },
 ];
 
-const visitItems = [
-  { icon: Clock3, label: ORGANIZACAO.horario },
-  { icon: Send, label: ORGANIZACAO.instagram },
-];
+// Âncoras da Home usam <a> (o navegador rola até a seção); páginas usam Link (sem recarregar).
+function FooterLink({ link }) {
+  return link.href ? <a href={link.href}>{link.label}</a> : <Link to={link.to}>{link.label}</Link>;
+}
 
 function Footer() {
-  // O quê: renderiza as colunas informativas e a assinatura final da página.
-  // Como: listas dinâmicas associam cada item a um link, ícone ou texto sem repetir estrutura.
-  // Para quê: oferecer referências institucionais e canais de contato ao final da navegação.
   return (
     <footer className="footer">
       <div className="wrap">
-        <div className="footer-grid">
-          <div className="footer-col brand-col">
-            <div className="logo" aria-label="Patas em Casa">
-              <span className="logo-mark" aria-hidden="true">
-                <PawPrint size={18} />
+        <div className="footer-top">
+          <div className="footer-brand">
+            <Link to="/" className="footer-logo" aria-label="Patas em Casa — página inicial">
+              <span className="footer-logo-mark" aria-hidden="true">
+                <PawPrint size={20} />
               </span>
-              <span>Patas em Casa</span>
-            </div>
-
-            <p>
-              ONG de proteção e adoção responsável de cães e gatos, atuando desde 2019.
-            </p>
+              Patas em Casa
+            </Link>
+            <p>Resgate, tratamento e adoção responsável de cães e gatos desde {ORGANIZACAO.fundacao}.</p>
+            <p className="footer-cnpj">CNPJ {ORGANIZACAO.cnpj}</p>
           </div>
 
-          <div className="footer-col">
-            <h4>Navegação</h4>
-            <ul>
-              {navLinks.map((link) => (
-                <li key={link.label}>
-                  <a href={link.href}>{link.label}</a>
-                </li>
-              ))}
-            </ul>
-          </div>
+          <nav className="footer-nav" aria-label="Rodapé">
+            {linkGroups.map((group) => (
+              <div key={group.title}>
+                <h2 className="footer-heading">{group.title}</h2>
+                <ul>
+                  {group.links.map((link) => (
+                    <li key={link.label}><FooterLink link={link} /></li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </nav>
 
-          <div className="footer-col">
-            <h4>Contato</h4>
+          <div className="footer-contact">
+            <h2 className="footer-heading">Contato</h2>
             <ul>
-              {contactItems.map(({ icon: Icon, label }) => (
+              {contactItems.map(({ icon: Icon, label, href }) => (
                 <li key={label}>
-                  <span className="info-icon" aria-hidden="true">
-                    <Icon size={14} />
-                  </span>
-                  <span>{label}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div className="footer-col">
-            <h4>Visitas</h4>
-            <ul>
-              {visitItems.map(({ icon: Icon, label }) => (
-                <li key={label}>
-                  <span className="info-icon" aria-hidden="true">
-                    <Icon size={14} />
-                  </span>
-                  <span>{label}</span>
+                  <Icon size={16} aria-hidden="true" />
+                  {href ? <a href={href}>{label}</a> : <span>{label}</span>}
                 </li>
               ))}
             </ul>
@@ -88,11 +81,8 @@ function Footer() {
         </div>
 
         <div className="footer-bottom">
-          <span>© 2026 Patas em Casa. Todos os direitos reservados.</span>
-          <span className="footer-heartline">
-            <Heart className="footer-heart" size={13} />
-            Feito com carinho para quem espera por um lar.
-          </span>
+          <span>© {new Date().getFullYear()} Patas em Casa</span>
+          <Link to="/admin/login">Área da equipe</Link>
         </div>
       </div>
     </footer>

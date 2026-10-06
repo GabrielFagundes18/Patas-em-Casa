@@ -1,124 +1,107 @@
-// O quê: importa animações, ícones, roteamento, imagem principal e a onda decorativa.
-// Como: Framer Motion anima blocos, Link navega internamente e os demais módulos compõem a identidade visual.
-// Para quê: apresentar a proposta de adoção e o principal caminho para encontrar um animal.
+// O quê: topo da Home: chamada principal, os dois caminhos (adotar e doar) e um animal em destaque.
+// Como: o destaque é o primeiro caso urgente da lista (ou o primeiro animal, se não houver urgente).
+// Para quê: apresentar a ONG em uma frase e levar o visitante direto a quem precisa de um lar.
+import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowRight, Dog, Heart, HeartPulse, PawPrint } from 'lucide-react';
-import { useEffect, useState } from 'react';
-import Fundo from '../../assets/fundo.png';
+import { ArrowRight, Heart, PawPrint } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import Fundo from '../../assets/fundo.webp';
+import { ORGANIZACAO } from '../../constants/organizacao';
+import { artigo } from '../../utils/petText';
 import './Hero.css';
-import SvgOnda from '../SvgOnda/SvgOnda';
 
-const stories = ['Bento', 'Luna', 'Milo'];
+export function pickHighlight(pets) {
+  return pets.find((pet) => pet.urgent) ?? pets[0] ?? null;
+}
 
-function Hero() {
-  const [activeStory, setActiveStory] = useState(stories[0]);
+// Miniatura do destaque: a foto do animal ou, sem foto (ou com link quebrado), a pata da marca.
+function HighlightThumb({ pet }) {
+  const [failed, setFailed] = useState(false);
+  if (!pet.image || failed) {
+    return (
+      <span className="home-hero-thumb" aria-hidden="true">
+        <PawPrint size={24} />
+      </span>
+    );
+  }
+  return <img className="home-hero-thumb" src={pet.image} alt="" onError={() => setFailed(true)} />;
+}
 
-  useEffect(() => {
-    const timer = window.setInterval(() => {
-      setActiveStory((currentStory) => {
-        const index = stories.indexOf(currentStory);
-        const nextIndex = (index + 1) % stories.length;
-        return stories[nextIndex];
-      });
-    }, 3500);
+function Hero({ pets = [] }) {
+  const highlight = pickHighlight(pets);
 
-    return () => window.clearInterval(timer);
-  }, []);
-
-  // O quê: renderiza o hero e a seção de benefícios iniciais.
-  // Como: agrupa texto, chamadas para ação, imagem e cards em seções sem estado local.
-  // Para quê: comunicar o propósito da plataforma e preparar o visitante para o fluxo de adoção.
   return (
-    <div className="home-wrapper">
-      <section className="hero-section" aria-labelledby="hero-title">
-        <div className="wrap hero-container">
-          <motion.div
-            className="hero-left"
-            initial={{ opacity: 0, x: -30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            <span className="hero-kicker"><PawPrint size={15} /> Adoção responsável, todos os dias</span>
-            <h1 id="hero-title" className="hero-title" aria-live="polite">
-              Cada focinho tem uma <strong>{activeStory}</strong>
-            </h1>
+    <section className="home-hero" aria-labelledby="hero-title">
+      <div className="wrap home-hero-grid">
+        <motion.div
+          className="home-hero-copy"
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: 'easeOut' }}
+        >
+          <p className="home-eyebrow">ONG de proteção animal · desde {ORGANIZACAO.fundacao}</p>
+          <h1 id="hero-title" className="home-hero-title">
+            Cada focinho tem uma <em>história.</em>
+          </h1>
+          <p className="home-hero-lead">
+            Resgatamos, tratamos e preparamos cães e gatos para um lar de verdade. A adoção é gratuita, e a equipe
+            acompanha você do primeiro contato até as primeiras semanas em casa.
+          </p>
+          <div className="home-hero-actions">
+            <Link to="/adotar" className="home-btn home-btn--primary">
+              Quero adotar <ArrowRight size={18} aria-hidden="true" />
+            </Link>
+            <Link to="/doar" className="home-btn home-btn--outline">
+              <Heart size={18} aria-hidden="true" /> Quero doar
+            </Link>
+          </div>
+          <Link to="/como-funciona" className="home-link">Entender o processo de adoção</Link>
+        </motion.div>
 
-            <p className="hero-description">
-              Encontre cães e gatos resgatados que esperam por uma família. A equipe acompanha cada encontro para que a adoção seja leve, segura e duradoura.
+        <motion.div
+          className="home-hero-visual"
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: 'easeOut', delay: 0.1 }}
+        >
+          <div className="home-hero-frame">
+            <span className="home-hero-orb home-hero-orb--amber" aria-hidden="true" />
+            <span className="home-hero-orb home-hero-orb--sage" aria-hidden="true" />
+            <img
+              src={Fundo}
+              alt="Um cachorro e um gato acenando com a pata"
+              className="home-hero-img"
+              width="1400"
+              height="763"
+              fetchPriority="high"
+            />
+          </div>
+
+          {pets.length > 0 ? (
+            <p className="home-hero-chip">
+              <span aria-hidden="true" />
+              {pets.length} aguardando um lar
             </p>
+          ) : null}
 
-            <div className="hero-actions hero">
-              <a href="/adotar" className="btn-hero-pill" aria-label="Quero adotar">
-                Quero adotar
-              </a>
-              <a href="/adotar" className="btn-hero-pill">
-                Encontrar um companheiro <ArrowRight size={18} />
-              </a>
-              <a href="#como-funciona" className="hero-text-link">Entender o processo</a>
-            </div>
-
-          </motion.div>
-
-          <motion.div
-            className="hero-right"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7 }}
-          >
-            <img src={Fundo} alt="Animaizinhos" className="hero-cutout-img" />
-            <div className="hero-orbit hero-orbit-one" aria-hidden="true" />
-            <div className="hero-orbit hero-orbit-two" aria-hidden="true" />
-          </motion.div>
-        </div>
-        <SvgOnda color="var(--bg-primary)"  />
-      </section>
-
-      <section className="features-section">
-        <div className="wrap">
-          <div className="features-heading">
-            <span className="eyebrow">O cuidado antes do encontro</span>
-            <h2 className="features-title">Cada adoção começa bem antes do abraço.</h2>
-          </div>
-
-          <div className="features-grid">
-            <div className="feature-card">
-              <div className="feature-icon icon-yellow">
-                <Dog size={24} strokeWidth={2.2} />
-              </div>
-              <div className="feature-text">
-                <h3>São muitos</h3>
-                <p>
-                  Cães e gatos com perfis diferentes, prontos para encontrar a rotina certa.
-                </p>
-              </div>
-            </div>
-
-            <div className="feature-card">
-              <div className="feature-icon icon-green">
-                <HeartPulse size={24} strokeWidth={2.2} />
-              </div>
-              <div className="feature-text">
-                <h3>Eles são saudáveis</h3>
-                <p>Vacinação, avaliação e acompanhamento fazem parte de cada resgate.</p>
-              </div>
-            </div>
-
-            <div className="feature-card">
-              <div className="feature-icon icon-pink">
-                <Heart size={24} strokeWidth={2.2} />
-              </div>
-              <div className="feature-text">
-                <h3>Eles são amados</h3>
-                <p>
-                  Eles recebem presença, cuidado e respeito enquanto esperam por um lar.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <SvgOnda color="var(--sage-dark)"  />
-      </section>
-    </div>
+          {highlight ? (
+            <Link
+              to={highlight.id ? `/animais/${encodeURIComponent(highlight.id)}` : '/adotar'}
+              className="home-hero-highlight"
+            >
+              <HighlightThumb pet={highlight} />
+              <span className="home-hero-highlight-text">
+                {highlight.urgent ? <span className="home-badge-urgent">Urgente</span> : null}
+                <strong>
+                  {highlight.name} {highlight.urgent ? 'precisa de um lar' : 'está esperando por você'}
+                </strong>
+                <span className="home-hero-highlight-cta">Ver perfil d{artigo(highlight)} {highlight.name}</span>
+              </span>
+            </Link>
+          ) : null}
+        </motion.div>
+      </div>
+    </section>
   );
 }
 

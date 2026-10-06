@@ -1,210 +1,72 @@
-/* O quê: define a faixa do processo de adoção e o mock de conversa.
-  Como: cards, bolhas e flex controlam hierarquia, alinhamento e contraste.
-  Para quê: representar as etapas como uma conversa fácil de escanear. */
-.how {
-  padding: 6rem 0;
-  background: var(--bg-primary);
-}
-
-
-
-.section-head {
-  text-align: center;
-  margin-bottom: 2.2rem;
-}
-
-.eyebrow {
-  display: inline-block;
-  background: var(--sage-pale);
-  color: var(--sage-dark);
-  font-size: 0.8rem;
-  font-weight: 600;
-  padding: 6px 16px;
-  border-radius: 999px;
-  margin-bottom: 0.75rem;
-}
-
-.section-head h2 {
-  font-size: 2rem;
-  font-weight: 600;
-  color: var(--text-main);
-  margin: 0;
-}
-
-.chat-mock {
-  background: var(--bg-card);
-  border-radius: var(--radius-lg);
-  padding: 1.5rem 1.25rem;
-  box-shadow: var(--shadow-main);
-}
-
-.chat-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding-bottom: 14px;
-  margin-bottom: 16px;
-  border-bottom: 1px solid var(--border-color);
-}
-
-.chat-avatar {
-  width: 34px;
-  height: 34px;
-  min-width: 34px;
-  border-radius: 50%;
-  background: var(--sage);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--bg-card);
-}
-
-.chat-avatar svg {
-  width: 16px;
-  height: 16px;
-}
-
-.chat-name {
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--text-main);
-  margin: 0;
-}
-
-.chat-status {
-  font-size: 0.72rem;
-  color: #639922;
-  margin: 2px 0 0;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-
-.chat-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #639922;
-  display: inline-block;
-}
-
-.chat-thread {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-/* O quê: estiliza estados de mensagem recebida, enviada e final.
-  Como: cores, raios assimétricos e limites de largura distinguem os papéis na conversa.
-  Para quê: reforçar a sequência do processo e o destaque da conclusão. */
-.bubble {
-  max-width: 78%;
-  padding: 10px 14px;
-  border-radius: 14px;
-}
-
-.bubble-received {
-  align-self: flex-start;
-  background: var(--sage-pale);
-  border-bottom-left-radius: 3px;
-}
-
-.bubble-sent {
-  align-self: flex-end;
-  background: var(--sage);
-  border-bottom-right-radius: 3px;
-}
-
-.bubble-final {
-  background: var(--amber);
-}
-
-.bubble-title {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  margin: 0 0 4px;
-  color: var(--sage-dark);
-}
-
-.bubble-sent .bubble-title,
-.bubble-final .bubble-title {
-  color: rgba(255, 250, 243, 0.85);
-}
-
-.bubble-icon {
-  display: inline-flex;
-  align-items: center;
-}
-
-.bubble-icon svg {
-  width: 14px;
-  height: 14px;
-}
-
-.bubble-text {
-  font-size: 0.82rem;
-  line-height: 1.5;
-  margin: 0;
-  color: var(--text-main);
-}
-
-.bubble-sent .bubble-text,
-.bubble-final .bubble-text {
-  color: var(--bg-card);
-}
-
-.chat-input {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 16px;
-  padding-top: 12px;
+/* O quê: "Como funciona" da Home: chamada à esquerda e etapas numeradas à direita.
+  Como: duas colunas que quebram em uma; as etapas formam uma grade de 2 colunas (1 no celular).
+  Para quê: explicar o processo de adoção de forma curta, sem ocupar a tela inteira. */
+.home-how {
   border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+  background: var(--bg-card);
 }
 
-.chat-input-field {
-  flex: 1;
-  background: var(--bg-primary);
-  border-radius: 20px;
-  padding: 8px 14px;
-  font-size: 0.78rem;
-  color: var(--text-muted);
-}
-
-.chat-input-send {
-  width: 32px;
-  height: 32px;
-  min-width: 32px;
-  border-radius: 50%;
-  background: var(--sage);
-  color: var(--bg-card);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.chat-input-send svg {
-  width: 15px;
-  height: 15px;
-}
-
-/* O quê: aumenta a área útil das bolhas em celulares.
-  Como: o breakpoint amplia a largura máxima sem alterar o fluxo vertical.
-  Para quê: aproveitar melhor telas estreitas mantendo respiro lateral. */
-@media (max-width: 480px) {
-  .bubble {
-    max-width: 88%;
-  }
-}
-/* O quê: atalhos da seção para a página completa e para o catálogo.
-  Como: botões globais lado a lado, quebrando linha no celular.
-  Para quê: a seção resumida da Home levar ao detalhe (requisitos e documentos) ou direto aos animais. */
-.how-links {
+.home-how-layout {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 4px;
+  gap: 40px 72px;
+}
+
+.home-how-layout > .home-head {
+  flex: 1 1 360px;
+  max-width: 420px;
+}
+
+.home-steps {
+  display: grid;
+  flex: 999 1 520px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 36px 40px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: none;
+}
+
+.home-step {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 18px;
+  border-top: 2px solid var(--sage);
+}
+
+.home-step-num {
+  color: var(--amber-dark);
+  font-family: 'Fraunces', serif;
+  font-size: 30px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.home-step h3 {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+.home-step p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 15px;
+}
+
+@media (max-width: 640px) {
+  .home-how-layout > .home-head {
+    max-width: none;
+  }
+
+  .home-steps {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
+  }
 }

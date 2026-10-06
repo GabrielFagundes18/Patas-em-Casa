@@ -25,6 +25,8 @@
   --sage-dark: #223d34;
   --sage-pale: #edf4ee;
   --brick: #b2614c;
+  --brick-dark: #9a4632; /* selo "Urgente": texto branco com contraste AA */
+  --amber-light: #f2c48f; /* destaque sobre fundos verdes */
   --accent-glow: rgba(216, 139, 61, 0.17);
 
   /* UI Elements */
@@ -105,13 +107,20 @@ h3 {
   color: var(--text-main);
 }
 
+/* Rótulo em pílula das páginas internas. O formato de pílula ficava em HowItWorks.css e valia para o site
+   inteiro; veio para cá quando a Home ganhou estilos próprios (prefixo home-), sem mudar as outras páginas. */
 .eyebrow {
+  display: inline-block;
+  padding: 6px 16px;
+  margin-bottom: 0.75rem;
+  border-radius: 999px;
+  background: var(--sage-pale);
   font-family: 'IBM Plex Mono', monospace;
-  font-size: 12px;
+  font-size: 0.8rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--sage);
-  font-weight: 500;
+  color: var(--sage-dark);
+  font-weight: 600;
 }
 
 .mono {
@@ -167,33 +176,50 @@ h3 {
   box-shadow: var(--shadow-main);
 }
 
+/* Formato de pílula vindo de PetSectionContainer.css (mesmo motivo do .eyebrow acima). */
 .btn-secondary {
-  background: transparent;
-  border-color: var(--sage);
+  min-height: 46px;
+  padding-inline: 20px;
+  border-radius: 999px;
+  background: var(--bg-glass);
+  border: 1px solid var(--border-color);
   color: var(--sage-dark);
+  box-shadow: var(--shadow-main);
 }
 
 .btn-secondary:hover {
   background: var(--sage-pale);
+  border-color: var(--border-color);
 }
 
 section {
   padding: 76px 0;
 }
 
+/* Centralização, margem e tamanho do título vinham de HowItWorks.css (mesmo motivo do .eyebrow acima). */
 .section-head {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 12px;
   max-width: 640px;
-  margin-bottom: 26px;
+  margin-bottom: 2.2rem;
+  text-align: center;
 }
 
 .section-head h2 {
-  font-size: clamp(2.2rem, 4vw, 3.25rem);
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 600;
   line-height: 1.05;
   letter-spacing: -0.045em;
+  color: var(--text-main);
+}
+
+@media (max-width: 820px) {
+  .section-head {
+    margin-bottom: 20px;
+  }
 }
 
 .section-head p {
@@ -370,6 +396,15 @@ section {
     opacity: 1;
     transform: none;
     transition: none;
+  }
+
+  /* Vinha de PetSectionContainer.css: botões e menu sem deslocamento ao passar o mouse. */
+  .btn,
+  .menu-toggle,
+  .mobile-drawer {
+    transition: none !important;
+    transform: none !important;
+    animation: none !important;
   }
 
   * {

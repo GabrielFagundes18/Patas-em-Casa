@@ -2,7 +2,7 @@
 // Como: Testing Library interage pela árvore acessível e MemoryRouter simula URLs sem navegador real.
 // Para quê: validar navegação, carregamento do catálogo e abertura do fluxo de adoção.
 import '@testing-library/jest-dom';
-import { act, fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import App from './App';
 import Hero from './components/Hero/Hero';
@@ -93,10 +93,11 @@ test('renders the landing page and links to the adoption catalog', async () => {
     screen.getByRole('heading', { name: /Cada focinho tem uma/i })
   ).toBeInTheDocument();
 
-  expect(screen.getByRole('link', { name: 'Quero adotar' })).toHaveAttribute(
-    'href',
-    '/adotar'
-  );
+  // Cabeçalho e topo levam ao catálogo.
+  const adoptLinks = screen.getAllByRole('link', { name: 'Quero adotar' });
+  expect(adoptLinks.length).toBeGreaterThanOrEqual(2);
+  adoptLinks.forEach((link) => expect(link).toHaveAttribute('href', '/adotar'));
+  expect(screen.getByRole('link', { name: 'Quero doar' })).toHaveAttribute('href', '/doar');
 
   await screen.findByRole('heading', { name: /Quem está esperando por você/i });
 });
@@ -176,29 +177,25 @@ test('clears an expired admin session and returns to login', async () => {
   expect(localStorage.getItem('patas_admin_user')).toBeNull();
 });
 
-// O quê: verifica a rotação automática da história do hero.
-// Como: substitui timers reais por fake timers e avança o relógio dentro de act.
-// Para quê: validar conteúdo temporal sem depender da passagem real do tempo.
-test('rotates the hero story automatically', () => {
-  jest.useFakeTimers();
+// O quê: verifica o destaque do topo.
+// Como: renderiza o Hero com um animal comum e um urgente.
+// Para quê: o caso urgente aparece primeiro, com o link para o perfil dele e o artigo certo.
+test('the hero highlights the first urgent animal', () => {
+  const pets = [
+    { id: 'mel', name: 'Mel', sex: 'Fêmea', urgent: false, image: '' },
+    { id: 'duque', name: 'Duque', sex: 'Macho', urgent: true, image: '' },
+  ];
+  render(
+    <MemoryRouter>
+      <Hero pets={pets} />
+    </MemoryRouter>
+  );
 
-  render(<Hero />);
-
-  expect(screen.getByText(/Bento/i)).toBeInTheDocument();
-
-  act(() => {
-    jest.advanceTimersByTime(3500);
-  });
-
-  expect(screen.getByText(/Luna/i)).toBeInTheDocument();
-
-  act(() => {
-    jest.advanceTimersByTime(3500);
-  });
-
-  expect(screen.getByText(/Milo/i)).toBeInTheDocument();
-
-  jest.useRealTimers();
+  expect(screen.getByRole('heading', { name: 'Cada focinho tem uma história.' })).toBeInTheDocument();
+  expect(screen.getByText('2 aguardando um lar')).toBeInTheDocument();
+  const highlight = screen.getByRole('link', { name: /Duque precisa de um lar/ });
+  expect(highlight).toHaveAttribute('href', '/animais/duque');
+  expect(highlight).toHaveTextContent('Ver perfil do Duque');
 });
 
 test('home shows stories and adoption steps from the backend', async () => {
@@ -209,7 +206,8 @@ test('home shows stories and adoption steps from the backend', async () => {
   );
 
   expect(await screen.findByText(/Pipoca trouxe paz para a casa/)).toBeInTheDocument();
-  expect(screen.getByText('— Fernanda A., adotou Pipoca')).toBeInTheDocument();
+  expect(screen.getByText('Fernanda A.')).toBeInTheDocument();
+  expect(screen.getByText(/adotou Pipoca/)).toBeInTheDocument();
   expect(await screen.findByText('Comece a nova vida.')).toBeInTheDocument();
 });
 

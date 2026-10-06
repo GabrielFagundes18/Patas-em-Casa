@@ -57,6 +57,21 @@ header.scrolled .nav {
   transform: scale(1.02);
 }
 
+.nav .logo {
+  gap: 10px;
+  font-size: 21px;
+}
+
+.nav .logo-mark {
+  display: inline-grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+  background: var(--sage);
+  color: var(--bg-card);
+}
+
 
 .nav-links {
   display: flex;
@@ -119,11 +134,14 @@ header.scrolled .nav {
 .nav-cta {
   position: relative;
   overflow: hidden;
-  background: linear-gradient(135deg, var(--sage) 0%, var(--sage-dark) 100%);
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  background: var(--sage);
   color: var(--bg-card);
-  padding: 10px 18px;
-  border-radius: 8px;
-  font-size: 14px;
+  padding: 0 20px;
+  border-radius: 999px;
+  font-size: 15px;
   font-weight: 600;
   text-decoration: none;
   white-space: nowrap;
@@ -369,6 +387,13 @@ header.scrolled .nav {
 .floating-btn.secondary {
   background: var(--amber);
   color: var(--text-main);
+}
+
+/* Cinco links + botão: aperta o espaçamento antes de o menu virar gaveta. */
+@media (max-width: 1024px) {
+  .nav-links {
+    gap: 20px;
+  }
 }
 
 @media (max-width: 820px) {

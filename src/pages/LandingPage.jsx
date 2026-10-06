@@ -1,19 +1,21 @@
 // O quê: importa hooks e seções que compõem a página inicial.
 // Como: cada seção é um componente independente, enquanto useEffect controla observadores e scroll.
 // Para quê: organiza a experiência institucional e de descoberta de adoção em uma única página.
+// Ordem: topo, números, vitrine, como funciona, doação, histórias, voluntariado.
 import { useEffect, useState } from 'react';
+import { MotionConfig } from 'framer-motion';
 import Header from '../components/Header/Header';
 import Hero from '../components/Hero/Hero';
 import StatsStrip from '../components/StatsStrip/StatsStrip';
-
-
-
+import PetSection from '../components/PetSectionContainer/PetSectionContainer';
 import HowItWorks from '../components/HowItWorks/HowItWorks';
 import Donation from '../components/Donation/Donation';
 import Stories from '../components/Stories/Stories';
+import VolunteerSignup from '../components/VolunteerSignup/VolunteerSignup';
 import Footer from '../components/Footer/Footer';
-import PetSectionContainer from '../components/PetSectionContainer/PetSectionContainer';
 import { useAdoptionSteps } from '../hooks/useAdoptionSteps';
+import { useAvailableAnimals } from '../hooks/useAvailableAnimals';
+import './LandingPage.css';
 
 function LandingPage() {
   // O quê: declara o progresso de rolagem e a visibilidade da barra correspondente.
@@ -22,6 +24,8 @@ function LandingPage() {
   const [scrollProgress, setScrollProgress] = useState(0);
   const [showProgressBar, setShowProgressBar] = useState(false);
   const steps = useAdoptionSteps();
+  // Uma busca só alimenta o destaque do topo e a vitrine.
+  const { pets, loading, error } = useAvailableAnimals();
 
   // O quê: rola até a seção do endereço (ex.: /#adotar vindo de outra página).
   // Como: espera o primeiro desenho da Home e chama scrollIntoView no elemento do hash.
@@ -41,7 +45,7 @@ function LandingPage() {
     const prefersReducedMotion = typeof window.matchMedia === 'function'
       ? window.matchMedia('(prefers-reduced-motion: reduce)').matches
       : false;
-    const revealTargets = document.querySelectorAll('.section-head, .pet-card, .impact-card, .donate, .step');
+    const revealTargets = document.querySelectorAll('.home-head, .home-step');
 
     revealTargets.forEach((element) => element.classList.add('reveal'));
 
@@ -84,27 +88,30 @@ function LandingPage() {
   }, []);
 
   // O quê: renderiza a estrutura completa da landing page.
-  // Como: combina navegação, hero, estatísticas, vitrine, processo, doação, histórias e rodapé.
-  // Para quê: apresentar a proposta da ONG e conduzir o usuário ao catálogo de adoção.
+  // Como: MotionConfig faz as animações do framer-motion respeitarem "reduzir movimento" do sistema.
+  // Para quê: apresentar a ONG e levar a adotar, doar ou ser voluntário.
   return (
-    <div className="app-shell">
-      <div className={`scroll-progress ${showProgressBar ? 'visible' : ''}`} aria-hidden="true">
-        <div className="scroll-progress-bar" style={{ width: `${scrollProgress}%` }} />
+    <MotionConfig reducedMotion="user">
+      <div className="app-shell">
+        <div className={`scroll-progress ${showProgressBar ? 'visible' : ''}`} aria-hidden="true">
+          <div className="scroll-progress-bar" style={{ width: `${scrollProgress}%` }} />
+        </div>
+        <a href="#main-content" className="skip-link">
+          Pular para o conteúdo
+        </a>
+        <Header />
+        <main id="main-content">
+          <Hero pets={pets} />
+          <StatsStrip />
+          <PetSection pets={pets} loading={loading} error={error} />
+          <HowItWorks steps={steps} />
+          <Donation />
+          <Stories />
+          <VolunteerSignup />
+        </main>
+        <Footer />
       </div>
-      <a href="#main-content" className="skip-link">
-        Pular para o conteúdo
-      </a>
-      <Header />
-      <main id="main-content">
-        <Hero />
-        <StatsStrip />
-        <PetSectionContainer />
-        <HowItWorks steps={steps} />
-        <Donation />
-        <Stories />
-      </main>
-      <Footer />
-    </div>
+    </MotionConfig>
   );
 }
 

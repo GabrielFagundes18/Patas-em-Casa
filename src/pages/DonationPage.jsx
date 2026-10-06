@@ -3,7 +3,7 @@
 // Para quê: aceitar Pix, cartão e boleto sem que dados de pagamento passem pelo site da ONG.
 // Se a doação online estiver indisponível (503), mostra a chave Pix como alternativa.
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { HeartHandshake, Lock } from 'lucide-react';
 import { PublicLayout } from '../components/PublicLayout/PublicLayout';
 import { PixKey } from '../components/PixKey/PixKey';
@@ -28,10 +28,26 @@ function readError(error) {
 // Redirecionamento isolado para poder ser substituído nos testes.
 export const redirectTo = { go: (url) => window.location.assign(url) };
 
+// Escolha vinda da Home (/doar?tipo=recorrente&valor=50): valor sugerido, "outro" ou um valor livre.
+// Parâmetros ausentes ou inválidos caem no padrão (única, R$ 50).
+function readInitialChoice(params) {
+  const tipo = params.get('tipo') === 'recorrente' ? 'recorrente' : 'unica';
+  const raw = params.get('valor');
+  const numeric = Number(raw);
+  if (raw === 'outro') return { tipo, choice: 'outro', custom: '' };
+  if (raw && SUGGESTED_VALUES.includes(numeric)) return { tipo, choice: numeric, custom: '' };
+  if (raw && Number.isFinite(numeric) && numeric >= MIN_VALUE && numeric <= MAX_VALUE) {
+    return { tipo, choice: 'outro', custom: raw };
+  }
+  return { tipo, choice: 50, custom: '' };
+}
+
 export default function DonationPage() {
-  const [tipo, setTipo] = useState('unica');
-  const [choice, setChoice] = useState(50);
-  const [custom, setCustom] = useState('');
+  const [searchParams] = useSearchParams();
+  const [initial] = useState(() => readInitialChoice(searchParams));
+  const [tipo, setTipo] = useState(initial.tipo);
+  const [choice, setChoice] = useState(initial.choice);
+  const [custom, setCustom] = useState(initial.custom);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState(null);
 

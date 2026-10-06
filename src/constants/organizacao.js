@@ -4,6 +4,7 @@
 // ATENÇÃO: telefone, endereço e CNPJ abaixo ainda são valores de exemplo; substitua pelos reais antes de publicar.
 export const ORGANIZACAO = Object.freeze({
   nome: 'Patas em Casa',
+  fundacao: 2019, // ano de início; a Home calcula os anos de atuação a partir dele
   email: 'contato@patasemcasa.org',
   telefone: '(11) 4000-0000',
   endereco: 'Rua das Acácias, 120 — SP',

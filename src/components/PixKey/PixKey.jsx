@@ -1,12 +1,12 @@
-// O quê: cartão com a chave Pix da ONG e botão de copiar.
+// O quê: chave Pix da ONG com botão de copiar, em cartão (variant "card") ou em linha (variant "inline").
 // Como: usa a Clipboard API e mostra "Copiada" por 2 segundos; falha de cópia não quebra a tela.
-// Para quê: doação direta sem intermediários, usada na Home e como alternativa na página de doação.
+// Para quê: doação direta sem intermediários: cartão na página de doação, linha na seção de doação da Home.
 import { useState } from 'react';
 import { Check, Copy } from 'lucide-react';
 import { ORGANIZACAO } from '../../constants/organizacao';
-import '../Donation/Donation.css';
+import './PixKey.css';
 
-export function PixKey() {
+export function PixKey({ variant = 'card' }) {
   const [copied, setCopied] = useState(false);
 
   async function handleCopy() {
@@ -19,6 +19,22 @@ export function PixKey() {
     }
   }
 
+  const copyLabel = copied ? 'Chave PIX copiada' : 'Copiar chave PIX';
+  const copyIcon = copied ? <Check size={14} aria-hidden="true" /> : <Copy size={14} aria-hidden="true" />;
+
+  if (variant === 'inline') {
+    return (
+      <div className="pix-inline">
+        <span className="pix-inline-label">Prefere Pix?</span>
+        <code className="pix-inline-key">{ORGANIZACAO.pix.chave}</code>
+        <button type="button" className="pix-inline-copy" onClick={handleCopy} aria-label={copyLabel}>
+          {copyIcon}
+          <span>{copied ? 'Copiada' : 'Copiar'}</span>
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div className="pix-tag">
       <span className="tag-hole" aria-hidden="true" />
@@ -26,13 +42,8 @@ export function PixKey() {
 
       <div className="pix-key-row">
         <span className="pix-key-value">{ORGANIZACAO.pix.chave}</span>
-        <button
-          type="button"
-          className="copy-btn"
-          onClick={handleCopy}
-          aria-label={copied ? 'Chave PIX copiada' : 'Copiar chave PIX'}
-        >
-          {copied ? <Check size={14} /> : <Copy size={14} />}
+        <button type="button" className="copy-btn" onClick={handleCopy} aria-label={copyLabel}>
+          {copyIcon}
           <span>{copied ? 'Copiada' : 'Copiar'}</span>
         </button>
       </div>

@@ -1,3 +1,59 @@
-/* O quê: reserva o módulo de estilos da faixa de estatísticas.
-	Como: as regras compartilhadas da faixa estão no stylesheet da vitrine; este arquivo mantém o escopo do componente.
-	Para quê: permitir evolução visual local sem misturar responsabilidade com a lógica React. */
+/* O quê: faixa verde-escura com os números da ONG.
+  Como: grade de 4 colunas (2 no celular); cada número tem um traço âmbar acima.
+  Para quê: separar o topo da vitrine com dados reais em destaque. */
+.home-stats {
+  padding: 40px 0;
+  background: var(--sage-dark);
+  color: var(--bg-primary);
+}
+
+.home-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 28px 32px;
+}
+
+.home-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.home-stat-bar {
+  width: 28px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--amber);
+}
+
+.home-stat-value {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(36px, 4vw, 46px);
+  font-weight: 600;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.home-stat-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(243, 239, 230, 0.78);
+}
+
+@media (max-width: 700px) {
+  .home-stats {
+    padding: 28px 0;
+  }
+
+  .home-stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px 16px;
+  }
+
+  .home-stat-label {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+  }
+}

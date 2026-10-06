@@ -1,44 +1,34 @@
-// O quê: importa hooks, animação e o divisor visual da seção.
-// Como: useInView controla o contador e motion anima cada estatística.
-// Para quê: comunicar resultados da ONG com uma entrada progressiva.
+// O quê: faixa com os números da ONG (resgatados, adoções, aguardando um lar e anos de atuação).
+// Como: os três primeiros vêm da API; os anos são calculados a partir do ano de fundação.
+// Para quê: mostrar resultados reais, nunca números inventados ou que envelhecem no código.
 import { useEffect, useRef, useState } from 'react';
-import { motion, useInView } from 'framer-motion';
+import { motion, useInView, useReducedMotion } from 'framer-motion';
 import './StatsStrip.css';
-import SgvOndaInvertida from '../SvgOndaInvertida/SvgOndaInvertida';
 import { buscarNumeros } from '../../services/conteudoService';
+import { ORGANIZACAO } from '../../constants/organizacao';
 
-// O quê: monta as métricas da faixa de impacto a partir dos números do backend.
-// Como: valores ainda não carregados (ou indisponíveis) ficam null e aparecem como "—".
-// Para quê: nunca exibir números inventados; o tempo de atuação é dado institucional fixo.
+export function anosDeAtuacao(hoje = new Date()) {
+  return hoje.getFullYear() - ORGANIZACAO.fundacao;
+}
+
+// Valores ainda não carregados (ou indisponíveis) ficam null e aparecem como "—".
 function buildStats(numeros) {
   return [
-    { value: numeros ? String(numeros.animais_resgatados) : null, label: 'ANIMAIS RESGATADOS' },
-    { value: numeros ? String(numeros.adocoes_realizadas) : null, label: 'ADOÇÕES REALIZADAS' },
-    { value: numeros ? String(numeros.aguardando_lar) : null, label: 'AGUARDANDO UM LAR' },
-    { value: '5 anos', label: 'DE ATUAÇÃO' },
+    { value: numeros?.animais_resgatados ?? null, label: 'animais resgatados' },
+    { value: numeros?.adocoes_realizadas ?? null, label: 'adoções realizadas' },
+    { value: numeros?.aguardando_lar ?? null, label: 'aguardando um lar' },
+    { value: anosDeAtuacao(), suffix: ' anos', label: `de atuação, desde ${ORGANIZACAO.fundacao}` },
   ];
 }
 
-function CountUp({ value, inView }) {
-  // O quê: mantém o número atualmente exibido pelo contador.
-  // Como: o valor é atualizado a cada frame enquanto a animação progride.
-  // Para quê: criar a transição visual entre zero e a métrica final.
+// O quê: conta de 0 até o valor quando a faixa aparece na tela.
+// Como: requestAnimationFrame com easing cúbico; quem pediu menos movimento vê o número final direto.
+function CountUp({ value, suffix = '', inView }) {
+  const reduceMotion = useReducedMotion();
   const [displayValue, setDisplayValue] = useState(0);
-  // O quê: separa número, prefixo e sufixo do valor textual recebido.
-  // Como: regex extrai dígitos e verificações de string preservam “+” e “anos”.
-  // Para quê: animar somente o trecho numérico sem perder a formatação de negócio.
-  const parsed = value.match(/\d+(?:[.,]\d+)?/g)?.[0]?.replace(',', '.') ?? '0';
-  const numericValue = Number(parsed);
-  const prefix = value.startsWith('+') ? '+' : '';
-  const suffix = value.includes('anos') ? ' anos' : '';
 
-  // O quê: inicia e encerra a animação do contador quando o item entra na viewport.
-  // Como: requestAnimationFrame calcula progresso limitado, aplica easing cúbico e agenda o próximo frame.
-  // Para quê: produzir uma contagem suave e cancelar o callback se o componente sair da tela.
   useEffect(() => {
-    if (!inView) {
-      return undefined;
-    }
+    if (!inView || reduceMotion) return undefined;
 
     let frameId = 0;
     let startTime = 0;
@@ -47,42 +37,27 @@ function CountUp({ value, inView }) {
     const animate = (timestamp) => {
       if (!startTime) startTime = timestamp;
       const progress = Math.min((timestamp - startTime) / duration, 1);
-      const easedProgress = 1 - (1 - progress) ** 3;
-      setDisplayValue(Math.round(numericValue * easedProgress));
-
-      if (progress < 1) {
-        frameId = requestAnimationFrame(animate);
-      }
+      setDisplayValue(Math.round(value * (1 - (1 - progress) ** 3)));
+      if (progress < 1) frameId = requestAnimationFrame(animate);
     };
 
     frameId = requestAnimationFrame(animate);
-
     return () => cancelAnimationFrame(frameId);
-  }, [inView, numericValue]);
+  }, [inView, reduceMotion, value]);
 
-  // O quê: renderiza prefixo, número animado e sufixo.
-  // Como: fragment evita um elemento extra na árvore e preserva a composição textual.
-  // Para quê: exibir a métrica no formato original durante e após a animação.
   return (
     <>
-      {prefix}
-      {displayValue}
+      {reduceMotion ? value : displayValue}
       {suffix}
     </>
   );
 }
 
 function StatsStrip() {
-  // O quê: observa a faixa para disparar a animação de entrada e os contadores.
-  // Como: useRef conecta o DOM ao useInView com execução única.
-  // Para quê: evitar iniciar métricas antes de o usuário alcançá-las.
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, amount: 0.4 });
   const [numeros, setNumeros] = useState(null);
 
-  // O quê: carrega os números reais do banco uma vez.
-  // Como: AbortController cancela a requisição se a página for desmontada; falhas mantêm "—".
-  // Para quê: a faixa refletir resgates, adoções e animais aguardando de verdade.
   useEffect(() => {
     const controller = new AbortController();
     buscarNumeros({ signal: controller.signal })
@@ -93,43 +68,26 @@ function StatsStrip() {
     return () => controller.abort();
   }, []);
 
-  const stats = buildStats(numeros);
-
-  // O quê: renderiza a faixa e uma célula para cada estatística.
-  // Como: map cria elementos animados com atraso baseado no índice e CountUp recebe o estado de visibilidade.
-  // Para quê: apresentar as métricas de impacto em uma sequência visual coerente.
   return (
-    <div className="stats-strip" ref={ref}>
-   
-      
-     
-     <SgvOndaInvertida/>
-      <div className="wrap stats-grid">
-        {stats.map((stat, index) => (
+    <section className="home-stats" aria-label="A Patas em Casa em números" ref={ref}>
+      <div className="wrap home-stats-grid">
+        {buildStats(numeros).map((stat, index) => (
           <motion.div
             key={stat.label}
-            className="stat-item"
-            initial={{ opacity: 0, y: 28 }}
-            animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 28 }}
-            transition={{
-              duration: 0.55,
-              ease: 'easeOut',
-              delay: index * 0.12,
-            }}
-            whileHover={{
-              y: -8,
-              scale: 1.03,
-              transition: { duration: 0.2, ease: 'easeOut' },
-            }}
+            className="home-stat"
+            initial={{ opacity: 0, y: 16 }}
+            animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
+            transition={{ duration: 0.5, ease: 'easeOut', delay: index * 0.1 }}
           >
-            <div className="stat-num">
-              {stat.value === null ? '—' : <CountUp value={stat.value} inView={inView} />}
-            </div>
-            <div className="stat-label">{stat.label}</div>
+            <span className="home-stat-bar" aria-hidden="true" />
+            <strong className="home-stat-value">
+              {stat.value === null ? '—' : <CountUp value={stat.value} suffix={stat.suffix} inView={inView} />}
+            </strong>
+            <span className="home-stat-label">{stat.label}</span>
           </motion.div>
         ))}
       </div>
-    </div>
+    </section>
   );
 }
 
