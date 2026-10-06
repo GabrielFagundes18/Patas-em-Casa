@@ -8,6 +8,8 @@ import DashboardOverview from './dashboard/DashboardOverview';
 import DonationsPage from './doacoes/DonationsPage';
 import TeamPage from './equipe/TeamPage';
 import VolunteersPage from './voluntarios/VolunteersPage';
+import AdoptersPage from './adotantes/AdoptersPage';
+import StoriesPage from './historias/StoriesPage';
 import { fetchAdminMe, logoutAdmin } from '../services/adminService';
 import { clearSession, SESSION_EXPIRED_EVENT } from '../services/api';
 
@@ -18,8 +20,12 @@ function renderSection(activeTab, user) {
       return <AnimalsPage user={user} />;
     case 'adocoes':
       return <AdoptionsPage user={user} />;
+    case 'adotantes':
+      return <AdoptersPage user={user} />;
+    case 'historias':
+      return <StoriesPage user={user} />;
     case 'doacoes':
-      return <DonationsPage />;
+      return <DonationsPage user={user} />;
     case 'voluntarios':
       return <VolunteersPage user={user} />;
     case 'configuracoes':

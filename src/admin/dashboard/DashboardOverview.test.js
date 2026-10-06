@@ -32,7 +32,7 @@ test('shows real indicators, lists and agenda from the API', async () => {
   expect(screen.getByText(/R\$\s?120,50/, { selector: '.dashboard-metric-value' })).toBeInTheDocument();
   expect(screen.getByText('Duque')).toBeInTheDocument();
   expect(screen.getByText('quer adotar Nino · 04/10/2026')).toBeInTheDocument();
-  expect(screen.getByText('Visita a realizar', { selector: '.admin-badge' })).toBeInTheDocument();
+  expect(screen.getByText('Visita', { selector: '.admin-badge' })).toBeInTheDocument();
   expect(screen.getAllByText('91%')).toHaveLength(2);
   expect(screen.getByText('36.4%')).toBeInTheDocument();
 });

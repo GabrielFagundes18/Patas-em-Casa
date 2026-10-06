@@ -141,3 +141,12 @@
     padding: 28px 22px;
   }
 }
+
+/* Link secundário das telas de acesso (esqueci a senha, voltar ao login). */
+.admin-login-link {
+  justify-self: center;
+  margin-top: 4px;
+  color: var(--admin-brand-strong);
+  font-size: 13px;
+  font-weight: 600;
+}

@@ -26,3 +26,25 @@ export async function updateAnimalStatus(id, status, motivo) {
 export async function deleteAnimal(id) {
   await api.delete(`/api/v1/animals/${id}`);
 }
+export async function getAnimal(id) {
+  const response = await api.get(`/api/v1/animals/${id}`);
+  return response.data.data;
+}
+
+// Fotos vão como multipart (campo "fotos"); o axios monta o boundary a partir do FormData.
+export async function uploadAnimalPhotos(id, files) {
+  const form = new FormData();
+  Array.from(files).forEach((file) => form.append('fotos', file));
+  const response = await api.post(`/api/v1/animals/${id}/photos`, form, { headers: { 'Content-Type': 'multipart/form-data' } });
+  return response.data.data;
+}
+
+export async function setMainAnimalPhoto(id, photoId) {
+  const response = await api.patch(`/api/v1/animals/${id}/photos/${photoId}/principal`);
+  return response.data.data;
+}
+
+export async function deleteAnimalPhoto(id, photoId) {
+  const response = await api.delete(`/api/v1/animals/${id}/photos/${photoId}`);
+  return response.data.data;
+}

@@ -9,6 +9,7 @@ import {
   donationMethodSeries,
   formatCurrency,
   formatDate,
+  formatDateTime,
   priorityMap,
   statusOf,
 } from '../constants/statusLabels';
@@ -18,7 +19,7 @@ import './DashboardOverview.css';
 
 const REFRESH_INTERVAL_MS = 60000;
 const monthFormatter = new Intl.DateTimeFormat('pt-BR', { month: 'short', timeZone: 'UTC' });
-const AGENDA_TYPES = { visita: 'Visita a realizar', termo_pendente: 'Termo a assinar' };
+const AGENDA_TYPES = { visita: 'Visita', entrevista: 'Entrevista', termo_pendente: 'Termo a assinar' };
 const MONTHLY_SOURCES = {
   doacoes_total: { label: 'Doações (R$)', format: formatCurrency, series: 1 },
   doacoes_quantidade: { label: 'Doações (quantidade)', format: (value) => String(value), series: 2 },
@@ -33,13 +34,13 @@ function monthLabel(month) {
 function exportAgenda(rows) {
   const escape = (value) => `"${String(value ?? '').replace(/"/g, '""')}"`;
   const lines = [
-    ['Tipo', 'Adotante', 'Animal', 'Responsável', 'Desde'].map(escape).join(';'),
+    ['Tipo', 'Adotante', 'Animal', 'Responsável', 'Quando'].map(escape).join(';'),
     ...rows.map((item) => [
       AGENDA_TYPES[item.tipo],
       item.adotante_nome,
       item.animal_nome,
       item.responsavel_nome || 'Sem responsável',
-      formatDate(item.referencia_em),
+      item.tipo === 'termo_pendente' ? `Aprovado em ${formatDate(item.referencia_em)}` : formatDateTime(item.referencia_em),
     ].map(escape).join(';')),
   ];
   const url = URL.createObjectURL(new Blob([`﻿${lines.join('\r\n')}`], { type: 'text/csv;charset=utf-8' }));
@@ -287,7 +288,7 @@ export default function DashboardOverview() {
           <div className="admin-card-header">
             <div>
               <h2 id="dash-agenda">Agenda</h2>
-              <p>Visitas a realizar e termos de adoção pendentes</p>
+              <p>Visitas e entrevistas marcadas e termos de adoção pendentes</p>
             </div>
             <div className="dashboard-chart-filters">
               <label>
@@ -311,19 +312,21 @@ export default function DashboardOverview() {
                     <th scope="col">Adotante</th>
                     <th scope="col">Animal</th>
                     <th scope="col">Responsável</th>
-                    <th scope="col">Desde</th>
+                    <th scope="col">Quando</th>
                   </tr>
                 </thead>
                 <tbody>
                   {agendaRows.map((item) => (
-                    <tr key={`${item.tipo}-${item.pedido_id}`}>
+                    <tr key={`${item.tipo}-${item.id || item.pedido_id}`}>
                       <td data-label="Tipo">
-                        <span className={`admin-badge is-${item.tipo === 'visita' ? 'available' : 'pending'}`}>{AGENDA_TYPES[item.tipo]}</span>
+                        <span className={`admin-badge is-${item.tipo === 'termo_pendente' ? 'pending' : 'available'}`}>{AGENDA_TYPES[item.tipo] || item.tipo}</span>
                       </td>
                       <td data-label="Adotante"><span className="admin-cell-title">{item.adotante_nome}</span></td>
                       <td data-label="Animal">{item.animal_nome}</td>
                       <td data-label="Responsável">{item.responsavel_nome || 'Sem responsável'}</td>
-                      <td data-label="Desde">{formatDate(item.referencia_em)}</td>
+                      <td data-label="Quando">
+                        {item.tipo === 'termo_pendente' ? `Aprovado em ${formatDate(item.referencia_em)}` : formatDateTime(item.referencia_em)}
+                      </td>
                     </tr>
                   ))}
                 </tbody>

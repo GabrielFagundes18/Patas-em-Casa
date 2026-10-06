@@ -39,6 +39,7 @@ export default function AnimalsPage({ user }) {
   const [retryCount, setRetryCount] = useState(0);
   const [editingAnimal, setEditingAnimal] = useState(null);
   const [formOpen, setFormOpen] = useState(false);
+  const [formNotice, setFormNotice] = useState('');
   const [saving, setSaving] = useState(false);
   const [actionError, setActionError] = useState('');
   const [draft, setDraft] = useState(() => Object.fromEntries(searchParams.entries()));
@@ -117,14 +118,21 @@ export default function AnimalsPage({ user }) {
     setSearchParams(next);
   }
 
+  // Depois de cadastrar, o formulário continua aberto em modo edição para enviar as fotos.
   async function saveAnimal(payload) {
     setSaving(true);
     setActionError('');
     try {
-      if (editingAnimal) await updateAnimal(editingAnimal.id, payload);
-      else await createAnimal(payload);
-      setFormOpen(false);
-      setEditingAnimal(null);
+      if (editingAnimal) {
+        await updateAnimal(editingAnimal.id, payload);
+        setFormOpen(false);
+        setEditingAnimal(null);
+        setFormNotice('');
+      } else {
+        const created = await createAnimal(payload);
+        setEditingAnimal(created);
+        setFormNotice(`${created.nome} foi cadastrado. Agora envie as fotos.`);
+      }
       setRetryCount((count) => count + 1);
     } catch (requestError) {
       setActionError(errorMessage(requestError));
@@ -165,11 +173,13 @@ export default function AnimalsPage({ user }) {
 
   function openCreateForm() {
     setEditingAnimal(null);
+    setFormNotice('');
     setFormOpen(true);
   }
 
   function openEditForm(animal) {
     setEditingAnimal(animal);
+    setFormNotice('');
     setFormOpen(true);
   }
 
@@ -384,7 +394,10 @@ export default function AnimalsPage({ user }) {
       {formOpen ? (
         <AnimalFormDialog
           animal={editingAnimal}
-          onClose={() => { setFormOpen(false); setEditingAnimal(null); }}
+          key={editingAnimal?.id || 'novo'}
+          notice={formNotice}
+          onClose={() => { setFormOpen(false); setEditingAnimal(null); setFormNotice(''); }}
+          onPhotosChanged={() => setRetryCount((count) => count + 1)}
           onSubmit={saveAnimal}
           saving={saving}
         />

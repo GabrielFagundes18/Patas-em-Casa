@@ -1,9 +1,7 @@
 import { useState } from 'react';
-import { Navigate, useLocation, useNavigate } from 'react-router-dom';
-import { PawPrint } from 'lucide-react';
+import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { loginAdmin } from '../../services/adminService';
-import '../styles/admin.css';
-import './AdminLoginPage.css';
+import AdminAuthShell from './AdminAuthShell';
 
 export default function AdminLoginPage() {
   const navigate = useNavigate();
@@ -24,7 +22,8 @@ export default function AdminLoginPage() {
       const payload = await loginAdmin(form.email, form.password);
       localStorage.setItem('patas_admin_token', payload.token);
       localStorage.setItem('patas_admin_user', JSON.stringify(payload.user));
-      navigate('/admin', { replace: true });
+      // Volta para a página do painel que a pessoa tentou abrir antes do login.
+      navigate(location.state?.from || '/admin', { replace: true });
     } catch (requestError) {
       setError(
         !requestError?.response
@@ -44,28 +43,15 @@ export default function AdminLoginPage() {
   }
 
   return (
-    <main className="admin-login-page">
-      <div className="admin-login-shell">
-      <aside className="admin-login-aside">
-        <span aria-hidden="true" className="admin-login-mark"><PawPrint size={26} /></span>
-        <p className="admin-login-aside-title">Painel Patas em Casa</p>
-        <p>Animais, adoções, doações e voluntários da ONG em um só lugar.</p>
-      </aside>
-      <section aria-labelledby="admin-login-title" className="admin-login-card">
-        <a aria-label="Patas em Casa, página inicial" className="admin-login-brand" href="/">
-          <PawPrint aria-hidden="true" size={21} />
-          <span>Patas em Casa</span>
-        </a>
-
-        <div className="admin-login-heading">
-          <p className="admin-login-eyebrow">Área administrativa</p>
-          <h1 id="admin-login-title">Acesso do painel</h1>
-          <p>Entre com suas credenciais para continuar.</p>
-        </div>
-
+    <AdminAuthShell description="Entre com suas credenciais para continuar." title="Acesso do painel" titleId="admin-login-title">
         {location.state?.sessaoExpirada && !error ? (
           <p className="admin-alert admin-login-notice" role="status">
             Sua sessão expirou por inatividade. Entre novamente para continuar.
+          </p>
+        ) : null}
+        {location.state?.senhaDefinida && !error ? (
+          <p className="admin-alert is-success admin-login-notice" role="status">
+            Senha definida. Entre com a nova senha.
           </p>
         ) : null}
 
@@ -104,8 +90,7 @@ export default function AdminLoginPage() {
             {loading ? 'Entrando...' : 'Entrar no painel'}
           </button>
         </form>
-      </section>
-      </div>
-    </main>
+        <Link className="admin-login-link" to="/admin/esqueci-senha">Esqueci minha senha</Link>
+    </AdminAuthShell>
   );
 }

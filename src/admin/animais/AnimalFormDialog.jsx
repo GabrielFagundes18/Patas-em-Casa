@@ -1,6 +1,10 @@
-import { useEffect, useRef, useState } from 'react';
-import { X } from 'lucide-react';
+// O quê: cadastro e edição de animal no painel.
+// Como: formulário único; na edição aparece a galeria de fotos (AnimalPhotos), que salva na hora.
+// Para quê: manter a ficha completa (dados, saúde, temperamento e fotos) usada pelo site.
+import { useState } from 'react';
 import { animalSizes, animalSpecies, animalStatusMap, animalSexes } from '../constants/animalOptions';
+import AdminDialog from '../shared/AdminDialog';
+import AnimalPhotos from './AnimalPhotos';
 
 function createForm(animal) {
   return {
@@ -16,22 +20,19 @@ function createForm(animal) {
     data_entrada: animal?.data_entrada?.slice(0, 10) || new Date().toISOString().slice(0, 10),
     castrado: Boolean(animal?.castrado),
     vacinado: Boolean(animal?.vacinado),
+    temperamento: (animal?.temperamento || []).join(', '),
   };
 }
 
-export default function AnimalFormDialog({ animal, saving, onClose, onSubmit }) {
+// "brincalhão, calmo,  , calmo" → ['brincalhão', 'calmo'] (a API também normaliza).
+function parseTraits(text) {
+  return [...new Set(text.split(',').map((trait) => trait.trim()).filter(Boolean))];
+}
+
+export default function AnimalFormDialog({ animal, notice, saving, onClose, onSubmit, onPhotosChanged }) {
   const [form, setForm] = useState(() => createForm(animal));
   const [error, setError] = useState('');
-  const dialogRef = useRef(null);
   const editing = Boolean(animal);
-
-  useEffect(() => {
-    const dialog = dialogRef.current;
-    if (dialog && !dialog.open) dialog.showModal();
-    return () => {
-      if (dialog?.open) dialog.close();
-    };
-  }, []);
 
   function handleChange(event) {
     const { name, value, type, checked } = event.target;
@@ -51,6 +52,7 @@ export default function AnimalFormDialog({ animal, saving, onClose, onSubmit }) 
         porte: form.porte || null,
         descricao: form.descricao || null,
         foto_url: form.foto_url || null,
+        temperamento: parseTraits(form.temperamento),
       });
     } catch (submitError) {
       setError(submitError?.response?.data?.error?.message || 'Não foi possível salvar o animal.');
@@ -58,22 +60,8 @@ export default function AnimalFormDialog({ animal, saving, onClose, onSubmit }) 
   }
 
   return (
-    <dialog
-      aria-labelledby="animal-form-title"
-      className="admin-dialog"
-      onCancel={onClose}
-      ref={dialogRef}
-    >
-      <div className="admin-dialog-header">
-        <div>
-          <p className="admin-eyebrow">Cadastro de animais</p>
-          <h2 id="animal-form-title">{editing ? 'Editar animal' : 'Cadastrar animal'}</h2>
-        </div>
-        <button aria-label="Fechar formulário" className="admin-icon-button" onClick={onClose} type="button">
-          <X size={19} />
-        </button>
-      </div>
-
+    <AdminDialog eyebrow="Cadastro de animais" id="animal-form" onClose={onClose} title={editing ? 'Editar animal' : 'Cadastrar animal'}>
+      {notice ? <p className="admin-alert is-success" role="status">{notice}</p> : null}
       <form className="admin-form" onSubmit={handleSubmit}>
         <div className="admin-form-grid">
           <label>
@@ -119,14 +107,31 @@ export default function AnimalFormDialog({ animal, saving, onClose, onSubmit }) 
             <input name="data_entrada" onChange={handleChange} type="date" value={form.data_entrada} />
           </label>
           <label className="is-wide">
-            URL da foto principal
+            {editing ? 'URL da foto principal (preenchida pela galeria abaixo)' : 'URL de uma foto (opcional; depois de cadastrar, envie as fotos)'}
             <input maxLength="2048" name="foto_url" onChange={handleChange} type="url" value={form.foto_url} />
+          </label>
+          <label className="is-wide">
+            Temperamento
+            <input aria-describedby="animal-traits-hint" maxLength="400" name="temperamento" onChange={handleChange} placeholder="Ex.: brincalhão, calmo, convive com gatos" value={form.temperamento} />
+            <small className="admin-field-hint" id="animal-traits-hint">Separe por vírgula (até 10 características).</small>
           </label>
           <label className="is-wide">
             Descrição
             <textarea maxLength="10000" name="descricao" onChange={handleChange} rows="3" value={form.descricao} />
           </label>
         </div>
+
+        {editing ? (
+          <AnimalPhotos
+            animalId={animal.id}
+            animalName={form.nome || animal.nome}
+            onChanged={(updated) => {
+              // A foto principal define o foto_url no servidor; o formulário acompanha para não sobrescrever.
+              setForm((current) => ({ ...current, foto_url: updated.foto_url || '' }));
+              onPhotosChanged?.();
+            }}
+          />
+        ) : null}
 
         <div className="admin-checks">
           <label><input checked={form.castrado} name="castrado" onChange={handleChange} type="checkbox" /> Castrado</label>
@@ -142,6 +147,6 @@ export default function AnimalFormDialog({ animal, saving, onClose, onSubmit }) 
           </button>
         </div>
       </form>
-    </dialog>
+    </AdminDialog>
   );
 }

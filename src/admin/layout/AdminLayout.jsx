@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
+  BookHeart,
+  UserCheck,
   Bell,
   ChevronRight,
   CircleHelp,
@@ -25,7 +27,9 @@ const navigationIcons = {
   dashboard: LayoutDashboard,
   animals: PawPrint,
   adoptions: Heart,
+  adopters: UserCheck,
   people: Users,
+  stories: BookHeart,
   finance: Wallet,
   settings: Settings,
 };

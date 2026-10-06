@@ -26,3 +26,15 @@ export async function fetchAdminMe(token) {
 export async function logoutAdmin() {
   await api.post('/api/v1/auth/logout');
 }
+
+// O quê: pede o link de redefinição de senha (a resposta não revela se o e-mail existe).
+export async function requestPasswordReset(email) {
+  const response = await api.post('/api/v1/auth/forgot-password', { email });
+  return response.data.data;
+}
+
+// O quê: define a nova senha com o token do link (redefinição ou convite).
+export async function resetPassword(token, novaSenha) {
+  const response = await api.post('/api/v1/auth/reset-password', { token, nova_senha: novaSenha });
+  return response.data.data;
+}

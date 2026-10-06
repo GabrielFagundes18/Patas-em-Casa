@@ -1,5 +1,11 @@
+// O quê: tela "Doações": totais, lista com filtros, registro manual e doações mensais (Mercado Pago).
+// Como: lista paginada com filtros na URL; doações online não são editáveis (o Mercado Pago atualiza o status).
+// Para quê: a equipe enxergar e registrar tudo o que entra para a ONG.
 import { useEffect, useState } from 'react';
-import { fetchDonationSummary, listDonations } from './donationService';
+import { Pencil, Plus } from 'lucide-react';
+import { createDonation, fetchDonationSummary, listDonations, updateDonation } from './donationService';
+import DonationFormDialog from './DonationFormDialog';
+import SubscriptionsSection from './SubscriptionsSection';
 import {
   donationMethodLabels,
   donationStatusMap,
@@ -13,13 +19,28 @@ import Pagination from '../shared/Pagination';
 import SearchField from '../shared/SearchField';
 import { usePaginatedList } from '../shared/usePaginatedList';
 
-export default function DonationsPage() {
+export default function DonationsPage({ user }) {
   const { items, meta, loading, error, filters, setFilter, setPage, reload } = usePaginatedList(
     listDonations,
     'Não foi possível carregar as doações.'
   );
   const [summary, setSummary] = useState(null);
+  const [summaryKey, setSummaryKey] = useState(0);
+  const [dialog, setDialog] = useState(null);
+  const [notice, setNotice] = useState('');
+  const permissions = user?.permissions || [];
+  const canCreate = permissions.includes('donations:create');
+  const canUpdate = permissions.includes('donations:update');
   const hasFilters = ['q', 'status', 'metodo', 'tipo'].some((key) => filters[key]);
+
+  async function save(payload) {
+    if (dialog.donation) await updateDonation(dialog.donation.id, payload);
+    else await createDonation(payload);
+    setNotice(dialog.donation ? 'Doação atualizada.' : 'Doação registrada.');
+    setDialog(null);
+    setSummaryKey((key) => key + 1);
+    reload();
+  }
 
   useEffect(() => {
     let active = true;
@@ -31,16 +52,24 @@ export default function DonationsPage() {
     return () => {
       active = false;
     };
-  }, []);
+  }, [summaryKey]);
 
   return (
     <section aria-labelledby="donations-heading" className="admin-page">
       <div className="admin-toolbar">
         <div>
           <h2 id="donations-heading">Doações</h2>
-          <p>Somente doações confirmadas entram nos totais.</p>
+          <p>Somente doações confirmadas entram nos totais. As do site são atualizadas pelo Mercado Pago.</p>
         </div>
+        {canCreate ? (
+          <div className="admin-toolbar-actions">
+            <button className="admin-button is-primary" onClick={() => { setNotice(''); setDialog({ donation: null }); }} type="button">
+              <Plus aria-hidden="true" size={18} /> Registrar doação
+            </button>
+          </div>
+        ) : null}
       </div>
+      {notice ? <p className="admin-alert is-success" role="status">{notice}</p> : null}
 
       {summary ? (
         <div aria-label="Resumo das doações" className="admin-kpis" role="group">
@@ -110,6 +139,7 @@ export default function DonationsPage() {
                   <th scope="col">Método</th>
                   <th scope="col">Status</th>
                   <th scope="col">Valor</th>
+                  {canUpdate ? <th scope="col"><span className="admin-visually-hidden">Ações</span></th> : null}
                 </tr>
               </thead>
               <tbody>
@@ -126,6 +156,17 @@ export default function DonationsPage() {
                       <td data-label="Método">{donationMethodLabels[donation.metodo || 'nao_informado']}</td>
                       <td data-label="Status"><span className={`admin-badge is-${status.variant}`}>{status.label}</span></td>
                       <td data-label="Valor">{formatCurrency(donation.valor)}</td>
+                      {canUpdate ? (
+                        <td data-label="Ações">
+                          {donation.gateway ? (
+                            <small className="admin-field-hint">Online (Mercado Pago)</small>
+                          ) : donation.status !== 'cancelada' ? (
+                            <button aria-label={`Editar doação de ${donation.doador_nome}`} className="admin-icon-button is-small" onClick={() => { setNotice(''); setDialog({ donation }); }} type="button">
+                              <Pencil size={15} />
+                            </button>
+                          ) : null}
+                        </td>
+                      ) : null}
                     </tr>
                   );
                 })}
@@ -135,6 +176,10 @@ export default function DonationsPage() {
           <Pagination meta={meta} onChange={setPage} />
         </>
       ) : null}
+
+      {dialog ? <DonationFormDialog donation={dialog.donation} onClose={() => setDialog(null)} onSubmit={save} /> : null}
+
+      <SubscriptionsSection canCancel={canUpdate} />
     </section>
   );
 }

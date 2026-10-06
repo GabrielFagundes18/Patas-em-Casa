@@ -1,5 +1,6 @@
 export const roleLabels = {
   administrador: 'Super Admin',
+  gestor_ong: 'Gestor da ONG',
   gestor_animais: 'Veterinário / Cuidador',
   financeiro: 'Atendimento e Doações',
   voluntariado: 'Voluntário',
@@ -37,6 +38,14 @@ export const adminNavigationGroups = [
         icon: 'adoptions',
         description: 'Triagem e acompanhamento de pedidos.',
       },
+      {
+        key: 'adotantes',
+        label: 'Adotantes',
+        path: '/admin/adotantes',
+        permission: 'adopters:read',
+        icon: 'adopters',
+        description: 'Cadastro dos candidatos, histórico e pedidos de privacidade (LGPD).',
+      },
     ],
   },
   {
@@ -49,6 +58,14 @@ export const adminNavigationGroups = [
         permission: 'volunteers:read',
         icon: 'people',
         description: 'Inscrições e disponibilidade da equipe voluntária.',
+      },
+      {
+        key: 'historias',
+        label: 'Histórias',
+        path: '/admin/historias',
+        permission: 'stories:read',
+        icon: 'stories',
+        description: 'Depoimentos de adoção publicados no site.',
       },
     ],
   },

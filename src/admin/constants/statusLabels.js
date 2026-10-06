@@ -19,6 +19,30 @@ export const donationStatusMap = {
   pendente: { label: 'Pendente', variant: 'pending' },
   confirmada: { label: 'Confirmada', variant: 'success' },
   cancelada: { label: 'Cancelada', variant: 'muted' },
+  falhou: { label: 'Pagamento recusado', variant: 'urgent' },
+};
+
+// Doação mensal (assinatura no Mercado Pago).
+export const subscriptionStatusMap = {
+  pendente: { label: 'Aguardando pagamento', variant: 'pending' },
+  ativa: { label: 'Ativa', variant: 'success' },
+  pausada: { label: 'Pausada', variant: 'pending' },
+  cancelada: { label: 'Cancelada', variant: 'muted' },
+};
+
+export const adopterStatusMap = {
+  em_analise: { label: 'Em análise', variant: 'pending' },
+  visita_agendada: { label: 'Visita agendada', variant: 'available' },
+  adotante: { label: 'Adotante', variant: 'success' },
+  inativo: { label: 'Inativo', variant: 'muted' },
+};
+
+export const appointmentTypeLabels = { visita: 'Visita', entrevista: 'Entrevista' };
+
+export const appointmentStatusMap = {
+  agendado: { label: 'Agendado', variant: 'available' },
+  realizado: { label: 'Realizado', variant: 'success' },
+  cancelado: { label: 'Cancelado', variant: 'muted' },
 };
 
 export const donationTypeLabels = { unica: 'Única', recorrente: 'Recorrente' };
@@ -60,6 +84,14 @@ export function seriesColor(index) {
 
 const currencyFormatter = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
 const dateFormatter = new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeZone: 'America/Sao_Paulo' });
+const dateTimeFormatter = new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short', timeZone: 'America/Sao_Paulo' });
+
+// Data e hora (horário de Brasília), para compromissos da agenda.
+export function formatDateTime(value) {
+  if (!value) return '—';
+  const date = new Date(value);
+  return Number.isNaN(date.valueOf()) ? '—' : dateTimeFormatter.format(date);
+}
 
 export function formatCurrency(value) {
   return currencyFormatter.format(Number(value) || 0);
