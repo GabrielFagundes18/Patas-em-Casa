@@ -129,7 +129,7 @@ test('"Voltar para a ficha" reopens the detail of the same animal', async () => 
   const form = await screen.findByRole('dialog', { name: /quero adotar nino/i });
   fireEvent.click(within(form).getByRole('button', { name: /voltar para a ficha/i }));
 
-  await waitFor(() => expect(document.querySelector('main')).toHaveClass('has-detail'));
+  await waitFor(() => expect(screen.getByRole('main')).toHaveClass('has-detail'));
   expect(screen.getAllByRole('dialog', { name: 'Nino' }).length).toBeGreaterThan(0);
 });
 
@@ -138,11 +138,11 @@ test('Escape closes the detail', async () => {
 
   fireEvent.click(await screen.findByRole('button', { name: 'Ver ficha de Mel' }));
   await screen.findByRole('dialog', { name: 'Mel' });
-  expect(document.querySelector('main')).toHaveClass('has-detail');
+  expect(screen.getByRole('main')).toHaveClass('has-detail');
 
   fireEvent.keyDown(document, { key: 'Escape' });
 
-  await waitFor(() => expect(document.querySelector('main')).not.toHaveClass('has-detail'));
+  await waitFor(() => expect(screen.getByRole('main')).not.toHaveClass('has-detail'));
 });
 
 test('sharing copies a link that opens the animal and confirms it', async () => {
@@ -153,7 +153,7 @@ test('sharing copies a link that opens the animal and confirms it', async () => 
   fireEvent.click(await screen.findByRole('button', { name: 'Compartilhar Mel' }));
 
   expect(await screen.findByText('Link da ficha de Mel copiado.')).toBeInTheDocument();
-  expect(writeText).toHaveBeenCalledWith(`http://localhost/adotar?pet=${mel.id}`);
+  expect(writeText).toHaveBeenCalledWith(`http://localhost/animais/${mel.id}`);
 });
 
 test('missing photos show a placeholder instead of an empty image', async () => {
