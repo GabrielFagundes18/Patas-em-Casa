@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom';
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter, Route, Routes, useLocation, useParams } from 'react-router-dom';
 import AdoptionCatalog from './AdoptionCatalog';
 import { buscarTodoAnimais } from '../services/animaisService';
 
@@ -22,6 +22,7 @@ const nino = {
   data_entrada: '2026-08-23',
   castrado: true,
   vacinado: true,
+  temperamento: ['brincalhão'],
 };
 
 const mel = {
@@ -38,19 +39,35 @@ const mel = {
   data_entrada: '2026-07-28',
   castrado: true,
   vacinado: false,
+  temperamento: [],
 };
+
+// Mostra o endereço atual, para conferir os filtros gravados na URL.
+function LocationProbe() {
+  const location = useLocation();
+  return <output data-testid="location">{`${location.pathname}${location.search}`}</output>;
+}
+
+function ProfileStub() {
+  const { id } = useParams();
+  return <h1>Ficha {id}</h1>;
+}
 
 function renderCatalog(url = '/adotar') {
   return render(
     <MemoryRouter initialEntries={[url]}>
-      <AdoptionCatalog />
+      <Routes>
+        <Route path="/adotar" element={<><AdoptionCatalog /><LocationProbe /></>} />
+        <Route path="/animais/:id" element={<ProfileStub />} />
+      </Routes>
     </MemoryRouter>
   );
 }
 
-function headerCount() {
-  return screen.getByText(/esperando por um lar/i);
-}
+const headerCount = () => screen.getByText(/esperando por um lar/i);
+const cardNames = () => screen.getAllByRole('heading', { level: 2 })
+  .map((heading) => heading.textContent)
+  .filter((name) => ['Nino', 'Mel'].includes(name));
 
 beforeAll(() => {
   global.IntersectionObserver = class IntersectionObserver {
@@ -61,11 +78,12 @@ beforeAll(() => {
 });
 
 beforeEach(() => {
-  buscarTodoAnimais.mockResolvedValue([nino, mel]);
+  buscarTodoAnimais.mockResolvedValue([mel, nino]);
 });
 
 afterEach(() => {
   jest.clearAllMocks();
+  window.localStorage.clear();
   document.body.style.overflow = '';
 });
 
@@ -83,66 +101,90 @@ test('shows an error with retry instead of an empty catalog when the API fails',
   expect(buscarTodoAnimais).toHaveBeenCalledTimes(2);
 });
 
-test('opens the pet detail with real data from a shared link', async () => {
+test('the page has the site menu and footer, and urgent animals come first', async () => {
+  renderCatalog();
+  await screen.findByRole('heading', { name: 'Nino' });
+
+  expect(screen.getByRole('navigation', { name: 'Rodapé' })).toBeInTheDocument();
+  expect(cardNames()).toEqual(['Nino', 'Mel']);
+  expect(screen.getByRole('combobox', { name: 'Ordenar' })).toHaveValue('urgent');
+  expect(screen.getByRole('link', { name: /Conhecer o Nino/ })).toHaveAttribute('href', `/animais/${nino.id}`);
+  expect(screen.getByRole('link', { name: /Conhecer a Mel/ })).toBeInTheDocument();
+  expect(screen.queryByText(/550E8400/)).not.toBeInTheDocument();
+});
+
+test('old shared links (/adotar?pet=<id>) open the full profile', async () => {
   renderCatalog(`/adotar?pet=${nino.id}`);
 
-  const dialog = await screen.findByRole('dialog', { name: 'Nino' });
-  expect(dialog).toHaveTextContent('Nino adora passeios no fim da tarde.');
-  expect(dialog).toHaveTextContent('23 de agosto de 2026');
-  expect(within(dialog).getByRole('button', { name: /quero adotar o nino/i })).toBeInTheDocument();
-  expect(dialog).not.toHaveTextContent('12 mar 2024');
+  expect(await screen.findByRole('heading', { name: `Ficha ${nino.id}` })).toBeInTheDocument();
 });
 
-test('warns when a shared link points to an animal that is no longer listed', async () => {
-  renderCatalog('/adotar?pet=00000000-0000-4000-8000-000000000000');
-
-  expect(await screen.findByText(/não está mais disponível para adoção/i)).toBeInTheDocument();
-  expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
-});
-
-test('size filter uses the same labels as the drawer and each chip removes one filter', async () => {
+test('quick filters change the list and are saved in the address', async () => {
   renderCatalog();
   await screen.findByRole('heading', { name: 'Nino' });
   expect(headerCount()).toHaveTextContent('2 animais esperando');
 
+  fireEvent.click(screen.getByRole('button', { name: 'Gatos' }));
+
+  expect(screen.getByRole('button', { name: 'Gatos' })).toHaveAttribute('aria-pressed', 'true');
+  expect(headerCount()).toHaveTextContent('1 animal esperando');
+  expect(cardNames()).toEqual(['Mel']);
+  expect(screen.getByTestId('location')).toHaveTextContent('/adotar?especie=gato');
+});
+
+test('filters and sort written in the address are applied when the page opens', async () => {
+  renderCatalog('/adotar?urgente=1&ordem=nome');
+  await screen.findByRole('heading', { name: 'Nino' });
+
+  expect(cardNames()).toEqual(['Nino']);
+  expect(screen.getByRole('button', { name: 'Urgentes' })).toHaveAttribute('aria-pressed', 'true');
+  expect(screen.getByRole('combobox', { name: 'Ordenar' })).toHaveValue('name');
+});
+
+test('drawer filters (size, sex, temperament) show as chips and each chip removes one filter', async () => {
+  renderCatalog();
+  await screen.findByRole('heading', { name: 'Nino' });
+
   fireEvent.click(screen.getByRole('button', { name: /^filtros/i }));
   const drawer = screen.getByRole('dialog', { name: /encontre o perfil ideal/i });
+  expect(within(drawer).getByRole('button', { name: /Filhote/ })).toBeInTheDocument();
   fireEvent.click(within(drawer).getByRole('button', { name: 'Médio' }));
-  fireEvent.click(within(drawer).getByRole('button', { name: 'Gato' }));
+  fireEvent.click(within(drawer).getByRole('button', { name: 'Fêmea' }));
   expect(within(drawer).getByRole('button', { name: 'Médio' })).toHaveAttribute('aria-pressed', 'true');
   expect(headerCount()).toHaveTextContent('0 animais esperando');
 
-  fireEvent.click(screen.getByRole('button', { name: 'Remover filtro Gato' }));
+  fireEvent.click(within(drawer).getByRole('button', { name: 'brincalhão' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Remover filtro Fêmea' }));
 
   expect(headerCount()).toHaveTextContent('1 animal esperando');
   expect(screen.getByRole('button', { name: 'Remover filtro Porte médio' })).toBeInTheDocument();
-  expect(screen.queryByRole('button', { name: 'Remover filtro Gato' })).not.toBeInTheDocument();
+  expect(screen.getByRole('button', { name: 'Remover filtro brincalhão' })).toBeInTheDocument();
+  expect(screen.queryByRole('button', { name: 'Remover filtro Fêmea' })).not.toBeInTheDocument();
 });
 
-test('"Voltar para a ficha" reopens the detail of the same animal', async () => {
+test('search waits for typing to stop and also finds temperament', async () => {
   renderCatalog();
+  await screen.findByRole('heading', { name: 'Nino' });
 
-  fireEvent.click(await screen.findByRole('button', { name: 'Ver ficha de Nino' }));
-  const detail = await screen.findByRole('dialog', { name: 'Nino' });
-  fireEvent.click(within(detail).getByRole('button', { name: /quero adotar o nino/i }));
+  fireEvent.change(screen.getByRole('searchbox'), { target: { value: 'brincalhao' } });
 
-  const form = await screen.findByRole('dialog', { name: /quero adotar nino/i });
-  fireEvent.click(within(form).getByRole('button', { name: /voltar para a ficha/i }));
-
-  await waitFor(() => expect(screen.getByRole('main')).toHaveClass('has-detail'));
-  expect(screen.getAllByRole('dialog', { name: 'Nino' }).length).toBeGreaterThan(0);
+  await waitFor(() => expect(cardNames()).toEqual(['Nino']));
+  expect(screen.getByTestId('location')).toHaveTextContent('q=brincalhao');
 });
 
-test('Escape closes the detail', async () => {
+test('favorites are saved in the browser and can be shown alone', async () => {
   renderCatalog();
+  await screen.findByRole('heading', { name: 'Mel' });
+  expect(screen.queryByRole('button', { name: /Meus favoritos/ })).not.toBeInTheDocument();
 
-  fireEvent.click(await screen.findByRole('button', { name: 'Ver ficha de Mel' }));
-  await screen.findByRole('dialog', { name: 'Mel' });
-  expect(screen.getByRole('main')).toHaveClass('has-detail');
+  fireEvent.click(screen.getByRole('button', { name: 'Favoritar Mel' }));
 
-  fireEvent.keyDown(document, { key: 'Escape' });
+  expect(screen.getByRole('button', { name: 'Favoritar Mel' })).toHaveAttribute('aria-pressed', 'true');
+  expect(JSON.parse(window.localStorage.getItem('patas:favoritos'))).toEqual([mel.id]);
 
-  await waitFor(() => expect(screen.getByRole('main')).not.toHaveClass('has-detail'));
+  fireEvent.click(screen.getByRole('button', { name: /Meus favoritos \(1\)/ }));
+  expect(cardNames()).toEqual(['Mel']);
+  expect(screen.getByTestId('location')).toHaveTextContent('favoritos=1');
 });
 
 test('sharing copies a link that opens the animal and confirms it', async () => {
@@ -156,9 +198,12 @@ test('sharing copies a link that opens the animal and confirms it', async () => 
   expect(writeText).toHaveBeenCalledWith(`http://localhost/animais/${mel.id}`);
 });
 
-test('missing photos show a placeholder instead of an empty image', async () => {
+test('missing photos show a placeholder and the end of the list invites to help', async () => {
   renderCatalog();
   await screen.findByRole('heading', { name: 'Mel' });
 
   expect(screen.getByRole('img', { name: 'Mel, gato da raça SRD' })).toHaveClass('pet-photo-placeholder');
+  const invite = screen.getByRole('complementary', { name: 'Não encontrou agora?' });
+  expect(within(invite).getByRole('link', { name: /Quero doar/ })).toHaveAttribute('href', '/doar');
+  expect(within(invite).getByRole('link', { name: 'Ser voluntário' })).toHaveAttribute('href', '/#voluntariado');
 });

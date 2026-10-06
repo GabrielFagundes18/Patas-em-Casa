@@ -51,3 +51,139 @@
   font-size: 0.82rem;
   font-weight: 400;
 }
+
+/* O quê: fundo escurecido, cartão, campos e mensagem de sucesso do formulário de adoção.
+  Como: camada fixa com rolagem própria; grade de 2 colunas que vira 1 no celular.
+  Para quê: o formulário abre por cima da ficha do animal. (Vinham de AdoptionCatalog.css.) */
+.pet-detail-backdrop {
+  position: fixed;
+  z-index: 70;
+  inset: 0;
+  overflow: auto;
+  padding: 40px 20px;
+  background: var(--sage-dark);
+  backdrop-filter: blur(8px);
+}
+
+.detail-back {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 22px 28px 12px;
+  border: 0;
+  background: transparent;
+  color: var(--sage-dark);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.adoption-form-modal {
+  padding: 0; /* o cartão é um <section>: anula o espaçamento global de seções */
+  max-width: 760px;
+  margin: auto;
+  border-radius: 22px;
+  background: var(--paper);
+  box-shadow: var(--shadow-main);
+  overflow: hidden;
+}
+
+.adoption-form-body {
+  padding: 0 32px 36px;
+}
+
+.adoption-form-summary {
+  padding: 8px 0 18px;
+}
+
+.adoption-form-summary h2 {
+  margin: 10px 0 8px;
+  font-size: clamp(2rem, 4vw, 3rem);
+}
+
+.adoption-form-summary p {
+  color: var(--ink-soft);
+}
+
+.catalog-adoption-form {
+  display: grid;
+  gap: 18px;
+}
+
+.catalog-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.catalog-adoption-form label {
+  display: grid;
+  gap: 8px;
+  color: var(--ink-soft);
+  font-size: 14px;
+}
+
+.catalog-adoption-form input,
+.catalog-adoption-form textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--bg-card);
+  color: var(--ink);
+  font: inherit;
+}
+
+.catalog-adoption-form textarea {
+  min-height: 110px;
+  resize: vertical;
+}
+
+.catalog-form-checks {
+  display: grid;
+  gap: 12px;
+}
+
+.catalog-form-checks label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.catalog-form-checks input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--sage);
+}
+
+.adoption-success {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  padding: 16px 0 8px;
+  text-align: center;
+}
+
+.adoption-success svg {
+  color: var(--sage);
+}
+
+.adoption-success h3 {
+  font-size: 30px;
+}
+
+.adoption-success p {
+  max-width: 550px;
+  color: var(--ink-soft);
+  line-height: 1.7;
+}
+
+@media (max-width: 700px) {
+  .catalog-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .adoption-form-body {
+    padding: 0 22px 28px;
+  }
+}

@@ -6,7 +6,7 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import App from './App';
 import Hero from './components/Hero/Hero';
-import { buscarTodoAnimais } from './services/animaisService';
+import { buscarAnimal, buscarTodoAnimais } from './services/animaisService';
 import { buscarEtapasAdocao, buscarHistorias, buscarNumeros } from './services/conteudoService';
 import { fetchAdminMe } from './services/adminService';
 
@@ -15,6 +15,7 @@ import { fetchAdminMe } from './services/adminService';
 // Para quê: controlar dados remotos e manter os testes determinísticos.
 jest.mock('./services/animaisService', () => ({
   buscarTodoAnimais: jest.fn(),
+  buscarAnimal: jest.fn(),
 }));
 
 jest.mock('./services/conteudoService', () => ({
@@ -62,6 +63,7 @@ beforeAll(() => {
 // Para quê: garantir que cada cenário comece com dados previsíveis.
 beforeEach(() => {
   buscarTodoAnimais.mockResolvedValue([mockAnimal]);
+  buscarAnimal.mockResolvedValue({ ...mockAnimal, temperamento: [], fotos: [] });
   buscarNumeros.mockResolvedValue({ animais_resgatados: 11, adocoes_realizadas: 4, aguardando_lar: 6 });
   buscarHistorias.mockResolvedValue([
     { id: 'h1', autor_nome: 'Fernanda A.', texto: 'Pipoca trouxe paz para a casa.', foto_url: null, animal: { id: 'a1', nome: 'Pipoca', foto_url: null } },
@@ -102,26 +104,23 @@ test('renders the landing page and links to the adoption catalog', async () => {
   await screen.findByRole('heading', { name: /Quem está esperando por você/i });
 });
 
-// O quê: verifica a transição do catálogo para o formulário de adoção.
-// Como: simula cliques nos botões acessíveis após aguardar o card carregado.
+// O quê: verifica a jornada catálogo → ficha completa → formulário de adoção.
+// Como: o cartão do catálogo é um link para /animais/:id; a ficha abre o formulário.
 // Para quê: garantir que a jornada principal do usuário permaneça conectada.
-test('opens the adoption form from a pet detail in the catalog', async () => {
+test('goes from the catalog to the full profile and opens the adoption form', async () => {
   render(
     <MemoryRouter initialEntries={['/adotar']}>
       <App />
     </MemoryRouter>
   );
 
-  const petButton = await screen.findByRole('button', { name: /Ver ficha/i });
-  fireEvent.click(petButton);
+  fireEvent.click(await screen.findByRole('link', { name: /Conhecer o Nino/i }));
 
-  fireEvent.click(
-    await screen.findByRole('button', { name: /Quero adotar o Nino/i })
-  );
+  expect(await screen.findByRole('heading', { level: 1, name: 'Nino' })).toBeInTheDocument();
+  expect(buscarAnimal).toHaveBeenCalledWith('nino-001', expect.anything());
+  fireEvent.click(screen.getByRole('button', { name: /Quero adotar o Nino/i }));
 
-  expect(
-    screen.getByRole('heading', { name: /Quero adotar Nino/i })
-  ).toBeInTheDocument();
+  expect(await screen.findByRole('heading', { name: /Quero adotar Nino/i })).toBeInTheDocument();
 });
 
 test('renders the admin login page at the admin route', async () => {

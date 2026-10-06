@@ -229,6 +229,69 @@ section {
   line-height: 1.7;
 }
 
+/* O quê: rótulo e botões do catálogo, da gaveta de filtros e do formulário de adoção.
+  Como: botão principal verde com texto claro (contraste AA), secundário contornado, ícone redondo.
+  Para quê: o mesmo par de botões em todas essas telas; antes ficavam em AdoptionCatalog.css. */
+.catalog-eyebrow {
+  font: 500 12px 'IBM Plex Mono', monospace;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--sage);
+}
+
+.catalog-primary-button,
+.catalog-secondary-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 0 22px;
+  border: 1.5px solid transparent;
+  border-radius: 999px;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.catalog-primary-button {
+  background: var(--sage);
+  color: var(--bg-card);
+}
+
+.catalog-primary-button:hover {
+  background: var(--sage-dark);
+}
+
+.catalog-primary-button:disabled {
+  opacity: 0.7;
+  cursor: progress;
+}
+
+.catalog-secondary-button {
+  border-color: rgba(31, 42, 36, 0.2);
+  background: transparent;
+  color: var(--sage-dark);
+}
+
+.catalog-secondary-button:hover {
+  background: var(--sage-pale);
+}
+
+.catalog-icon-button {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--sage-dark);
+  cursor: pointer;
+}
+
 /* O quê: configura cartões, modais e formulários compartilhados.
   Como: grid, flex, backdrop-filter e variáveis de tema organizam superfícies e controles.
   Para quê: fornecer padrões visuais reutilizáveis para conteúdo e diálogos. */

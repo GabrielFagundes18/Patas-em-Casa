@@ -1,11 +1,12 @@
-// O quê: importa animação, ícones, opções do domínio, grupo reutilizável, diálogo e estilos.
-// Como: o drawer recebe estado controlado do catálogo e usa callbacks para alterá-lo.
+// O quê: gaveta com todos os filtros do catálogo (espécie, porte, idade, sexo, temperamento, cuidados, status).
+// Como: recebe o estado controlado do catálogo e usa callbacks para alterá-lo; temperamento só aparece
+// quando algum animal tem traços cadastrados.
 // Para quê: encapsular todos os critérios de refinamento da busca.
 import { useId } from "react";
 import { motion } from "framer-motion";
 import { Check, Heart, X } from "lucide-react";
 import {
-  MAX_AGE_FILTER,
+  AGE_GROUPS,
   sexOptions,
   sizeOptions,
   speciesOptions,
@@ -14,13 +15,9 @@ import { useDialog } from "../../hooks/useDialog";
 import { FilterGroup } from "../FilterGroup/FilterGroup";
 import "./FilterDrawer.css";
 
-export function FilterDrawer({ filters, setFilters, onClose, onClear, resultCount }) {
+export function FilterDrawer({ filters, setFilters, onClose, onClear, resultCount, temperamentOptions = [] }) {
   const titleId = useId();
   const dialogRef = useDialog(onClose);
-  const ageLimit = Number(filters.age);
-  const ageLabel = ageLimit >= MAX_AGE_FILTER
-    ? "Idade: qualquer idade"
-    : `Idade máxima: ${ageLimit} ${ageLimit === 1 ? "ano" : "anos"}`;
 
   // O quê: alterna uma opção dentro de um filtro de seleção múltipla.
   // Como: atualização funcional lê o estado atual, remove o valor existente ou cria novo array com spread.
@@ -35,20 +32,23 @@ export function FilterDrawer({ filters, setFilters, onClose, onClear, resultCoun
 
   // O quê: renderiza um grupo de botões de seleção múltipla.
   // Como: aria-pressed comunica o estado de cada opção para leitores de tela.
-  // Para quê: reaproveitar a mesma marcação em espécie, porte e sexo.
+  // Para quê: reaproveitar a mesma marcação em espécie, porte, idade, sexo e temperamento.
+  // Opções podem ser texto ("Gato") ou { value, label, hint } (faixas de idade).
   const renderOptions = (key, options) => (
     <div className="filter-options">
       {options.map((option) => {
-        const active = filters[key].includes(option);
+        const { value, label, hint } = typeof option === "string" ? { value: option, label: option } : option;
+        const active = filters[key].includes(value);
         return (
           <button
-            key={option}
+            key={value}
             type="button"
             aria-pressed={active}
             className={active ? "filter-option active" : "filter-option"}
-            onClick={() => toggleValue(key, option)}
+            onClick={() => toggleValue(key, value)}
           >
-            {option}
+            {label}
+            {hint ? <small>{hint}</small> : null}
             {active && <Check size={14} aria-hidden="true" />}
           </button>
         );
@@ -88,21 +88,11 @@ export function FilterDrawer({ filters, setFilters, onClose, onClear, resultCoun
       <div className="drawer-content">
         <FilterGroup label="Espécie">{renderOptions("species", speciesOptions)}</FilterGroup>
         <FilterGroup label="Porte">{renderOptions("size", sizeOptions)}</FilterGroup>
-        <FilterGroup label={ageLabel}>
-          <input
-            className="age-range"
-            type="range"
-            min="1"
-            max={MAX_AGE_FILTER}
-            value={ageLimit}
-            aria-label="Idade máxima"
-            aria-valuetext={ageLimit >= MAX_AGE_FILTER ? "Qualquer idade" : `Até ${ageLimit} anos`}
-            onChange={(event) =>
-              setFilters((current) => ({ ...current, age: Number(event.target.value) }))
-            }
-          />
-        </FilterGroup>
+        <FilterGroup label="Idade">{renderOptions("ages", AGE_GROUPS)}</FilterGroup>
         <FilterGroup label="Sexo">{renderOptions("sex", sexOptions)}</FilterGroup>
+        {temperamentOptions.length > 0 ? (
+          <FilterGroup label="Temperamento">{renderOptions("temperament", temperamentOptions)}</FilterGroup>
+        ) : null}
         <FilterGroup label="Cuidados">
           <label className="check-row">
             <input

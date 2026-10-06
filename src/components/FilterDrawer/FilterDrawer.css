@@ -11,3 +11,132 @@
   outline: 2px solid var(--amber);
   outline-offset: 2px;
 }
+
+/* O quê: camada de fundo, painel lateral e grupos de opções da gaveta de filtros.
+  Como: position fixed acima da página; opções em pílulas com estado pressionado.
+  Para quê: editar filtros sem perder a posição no catálogo. (Vinham de AdoptionCatalog.css.) */
+.drawer-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  border: 0;
+  background: rgba(31, 42, 36, 0.35);
+}
+
+.filter-drawer {
+  position: fixed;
+  z-index: 61;
+  top: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  width: min(420px, 100%);
+  height: 100vh;
+  height: 100dvh;
+  background: var(--paper);
+  box-shadow: var(--shadow-main);
+}
+
+.drawer-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 28px 28px 18px;
+  border-bottom: 1px solid var(--line);
+}
+
+.drawer-header h2 {
+  margin-top: 8px;
+  font-size: 26px;
+}
+
+.drawer-content {
+  flex: 1;
+  overflow: auto;
+  padding: 6px 28px;
+}
+
+.filter-group {
+  padding: 20px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.filter-group:last-child {
+  border-bottom: 0;
+}
+
+.filter-group h3 {
+  margin-bottom: 12px;
+  color: var(--ink-soft);
+  font: 600 12px 'IBM Plex Mono', monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.filter-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.filter-option,
+.urgent-toggle {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 44px;
+  padding: 0 14px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--sage-dark);
+  font: inherit;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.filter-option small {
+  color: var(--ink-soft);
+  font-size: 12px;
+}
+
+.filter-option.active,
+.urgent-toggle.active {
+  border-color: var(--sage-dark);
+  background: var(--sage-dark);
+  color: var(--bg-card);
+}
+
+.filter-option.active small {
+  color: rgba(255, 250, 243, 0.8);
+}
+
+.urgent-toggle {
+  color: var(--brick-dark);
+}
+
+.check-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 40px;
+  color: var(--ink-soft);
+  font-size: 15px;
+}
+
+.check-row input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--sage);
+}
+
+.drawer-footer {
+  display: flex;
+  gap: 10px;
+  padding: 20px 28px;
+  border-top: 1px solid var(--line);
+}
+
+.drawer-footer button {
+  flex: 1;
+}

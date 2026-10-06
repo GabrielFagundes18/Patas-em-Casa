@@ -1,15 +1,19 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { buscarTodoAnimais } from '../services/animaisService';
 import { mapPetsFromApi } from '../utils/petMapper';
 
 // O quê: animais disponíveis para adoção, já no formato dos componentes.
 // Como: uma busca ao montar; a requisição é cancelada se a página sair antes da resposta.
-// Para quê: a Home usa a mesma lista no destaque do topo e na vitrine, com uma única chamada à API.
+// Para quê: a Home usa a mesma lista no destaque do topo e na vitrine, com uma única chamada à API;
+// o catálogo usa reload() no botão "Tentar novamente".
 export function useAvailableAnimals() {
   const [state, setState] = useState({ pets: [], loading: true, error: null });
+  const [attempt, setAttempt] = useState(0);
+  const reload = useCallback(() => setAttempt((count) => count + 1), []);
 
   useEffect(() => {
     const controller = new AbortController();
+    setState((current) => (current.loading ? current : { ...current, loading: true, error: null }));
     buscarTodoAnimais({ signal: controller.signal })
       .then((dados) => {
         if (!controller.signal.aborted) setState({ pets: mapPetsFromApi(dados), loading: false, error: null });
@@ -20,7 +24,7 @@ export function useAvailableAnimals() {
         }
       });
     return () => controller.abort();
-  }, []);
+  }, [attempt]);
 
-  return state;
+  return { ...state, reload };
 }

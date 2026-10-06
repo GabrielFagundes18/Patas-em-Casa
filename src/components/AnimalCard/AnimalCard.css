@@ -1,0 +1,204 @@
+/* O quê: cartão de animal usado na Home e no catálogo.
+  Como: foto quadrada (a imagem preenche sem esticar o cartão), corpo em coluna e rodapé com o link.
+  Para quê: o mesmo visual em todo o site; o link para a ficha fica sempre no pé do cartão. */
+.animal-card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  border: 1px solid var(--border-color);
+  border-radius: 22px;
+  background: var(--bg-card);
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.animal-card:hover,
+.animal-card:focus-within {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-main);
+}
+
+.animal-card-photo {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  background: var(--sage-pale);
+  overflow: hidden;
+}
+
+/* Foto e quadro "Foto em breve" preenchem o quadrado; fotos em pé não esticam o cartão. */
+.animal-card-photo img,
+.animal-card-photo .pet-photo-placeholder {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  object-fit: cover;
+}
+
+.animal-card-badge {
+  position: absolute;
+  z-index: 1;
+  top: 14px;
+  left: 14px;
+  padding: 5px 11px;
+  border-radius: 999px;
+  background: var(--brick-dark);
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1.3;
+}
+
+.animal-card-fav {
+  position: absolute;
+  z-index: 1;
+  top: 10px;
+  right: 10px;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 250, 243, 0.92);
+  box-shadow: 0 6px 16px rgba(31, 42, 36, 0.16);
+  color: var(--text-main);
+  cursor: pointer;
+}
+
+.animal-card-fav:hover {
+  color: var(--brick-dark);
+}
+
+.animal-card-fav.is-active {
+  color: var(--brick-dark);
+}
+
+.animal-card-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px 20px 12px;
+}
+
+.animal-card-name {
+  margin: 0;
+  font-family: 'Fraunces', serif;
+  font-size: 26px;
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+
+.animal-card-meta {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.animal-card-waiting {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  color: #8a5214; /* âmbar escurecido: contraste AA sobre o fundo do cartão */
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.animal-card-desc {
+  display: -webkit-box;
+  margin: 0;
+  overflow: hidden;
+  font-size: 15px;
+  line-height: 1.45;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+.animal-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.animal-card-tags li {
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--sage-pale);
+  color: var(--sage);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.animal-card-tags li.is-trait {
+  background: #f6ead9;
+  color: #7a4a14;
+}
+
+.animal-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: auto;
+}
+
+/* Texto e seta no mesmo fluxo: nomes longos quebram linha com a seta junto da última palavra. */
+.animal-card-link {
+  display: inline-block;
+  min-width: 0;
+  padding: 11px 0;
+  color: var(--sage);
+  font-weight: 600;
+  line-height: 1.35;
+  text-decoration: none;
+}
+
+.animal-card-link-end {
+  white-space: nowrap;
+}
+
+.animal-card-link svg {
+  display: inline;
+  margin-left: 4px;
+  vertical-align: -3px;
+}
+
+.animal-card-link:hover {
+  color: var(--sage-dark);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.animal-card-share {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--border-color);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--sage-dark);
+  cursor: pointer;
+}
+
+.animal-card-share:hover {
+  background: var(--sage-pale);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animal-card,
+  .animal-card:hover,
+  .animal-card:focus-within {
+    transition: none;
+    transform: none;
+  }
+}

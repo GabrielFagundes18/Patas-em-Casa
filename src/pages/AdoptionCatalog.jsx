@@ -1,140 +1,127 @@
-// O quê: importa hooks, roteamento, animações e ícones usados pelo catálogo.
-// Como: useSearchParams guarda o animal aberto na URL (?pet=<id>); AnimatePresence anima overlays e cards.
-// Para quê: sustentar busca, filtros, paginação progressiva, ficha compartilhável e formulário de adoção.
+// O quê: catálogo de adoção (/adotar): busca, filtros rápidos, gaveta de filtros, ordenação, favoritos e grade.
+// Como: busca, filtros e ordenação vivem no endereço (?especie=gato&urgente=1), então o link pode ser
+// compartilhado e o botão Voltar do navegador mantém a busca; cada cartão leva à ficha completa (/animais/:id).
+// Para quê: ajudar a pessoa a achar o animal certo e dar visibilidade a quem é urgente ou espera há mais tempo.
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   AlertTriangle,
   ChevronDown,
+  Heart,
   PawPrint,
   RotateCw,
   Search,
   SlidersHorizontal,
   X,
 } from "lucide-react";
-import { AdoptionFormModal } from "../components/AdoptionFormModal/AdoptionFormModal";
+import { AnimalCard } from "../components/AnimalCard/AnimalCard";
 import { FilterDrawer } from "../components/FilterDrawer/FilterDrawer";
-import { PetCard } from "../components/PetCard/PetCard";
-import { PetDetail } from "../components/PetDetail/PetDetail";
-import { PAGE_SIZE } from "../constants/catalogOptions";
-import { buscarTodoAnimais } from "../services/animaisService";
+import { PublicLayout } from "../components/PublicLayout/PublicLayout";
+import { PAGE_SIZE, SORT_OPTIONS } from "../constants/catalogOptions";
+import { useAvailableAnimals } from "../hooks/useAvailableAnimals";
+import { useFavorites } from "../hooks/useFavorites";
 import {
+  QUICK_FILTERS,
+  collectTemperaments,
   createInitialFilters,
   filterPets,
   getActiveFilterChips,
+  isFilterOn,
+  readCatalogParams,
   removeFilter,
   sortPets,
+  toggleFilter,
+  writeCatalogParams,
 } from "../utils/catalogFilters";
-import { mapPetsFromApi } from "../utils/petMapper";
 import { sharePet } from "../utils/sharePet";
 import "./AdoptionCatalog.css";
 
 const NOTICE_DURATION_MS = 4000;
+const SEARCH_DEBOUNCE_MS = 300;
+
+// Critérios que já aparecem como filtro rápido não se repetem na linha de chips removíveis.
+function isQuickChip(chip) {
+  return chip.key === "favorites" || QUICK_FILTERS.some((quick) => quick.key === chip.key && quick.value === chip.value);
+}
 
 export default function AdoptionCatalog() {
-  // O quê: declara o estado dos animais, da busca, dos filtros e dos overlays.
-  // Como: status separa carregamento, erro e sucesso; o animal aberto vem da URL.
-  // Para quê: permitir voltar com o botão do navegador e compartilhar o link de uma ficha.
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
-  const location = useLocation();
-  const locationRef = useRef(location);
-  const requestedPetId = searchParams.get("pet");
-  const [pets, setPets] = useState([]);
-  const [status, setStatus] = useState("loading");
-  const [reloadKey, setReloadKey] = useState(0);
-  const [inputQuery, setInputQuery] = useState("");
-  const [query, setQuery] = useState("");
-  const [filters, setFilters] = useState(createInitialFilters);
-  const [sort, setSort] = useState("recent");
+  const legacyPetId = searchParams.get("pet");
+  const { pets, loading, error, reload } = useAvailableAnimals();
+  const { favoriteIds, isFavorite, toggleFavorite } = useFavorites();
+  const { query, filters, sort } = useMemo(() => readCatalogParams(searchParams), [searchParams]);
+  const [inputQuery, setInputQuery] = useState(query);
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [adoptionPet, setAdoptionPet] = useState(null);
   const [notice, setNotice] = useState("");
   const loadMoreRef = useRef(null);
 
+  // Links antigos (/adotar?pet=<id>) abriam a ficha numa janela do catálogo; agora vão para a ficha completa,
+  // que também avisa quando o animal já foi adotado ou não existe.
   useEffect(() => {
-    locationRef.current = location;
-  }, [location]);
+    if (legacyPetId) navigate(`/animais/${encodeURIComponent(legacyPetId)}`, { replace: true });
+  }, [legacyPetId, navigate]);
 
-  // O quê: carrega os animais ao montar a página e a cada "Tentar novamente".
-  // Como: AbortController cancela a requisição na desmontagem; falhas viram status "error".
-  // Para quê: diferenciar servidor indisponível de catálogo vazio.
+  // O quê: grava busca, filtros e ordenação no endereço.
+  // Como: replace, para não criar uma entrada de histórico a cada clique.
+  function updateCatalog(changes) {
+    setSearchParams(writeCatalogParams({ query, filters, sort, ...changes }), { replace: true });
+  }
+
+  // A gaveta chama setFilters com um objeto ou com uma função (estado atual → novo estado).
+  function setFilters(update) {
+    updateCatalog({ filters: typeof update === "function" ? update(filters) : update });
+  }
+
+  // O quê: aplica a busca digitada depois de 300 ms sem digitar.
+  // Como: lê o endereço atual no momento da gravação, para não desfazer filtros escolhidos nesse intervalo.
   useEffect(() => {
-    const controller = new AbortController();
-    setStatus("loading");
-
-    buscarTodoAnimais({ signal: controller.signal })
-      .then((data) => {
-        if (controller.signal.aborted) return;
-        setPets(mapPetsFromApi(data));
-        setStatus("ready");
-      })
-      .catch(() => {
-        if (!controller.signal.aborted) setStatus("error");
-      });
-
-    return () => controller.abort();
-  }, [reloadKey]);
-
-  // O quê: aplica debounce ao texto digitado na busca.
-  // Como: aguarda 300 ms antes de copiar inputQuery para query e cancela o timer anterior.
-  // Para quê: reduzir recomputações enquanto o usuário ainda está escrevendo.
-  useEffect(() => {
-    const timer = window.setTimeout(() => setQuery(inputQuery), 300);
+    const timer = window.setTimeout(() => {
+      setSearchParams(
+        (current) => {
+          const state = readCatalogParams(current);
+          return state.query === inputQuery ? current : writeCatalogParams({ ...state, query: inputQuery });
+        },
+        { replace: true },
+      );
+    }, SEARCH_DEBOUNCE_MS);
     return () => window.clearTimeout(timer);
-  }, [inputQuery]);
+  }, [inputQuery, setSearchParams]);
 
-  // O quê: volta para o primeiro lote quando a busca, os filtros ou a ordenação mudam.
-  // Como: observa esses valores e restaura PAGE_SIZE.
-  // Para quê: cada nova combinação de critérios começa do topo da lista.
+  // Busca alterada fora do campo (Voltar do navegador, "Limpar busca e filtros"): o campo acompanha.
+  useEffect(() => {
+    setInputQuery(query);
+  }, [query]);
+
+  // Cada nova combinação de critérios começa do primeiro lote.
   useEffect(() => {
     setVisibleCount(PAGE_SIZE);
-  }, [query, filters, sort]);
+  }, [searchParams]);
 
-  // O quê: esconde o aviso (link copiado, animal indisponível) depois de alguns segundos.
-  // Como: agenda a limpeza sempre que um novo aviso é definido.
-  // Para quê: dar retorno sem exigir que o usuário feche a mensagem.
+  // O aviso (link copiado, favorito) some sozinho depois de alguns segundos.
   useEffect(() => {
     if (!notice) return undefined;
     const timer = window.setTimeout(() => setNotice(""), NOTICE_DURATION_MS);
     return () => window.clearTimeout(timer);
   }, [notice]);
 
-  // O quê: deriva a lista exibida, os chips de filtro e o animal aberto.
-  // Como: filterPets e sortPets são funções puras; o animal aberto é buscado pelo id da URL.
-  // Para quê: manter uma única fonte de verdade para contador, grade e ficha.
   const filteredPets = useMemo(
-    () => sortPets(filterPets(pets, query, filters), sort),
-    [pets, query, filters, sort],
+    () => sortPets(filterPets(pets, query, filters, { favoriteIds }), sort),
+    [pets, query, filters, sort, favoriteIds],
   );
+  const temperamentOptions = useMemo(() => collectTemperaments(pets), [pets]);
   const visiblePets = filteredPets.slice(0, visibleCount);
   const hasMore = visibleCount < filteredPets.length;
   const activeChips = getActiveFilterChips(filters);
-  const selectedPet = status === "ready" && requestedPetId
-    ? pets.find((pet) => pet.id === requestedPetId) ?? null
-    : null;
-
-  // O quê: avisa quando o link aponta para um animal que não está mais disponível.
-  // Como: após carregar, se o id da URL não existir na lista, remove o parâmetro e mostra um aviso.
-  // Para quê: links antigos compartilhados não abrem uma ficha vazia.
-  useEffect(() => {
-    if (status !== "ready" || !requestedPetId || selectedPet) return;
-    setNotice("Este animal não está mais disponível para adoção.");
-    setSearchParams(
-      (current) => {
-        const next = new URLSearchParams(current);
-        next.delete("pet");
-        return next;
-      },
-      { replace: true },
-    );
-  }, [status, requestedPetId, selectedPet, setSearchParams]);
+  const drawerChips = activeChips.filter((chip) => !isQuickChip(chip));
+  const drawerFilterCount = activeChips.filter((chip) => chip.key !== "favorites").length;
+  const status = loading ? "loading" : error ? "error" : "ready";
+  const resultCount = filteredPets.length;
 
   // O quê: carrega mais cards quando o fim da lista se aproxima.
   // Como: o observador é recriado a cada lote, então dispara de novo se o sentinel continuar visível.
-  // Para quê: evitar que a paginação trave em telas altas ou com poucos cards por lote.
   useEffect(() => {
     if (!hasMore || typeof IntersectionObserver === "undefined") return undefined;
     const sentinel = loadMoreRef.current;
@@ -150,245 +137,223 @@ export default function AdoptionCatalog() {
     return () => observer.disconnect();
   }, [hasMore, visibleCount]);
 
-  // O quê: abre a ficha de um animal.
-  // Como: grava ?pet=<id> numa nova entrada de histórico, marcada como aberta pelo catálogo.
-  // Para quê: o botão Voltar do navegador fecha a ficha e o link pode ser compartilhado.
-  function openPet(pet) {
-    if (!pet.id) return;
-    setSearchParams(
-      (current) => {
-        const next = new URLSearchParams(current);
-        next.set("pet", pet.id);
-        return next;
-      },
-      { state: { openedFromCatalog: true } },
-    );
-  }
-
-  // O quê: fecha a ficha aberta.
-  // Como: se a ficha foi aberta pelo catálogo, volta uma entrada no histórico; se veio de um
-  //       link compartilhado, apenas remove o parâmetro. Sem ?pet na URL, não faz nada.
-  // Para quê: não acumular entradas no histórico nem sair do site ao fechar a ficha.
-  function closeDetail() {
-    const current = locationRef.current;
-    if (!new URLSearchParams(current.search).has("pet")) return;
-
-    if (current.state?.openedFromCatalog) {
-      navigate(-1);
-      return;
-    }
-
-    setSearchParams(
-      (params) => {
-        const next = new URLSearchParams(params);
-        next.delete("pet");
-        return next;
-      },
-      { replace: true },
-    );
-  }
-
-  // O quê: compartilha a ficha e informa o resultado.
-  // Como: usa a Web Share API ou copia o link; cancelamento pelo usuário não gera aviso.
-  // Para quê: divulgar o animal com um link que abre direto na ficha dele.
   async function handleShare(pet) {
     const { status: result, url } = await sharePet(pet);
     if (result === "copied") setNotice(`Link da ficha de ${pet.name} copiado.`);
     if (result === "failed") setNotice(`Não foi possível copiar o link: ${url}`);
   }
 
-  // O quê: limpa busca e filtros de uma vez.
-  // Como: zera o texto digitado, a consulta aplicada e recria os filtros iniciais.
-  // Para quê: ação do estado vazio quando nenhum animal atende aos critérios.
-  function clearSearchAndFilters() {
-    setInputQuery("");
-    setQuery("");
-    setFilters(createInitialFilters());
+  function handleFavorite(pet) {
+    setNotice(isFavorite(pet.id) ? `${pet.name} saiu dos favoritos.` : `${pet.name} foi para os favoritos.`);
+    toggleFavorite(pet.id);
   }
 
-  const resultCount = filteredPets.length;
+  function clearSearchAndFilters() {
+    setInputQuery("");
+    updateCatalog({ query: "", filters: createInitialFilters() });
+  }
+
   const headerText = {
     loading: "Buscando animais disponíveis...",
     error: "Não foi possível carregar a lista agora.",
     ready: (
       <>
         <strong>{resultCount}</strong>{" "}
-        {resultCount === 1 ? "animal esperando" : "animais esperando"} por um lar
-        cheio de carinho.
+        {resultCount === 1 ? "animal esperando" : "animais esperando"} por um lar cheio de carinho.
       </>
     ),
   }[status];
 
-  // O quê: renderiza a página completa do catálogo de adoção.
-  // Como: combina JSX condicional, componentes controlados e callbacks para refletir o estado local.
-  // Para quê: oferecer busca, filtros, ordenação, navegação pelos animais e início do processo de adoção.
   return (
-    <main className={`catalog-page ${selectedPet ? "has-detail" : ""}`}>
-      <div className="catalog-wrap">
-        <Link className="catalog-breadcrumb" to="/">
-          Início <span aria-hidden="true">/</span> Adotar
-        </Link>
-
-        <div className="catalog-header">
-          <div>
-            <span className="catalog-eyebrow">Adoção responsável</span>
-            <h1>Encontre seu novo melhor amigo</h1>
+    <PublicLayout className="catalog-page">
+      <section className="catalog-section" aria-labelledby="catalog-title">
+        <div className="wrap">
+          <div className="catalog-header">
+            <p className="catalog-eyebrow">Adoção responsável</p>
+            <h1 id="catalog-title">Encontre seu novo melhor amigo</h1>
             <p aria-live="polite">{headerText}</p>
           </div>
-          <PawPrint className="header-paw" size={71} aria-hidden="true" />
-        </div>
 
-        {/* O quê: renderiza busca, abertura de filtros e ordenação.
-          Como: cada controle é controlado pelo estado e atualiza o componente por callbacks.
-          Para quê: concentra os principais mecanismos de descoberta dos animais. */}
-        <section className="catalog-toolbar" aria-label="Busca e ordenação">
-          <label className="catalog-search">
-            <Search size={19} aria-hidden="true" />
-            <input
-              type="search"
-              aria-label="Buscar animais por nome, raça ou código"
-              value={inputQuery}
-              onChange={(event) => setInputQuery(event.target.value)}
-              placeholder="Busque por nome, raça ou código..."
-            />
-          </label>
-          <button
-            type="button"
-            className="filter-trigger"
-            aria-haspopup="dialog"
-            onClick={() => setDrawerOpen(true)}
-          >
-            <SlidersHorizontal size={18} aria-hidden="true" /> Filtros
-            {activeChips.length > 0 && (
-              <b aria-label={`${activeChips.length} ativos`}>{activeChips.length}</b>
-            )}
-          </button>
-          <label className="sort-select">
-            <span>Ordenar por</span>
-            <select value={sort} onChange={(event) => setSort(event.target.value)}>
-              <option value="recent">Mais recentes</option>
-              <option value="urgent">Mais urgentes</option>
-              <option value="name">Nome (A-Z)</option>
-            </select>
-            <ChevronDown size={16} aria-hidden="true" />
-          </label>
-        </section>
+          <div className="catalog-toolbar" role="search">
+            <label className="catalog-search">
+              <Search size={19} aria-hidden="true" />
+              <input
+                type="search"
+                aria-label="Buscar animais por nome, raça ou temperamento"
+                value={inputQuery}
+                onChange={(event) => setInputQuery(event.target.value)}
+                placeholder="Busque por nome, raça ou temperamento"
+              />
+            </label>
+            <button
+              type="button"
+              className="filter-trigger"
+              aria-haspopup="dialog"
+              onClick={() => setDrawerOpen(true)}
+            >
+              <SlidersHorizontal size={18} aria-hidden="true" /> Filtros
+              {drawerFilterCount > 0 && <b aria-label={`${drawerFilterCount} ativos`}>{drawerFilterCount}</b>}
+            </button>
+            <label className="sort-select">
+              <span>Ordenar</span>
+              <select aria-label="Ordenar" value={sort} onChange={(event) => updateCatalog({ sort: event.target.value })}>
+                {SORT_OPTIONS.map((option) => (
+                  <option key={option.value} value={option.value}>{option.label}</option>
+                ))}
+              </select>
+              <ChevronDown size={16} aria-hidden="true" />
+            </label>
+          </div>
 
-        {/* O quê: mostra os filtros ativos como chips removíveis.
-          Como: cada chip remove apenas o próprio critério; "Limpar tudo" restaura o estado inicial.
-          Para quê: tornar visível o estado da filtragem e permitir ajustes rápidos. */}
-        {activeChips.length > 0 && (
-          <div className="active-filters">
-            {activeChips.map((chip) => (
+          <div className="catalog-quick" role="group" aria-label="Filtros rápidos">
+            {QUICK_FILTERS.map((quick) => {
+              const active = isFilterOn(filters, quick);
+              return (
+                <button
+                  key={quick.id}
+                  type="button"
+                  aria-pressed={active}
+                  className={active ? "is-active" : ""}
+                  onClick={() => setFilters(toggleFilter(filters, quick))}
+                >
+                  {quick.label}
+                </button>
+              );
+            })}
+            {favoriteIds.length > 0 || filters.favorites ? (
               <button
                 type="button"
-                key={`${chip.key}-${chip.value ?? ""}`}
-                aria-label={`Remover filtro ${chip.label}`}
-                onClick={() => setFilters((current) => removeFilter(current, chip))}
+                aria-pressed={filters.favorites}
+                className={`catalog-quick-fav ${filters.favorites ? "is-active" : ""}`.trim()}
+                onClick={() => setFilters({ ...filters, favorites: !filters.favorites })}
               >
-                {chip.label} <X size={13} aria-hidden="true" />
+                <Heart size={15} fill="currentColor" aria-hidden="true" /> Meus favoritos ({favoriteIds.length})
               </button>
-            ))}
-            <button
-              type="button"
-              className="clear-all"
-              onClick={() => setFilters(createInitialFilters())}
-            >
-              Limpar tudo
-            </button>
+            ) : null}
           </div>
-        )}
 
-        {status === "loading" && (
-          <div className="catalog-grid" aria-hidden="true">
-            {Array.from({ length: PAGE_SIZE }).map((_, index) => (
-              <div className="catalog-skeleton" key={index} />
-            ))}
-          </div>
-        )}
+          {activeChips.length > 0 && (
+            <div className="active-filters">
+              {drawerChips.map((chip) => (
+                <button
+                  type="button"
+                  key={`${chip.key}-${chip.value ?? ""}`}
+                  aria-label={`Remover filtro ${chip.label}`}
+                  onClick={() => setFilters(removeFilter(filters, chip))}
+                >
+                  {chip.label} <X size={13} aria-hidden="true" />
+                </button>
+              ))}
+              <button type="button" className="clear-all" onClick={() => setFilters(createInitialFilters())}>
+                Limpar filtros
+              </button>
+            </div>
+          )}
 
-        {status === "error" && (
-          <div className="catalog-empty catalog-error" role="alert">
-            <AlertTriangle size={34} aria-hidden="true" />
-            <h2>Não conseguimos carregar os animais</h2>
-            <p>Verifique sua conexão e tente novamente em instantes.</p>
-            <button
-              type="button"
-              className="catalog-primary-button"
-              onClick={() => setReloadKey((key) => key + 1)}
-            >
-              <RotateCw size={16} aria-hidden="true" /> Tentar novamente
-            </button>
-          </div>
-        )}
+          {status === "loading" && (
+            <div className="catalog-grid" aria-hidden="true">
+              {Array.from({ length: PAGE_SIZE }).map((_, index) => (
+                <div className="catalog-skeleton" key={index} />
+              ))}
+            </div>
+          )}
 
-        {status === "ready" && (
-          <div className="catalog-grid">
-            <AnimatePresence>
+          {status === "error" && (
+            <div className="catalog-empty catalog-error" role="alert">
+              <AlertTriangle size={34} aria-hidden="true" />
+              <h2>Não conseguimos carregar os animais</h2>
+              <p>Verifique sua conexão e tente novamente em instantes.</p>
+              <button type="button" className="catalog-primary-button" onClick={reload}>
+                <RotateCw size={16} aria-hidden="true" /> Tentar novamente
+              </button>
+            </div>
+          )}
+
+          {status === "ready" && resultCount > 0 && (
+            <div className="catalog-grid">
               {visiblePets.map((pet) => (
-                <PetCard
-                  key={pet.id ?? pet.code}
+                <AnimalCard
+                  key={pet.id ?? pet.name}
                   pet={pet}
-                  onOpen={openPet}
+                  headingLevel={2}
+                  isFavorite={isFavorite(pet.id)}
+                  onToggleFavorite={handleFavorite}
                   onShare={handleShare}
                 />
               ))}
-            </AnimatePresence>
-          </div>
-        )}
-
-        {/* O quê: orienta o usuário quando não há resultados.
-          Como: distingue catálogo sem nenhum animal de busca/filtros sem correspondência.
-          Para quê: só oferecer "limpar filtros" quando isso realmente pode trazer resultados. */}
-        {status === "ready" && resultCount === 0 && (
-          pets.length === 0 ? (
-            <div className="catalog-empty">
-              <PawPrint size={34} aria-hidden="true" />
-              <h2>Nenhum animal disponível no momento</h2>
-              <p>Novos animais chegam com frequência. Volte em breve ou ajude a ONG de outras formas.</p>
-              <a className="catalog-primary-button" href="/#ajudar">
-                Como ajudar
-              </a>
             </div>
-          ) : (
-            <div className="catalog-empty">
-              <PawPrint size={34} aria-hidden="true" />
-              <h2>Nenhum animal encontrado</h2>
-              <p>Não encontramos um perfil com essa busca e esses filtros. Que tal ver todos?</p>
+          )}
+
+          {/* Sem resultados: catálogo vazio, nenhum favorito marcado ou busca/filtros sem correspondência. */}
+          {status === "ready" && resultCount === 0 && (
+            pets.length === 0 ? (
+              <div className="catalog-empty">
+                <PawPrint size={34} aria-hidden="true" />
+                <h2>Nenhum animal disponível no momento</h2>
+                <p>Novos animais chegam com frequência. Volte em breve ou ajude a ONG de outras formas.</p>
+                <a className="catalog-primary-button" href="/#ajudar">Como ajudar</a>
+              </div>
+            ) : filters.favorites && favoriteIds.length === 0 ? (
+              <div className="catalog-empty">
+                <Heart size={34} aria-hidden="true" />
+                <h2>Você ainda não tem favoritos</h2>
+                <p>Toque no coração dos animais de que gostar para encontrá-los aqui depois.</p>
+                <button
+                  type="button"
+                  className="catalog-primary-button"
+                  onClick={() => setFilters({ ...filters, favorites: false })}
+                >
+                  Ver todos os animais
+                </button>
+              </div>
+            ) : (
+              <div className="catalog-empty">
+                <PawPrint size={34} aria-hidden="true" />
+                <h2>Nenhum animal encontrado</h2>
+                <p>Não encontramos um perfil com essa busca e esses filtros. Que tal ver todos?</p>
+                <button type="button" className="catalog-primary-button" onClick={clearSearchAndFilters}>
+                  Limpar busca e filtros
+                </button>
+              </div>
+            )
+          )}
+
+          {/* Paginação progressiva: o observador carrega sozinho; o botão serve a teclado e clique. */}
+          {status === "ready" && hasMore && (
+            <div ref={loadMoreRef} className="catalog-load-more">
               <button
                 type="button"
-                className="catalog-primary-button"
-                onClick={clearSearchAndFilters}
+                className="catalog-secondary-button"
+                onClick={() => setVisibleCount((count) => count + PAGE_SIZE)}
               >
-                Limpar busca e filtros
+                Mostrar mais animais ({resultCount - visibleCount} restantes)
               </button>
             </div>
-          )
-        )}
+          )}
 
-        {/* O quê: sentinel da paginação progressiva, com botão para quem não rola até o fim.
-          Como: o IntersectionObserver observa este bloco; o botão faz o mesmo incremento.
-          Para quê: carregar mais cards automaticamente e também por teclado/clique. */}
-        {status === "ready" && hasMore && (
-          <div ref={loadMoreRef} className="catalog-load-more">
-            <button
-              type="button"
-              className="catalog-secondary-button"
-              onClick={() => setVisibleCount((count) => count + PAGE_SIZE)}
-            >
-              Mostrar mais animais ({resultCount - visibleCount} restantes)
-            </button>
-          </div>
-        )}
-      </div>
+          {/* Fim da lista: quem não achou agora ainda pode ajudar quem já está na ONG. */}
+          {status === "ready" && pets.length > 0 && !hasMore && (
+            <aside className="catalog-invite" aria-labelledby="catalog-invite-title">
+              <div>
+                <h2 id="catalog-invite-title">Não encontrou agora?</h2>
+                <p>Novos animais chegam com frequência. Enquanto isso, dá para ajudar quem já está aqui.</p>
+              </div>
+              <div className="catalog-invite-actions">
+                <Link to="/doar" className="catalog-primary-button">
+                  <Heart size={16} aria-hidden="true" /> Quero doar
+                </Link>
+                <a href="/#voluntariado" className="catalog-secondary-button">Ser voluntário</a>
+              </div>
+            </aside>
+          )}
+        </div>
+      </section>
 
       <div className="catalog-notice" role="status" aria-live="polite">
         {notice && <span>{notice}</span>}
       </div>
 
-      {/* O quê: monta o drawer de filtros e sua camada de fundo.
-        Como: overlay e drawer são filhos diretos de AnimatePresence, cada um com key própria.
-        Para quê: permitir editar critérios sem abandonar o contexto do catálogo. */}
+      {/* Gaveta de filtros e sua camada de fundo, cada uma com key própria dentro do AnimatePresence. */}
       <AnimatePresence>
         {drawerOpen && (
           <motion.button
@@ -409,45 +374,12 @@ export default function AdoptionCatalog() {
             filters={filters}
             setFilters={setFilters}
             resultCount={resultCount}
+            temperamentOptions={temperamentOptions}
             onClose={() => setDrawerOpen(false)}
             onClear={() => setFilters(createInitialFilters())}
           />
         )}
       </AnimatePresence>
-
-      {/* O quê: monta a ficha do animal indicado na URL.
-        Como: "Quero adotar" fecha a ficha e abre o formulário do mesmo animal.
-        Para quê: aprofundar a decisão antes de iniciar a solicitação. */}
-      <AnimatePresence>
-        {selectedPet && (
-          <PetDetail
-            key={selectedPet.id}
-            pet={selectedPet}
-            onClose={closeDetail}
-            onAdopt={(pet) => {
-              closeDetail();
-              setAdoptionPet(pet);
-            }}
-          />
-        )}
-      </AnimatePresence>
-
-      {/* O quê: monta o formulário de adoção para o animal escolhido.
-        Como: "Voltar para a ficha" reabre a ficha; "Fechar" apenas encerra o formulário.
-        Para quê: coletar os dados da solicitação sem perder o contexto do animal. */}
-      <AnimatePresence>
-        {adoptionPet && (
-          <AdoptionFormModal
-            key={adoptionPet.id ?? adoptionPet.code}
-            pet={adoptionPet}
-            onClose={() => setAdoptionPet(null)}
-            onBack={() => {
-              setAdoptionPet(null);
-              openPet(adoptionPet);
-            }}
-          />
-        )}
-      </AnimatePresence>
-    </main>
+    </PublicLayout>
   );
 }

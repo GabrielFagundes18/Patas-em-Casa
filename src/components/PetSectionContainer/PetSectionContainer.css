@@ -1,4 +1,4 @@
-/* O quê: vitrine da Home: cabeçalho com o link "Ver todos" e 4 cartões de animais.
+/* O quê: vitrine da Home: cabeçalho com o link "Ver todos" e 4 cartões de animais (AnimalCard).
   Como: grade com áreas nomeadas; no celular o link vai para baixo dos cartões, que viram uma fileira deslizável.
   Para quê: mostrar os casos urgentes primeiro e levar ao catálogo completo. */
 .home-pets-layout {
@@ -43,101 +43,6 @@
   gap: 24px;
 }
 
-/* ---------- Cartão ---------- */
-.home-pet-card {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-  border: 1px solid var(--border-color);
-  border-radius: 22px;
-  background: var(--bg-card);
-  overflow: hidden;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.home-pet-card:hover,
-.home-pet-card:focus-within {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-main);
-}
-
-.home-pet-photo {
-  position: relative;
-  aspect-ratio: 1 / 1;
-  background: var(--sage-pale);
-  overflow: hidden;
-}
-
-/* Foto e quadro "Foto em breve" preenchem o quadrado; fotos em pé não esticam o cartão. */
-.home-pet-photo img,
-.home-pet-photo .pet-photo-placeholder {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  min-height: 0;
-  object-fit: cover;
-}
-
-.home-pet-badge {
-  position: absolute;
-  z-index: 1;
-  top: 14px;
-  left: 14px;
-}
-
-.home-pet-body {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  gap: 10px;
-  padding: 20px 20px 12px;
-}
-
-.home-pet-name {
-  margin: 0;
-  font-size: 26px;
-  line-height: 1.1;
-}
-
-.home-pet-meta {
-  margin: 0;
-  color: var(--text-muted);
-  font-size: 14px;
-}
-
-.home-pet-desc {
-  display: -webkit-box;
-  margin: 0;
-  overflow: hidden;
-  font-size: 15px;
-  line-height: 1.45;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
-}
-
-.home-pet-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.home-pet-tags li {
-  padding: 4px 10px;
-  border-radius: 999px;
-  background: var(--sage-pale);
-  color: var(--sage);
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.home-pet-link {
-  margin-top: auto;
-}
-
 /* ---------- Responsivo ---------- */
 @media (max-width: 1024px) {
   .home-pets-grid {
@@ -170,22 +75,13 @@
     scroll-snap-type: x mandatory;
   }
 
-  .home-pet-card {
+  .home-pets-grid > .animal-card {
     flex: 0 0 min(264px, 78%);
     scroll-snap-align: start;
   }
 
-  .home-pet-card:hover,
-  .home-pet-card:focus-within {
-    transform: none;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .home-pet-card,
-  .home-pet-card:hover,
-  .home-pet-card:focus-within {
-    transition: none;
+  .home-pets-grid > .animal-card:hover,
+  .home-pets-grid > .animal-card:focus-within {
     transform: none;
   }
 }

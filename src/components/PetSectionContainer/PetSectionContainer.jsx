@@ -4,46 +4,13 @@
 import './PetSectionContainer.css';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
-import { PetPhoto } from '../PetPhoto/PetPhoto';
-import { artigo, concordar, especieDoAnimal } from '../../utils/petText';
+import { AnimalCard } from '../AnimalCard/AnimalCard';
 
 const SHOWCASE_SIZE = 4;
 
 // Urgentes primeiro, mantendo a ordem da API dentro de cada grupo.
 export function pickShowcase(pets, size = SHOWCASE_SIZE) {
   return [...pets.filter((pet) => pet.urgent), ...pets.filter((pet) => !pet.urgent)].slice(0, size);
-}
-
-function ShowcaseCard({ pet }) {
-  const meta = [especieDoAnimal(pet), pet.sex, pet.ageLabel, pet.size ? `Porte ${pet.size.toLowerCase()}` : null]
-    .filter(Boolean)
-    .join(' · ');
-  const cuidados = [
-    pet.castrado ? concordar(pet, 'Castrado') : null,
-    pet.vacinado ? concordar(pet, 'Vacinado') : null,
-  ].filter(Boolean);
-
-  return (
-    <article className="home-pet-card">
-      <div className="home-pet-photo">
-        <PetPhoto pet={pet} loading="lazy" />
-        {pet.urgent ? <span className="home-badge-urgent home-pet-badge">Urgente</span> : null}
-      </div>
-      <div className="home-pet-body">
-        <h3 className="home-pet-name">{pet.name}</h3>
-        <p className="home-pet-meta">{meta}</p>
-        {pet.descricao ? <p className="home-pet-desc">{pet.descricao}</p> : null}
-        {cuidados.length > 0 ? (
-          <ul className="home-pet-tags" aria-label="Cuidados">
-            {cuidados.map((cuidado) => <li key={cuidado}>{cuidado}</li>)}
-          </ul>
-        ) : null}
-        <Link to={pet.id ? `/animais/${encodeURIComponent(pet.id)}` : '/adotar'} className="home-arrow-link home-pet-link">
-          Conhecer {artigo(pet)} {pet.name} <ArrowRight size={16} aria-hidden="true" />
-        </Link>
-      </div>
-    </article>
-  );
 }
 
 export function PetSection({ pets = [], loading = false, error = null }) {
@@ -73,7 +40,7 @@ export function PetSection({ pets = [], loading = false, error = null }) {
 
         {showcase.length > 0 ? (
           <div className="home-pets-grid">
-            {showcase.map((pet) => <ShowcaseCard key={pet.id ?? pet.name} pet={pet} />)}
+            {showcase.map((pet) => <AnimalCard key={pet.id ?? pet.name} pet={pet} />)}
           </div>
         ) : null}
       </div>
