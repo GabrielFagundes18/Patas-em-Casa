@@ -13,16 +13,18 @@ import Donation from '../components/Donation/Donation';
 import Stories from '../components/Stories/Stories';
 import Footer from '../components/Footer/Footer';
 import PetSectionContainer from '../components/PetSectionContainer/PetSectionContainer';
+import { buscarEtapasAdocao } from '../services/conteudoService';
 
 // O quê: descreve as etapas apresentadas na seção “Como funciona”.
 // Como: cada objeto reúne título, explicação e chave de ícone consumidos pelo componente filho.
 // Para quê: mantém conteúdo e renderização separados, facilitando a evolução do fluxo de adoção.
-const steps=[
-    { title: 'Encontre', description: 'Navegue pelos pets disponíveis perto de você.', icon: 'search' },
-    { title: 'Conecte-se', description: 'Converse com o abrigo e conheça a história dele.', icon: 'heart' },
-    { title: 'Cadastre-se', description: 'Preencha um formulário rápido de responsabilidade.', icon: 'clipboard' },
-    { title: 'Leve para casa', description: 'Combine a retirada e comece a nova vida juntos.', icon: 'home' },
-  ]
+// Etapas padrão usadas só se o backend estiver indisponível; o conteúdo oficial vem de adoption_steps.
+const defaultSteps = [
+  { title: 'Encontre', description: 'Navegue pelos pets disponíveis perto de você.', icon: 'search' },
+  { title: 'Conecte-se', description: 'Converse com o abrigo e conheça a história dele.', icon: 'heart' },
+  { title: 'Cadastre-se', description: 'Preencha um formulário rápido de responsabilidade.', icon: 'clipboard' },
+  { title: 'Leve para casa', description: 'Combine a retirada e comece a nova vida juntos.', icon: 'home' },
+];
 
 function LandingPage() {
   // O quê: declara o progresso de rolagem e a visibilidade da barra correspondente.
@@ -30,6 +32,22 @@ function LandingPage() {
   // Para quê: dá ao visitante uma indicação visual de quanto falta para concluir a página.
   const [scrollProgress, setScrollProgress] = useState(0);
   const [showProgressBar, setShowProgressBar] = useState(false);
+  const [steps, setSteps] = useState(defaultSteps);
+
+  // O quê: carrega as etapas de adoção cadastradas no banco.
+  // Como: substitui as etapas padrão quando a API responde com ao menos uma etapa ativa.
+  // Para quê: a seção "Como funciona" refletir o que a equipe mantém no sistema.
+  useEffect(() => {
+    const controller = new AbortController();
+    buscarEtapasAdocao({ signal: controller.signal })
+      .then((etapas) => {
+        if (!controller.signal.aborted && etapas.length > 0) {
+          setSteps(etapas.map((etapa) => ({ title: etapa.titulo, description: etapa.descricao })));
+        }
+      })
+      .catch(() => {});
+    return () => controller.abort();
+  }, []);
 
   // O quê: prepara a animação de revelação das seções ao entrarem na viewport.
   // Como: respeita prefers-reduced-motion e usa IntersectionObserver para adicionar classes uma única vez.

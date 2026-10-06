@@ -4,6 +4,8 @@
 import './styles/globals.css';
 import LandingPage from './pages/LandingPage';
 import AdoptionCatalog from './pages/AdoptionCatalog';
+import AdminLoginPage from './admin/security/AdminLoginPage';
+import AdminDashboardPage from './admin/AdminDashboardPage';
 import { Route, Routes } from 'react-router-dom';
 
 // O quê: declara o componente raiz de navegação da aplicação.
@@ -11,11 +13,15 @@ import { Route, Routes } from 'react-router-dom';
 // Para quê: separa a landing page do catálogo de adoção sem duplicar o bootstrap do React.
 function App() {
   return (
-    // O quê: registra as rotas públicas da aplicação.
-    // Como: a rota explícita /adotar renderiza o catálogo e o curinga cobre os demais caminhos.
-    // Para quê: garante uma página inicial funcional e um destino estável para adoção.
-    <Routes>  
+    <Routes>
       <Route path="/adotar" element={<AdoptionCatalog />} />
+      <Route path="/admin/login" element={<AdminLoginPage />} />
+      <Route path="/admin" element={<AdminDashboardPage />} />
+      <Route path="/admin/animais" element={<AdminDashboardPage activeTab="animais" />} />
+      <Route path="/admin/adocoes" element={<AdminDashboardPage activeTab="adocoes" />} />
+      <Route path="/admin/doacoes" element={<AdminDashboardPage activeTab="doacoes" />} />
+      <Route path="/admin/voluntarios" element={<AdminDashboardPage activeTab="voluntarios" />} />
+      <Route path="/admin/configuracoes" element={<AdminDashboardPage activeTab="configuracoes" />} />
       <Route path="*" element={<LandingPage />} />
     </Routes>
   );

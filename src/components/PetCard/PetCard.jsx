@@ -1,9 +1,10 @@
-// O quê: importa hooks, animação, ícones e estilos do card de catálogo.
+// O quê: importa hooks, animação, ícones, foto e estilos do card de catálogo.
 // Como: useRef mede o card para o efeito de inclinação e useState armazena o deslocamento da imagem.
 // Para quê: combinar dados do pet com interação visual e ações do catálogo.
 import { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { PawPrint, Share2 } from "lucide-react";
+import { PetPhoto } from "../PetPhoto/PetPhoto";
 import "./PetCard.css";
 
 export function PetCard({ pet, onOpen, onShare }) {
@@ -27,7 +28,7 @@ export function PetCard({ pet, onOpen, onShare }) {
   }
 
   // O quê: renderiza foto, status, metadados, tags e ações do animal.
-  // Como: motion.article e motion.img controlam animações, enquanto callbacks delegam abertura e compartilhamento.
+  // Como: motion.article controla animações, enquanto callbacks delegam abertura e compartilhamento.
   // Para quê: oferecer uma unidade reutilizável de descoberta no catálogo.
   return (
     <motion.article
@@ -42,11 +43,11 @@ export function PetCard({ pet, onOpen, onShare }) {
       onPointerLeave={() => setOffset({ x: 0, y: 0 })}
     >
       <div className="catalog-photo-wrap">
-        <motion.img
-          layoutId={`pet-photo-${pet.code}`}
-          src={pet.image}
-          alt={pet.alt}
+        <PetPhoto
+          pet={pet}
+          layoutId={`pet-photo-${pet.id ?? pet.code}`}
           style={{ x: offset.x, y: offset.y }}
+          loading="lazy"
         />
         <span className={`catalog-status ${pet.urgent ? "urgent" : ""}`}>
           <i />
@@ -69,9 +70,10 @@ export function PetCard({ pet, onOpen, onShare }) {
           <button
             className="catalog-primary-button"
             type="button"
+            aria-label={`Ver ficha de ${pet.name}`}
             onClick={() => onOpen(pet)}
           >
-            {pet.urgent ? "Apadrinhar" : "Ver ficha"}
+            Ver ficha
           </button>
           <button
             className="catalog-icon-button"
@@ -79,7 +81,7 @@ export function PetCard({ pet, onOpen, onShare }) {
             aria-label={`Compartilhar ${pet.name}`}
             onClick={() => onShare(pet)}
           >
-            <Share2 size={17} />
+            <Share2 size={17} aria-hidden="true" />
           </button>
         </div>
       </div>

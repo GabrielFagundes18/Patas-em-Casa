@@ -1,0 +1,143 @@
+/* Tela de login do painel. Cores por papel em src/admin/styles/admin.css (tokens do :root). */
+.admin-login-page {
+  display: grid;
+  min-height: 100vh;
+  place-items: center;
+  padding: 24px 16px;
+}
+
+.admin-login-shell {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  width: min(920px, 100%);
+  overflow: hidden;
+  border: 1px solid var(--admin-border);
+  border-radius: var(--admin-radius-lg);
+  background: var(--admin-surface);
+  box-shadow: var(--admin-shadow);
+}
+
+.admin-login-aside {
+  display: grid;
+  align-content: end;
+  gap: 12px;
+  padding: 40px 36px;
+  background: var(--admin-sidebar-bg);
+  color: var(--admin-sidebar-text);
+}
+
+.admin-login-mark {
+  display: grid;
+  width: 52px;
+  height: 52px;
+  place-items: center;
+  margin-bottom: auto;
+  border-radius: 16px;
+  background: var(--admin-action);
+  color: var(--admin-text);
+}
+
+.admin-login-aside-title {
+  margin-top: 120px;
+  font-family: 'Fraunces', serif;
+  font-size: 28px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.admin-login-aside p:last-child {
+  color: var(--admin-sidebar-muted);
+}
+
+.admin-login-card {
+  padding: 40px 40px 36px;
+}
+
+.admin-login-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--admin-brand-strong);
+  font-family: 'Fraunces', serif;
+  font-size: 17px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.admin-login-heading {
+  display: grid;
+  gap: 6px;
+  margin: 28px 0 22px;
+}
+
+.admin-login-eyebrow {
+  color: var(--admin-text-accent);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.admin-login-heading h1 {
+  font-family: 'Inter', sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.admin-login-heading > p:last-child {
+  color: var(--admin-text-muted);
+}
+
+.admin-login-notice {
+  margin-bottom: 16px;
+}
+
+.admin-login-form {
+  display: grid;
+  gap: 16px;
+}
+
+.admin-login-field {
+  display: grid;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.admin-login-field input {
+  width: 100%;
+  min-height: 46px;
+  padding: 10px 14px;
+  border: 1px solid var(--admin-border);
+  border-radius: var(--admin-radius);
+  background: var(--admin-surface-sunken);
+  color: var(--admin-text);
+  font: inherit;
+  font-weight: 400;
+}
+
+.admin-login-field input:focus {
+  border-color: var(--admin-brand);
+}
+
+.admin-login-submit {
+  min-height: 46px;
+  margin-top: 4px;
+  font-size: 14px;
+}
+
+@media (max-width: 760px) {
+  .admin-login-shell {
+    grid-template-columns: 1fr;
+    width: min(460px, 100%);
+  }
+
+  .admin-login-aside {
+    display: none;
+  }
+
+  .admin-login-card {
+    padding: 28px 22px;
+  }
+}

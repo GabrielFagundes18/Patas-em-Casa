@@ -5,16 +5,19 @@ import { useEffect, useRef, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
 import './StatsStrip.css';
 import SgvOndaInvertida from '../SvgOndaInvertida/SvgOndaInvertida';
+import { buscarNumeros } from '../../services/conteudoService';
 
-// O quê: define os números e rótulos exibidos na faixa de impacto.
-// Como: cada objeto separa o valor formatado da legenda semântica.
-// Para quê: centralizar as métricas que alimentam os componentes de apresentação.
-const stats = [
-  { value: '+150', label: 'ANIMAIS RESGATADOS' },
-  { value: '+120', label: 'ADOÇÕES REALIZADAS' },
-  { value: '28', label: 'AGUARDANDO UM LAR' },
-  { value: '5 anos', label: 'DE ATUAÇÃO' },
-];
+// O quê: monta as métricas da faixa de impacto a partir dos números do backend.
+// Como: valores ainda não carregados (ou indisponíveis) ficam null e aparecem como "—".
+// Para quê: nunca exibir números inventados; o tempo de atuação é dado institucional fixo.
+function buildStats(numeros) {
+  return [
+    { value: numeros ? String(numeros.animais_resgatados) : null, label: 'ANIMAIS RESGATADOS' },
+    { value: numeros ? String(numeros.adocoes_realizadas) : null, label: 'ADOÇÕES REALIZADAS' },
+    { value: numeros ? String(numeros.aguardando_lar) : null, label: 'AGUARDANDO UM LAR' },
+    { value: '5 anos', label: 'DE ATUAÇÃO' },
+  ];
+}
 
 function CountUp({ value, inView }) {
   // O quê: mantém o número atualmente exibido pelo contador.
@@ -75,6 +78,22 @@ function StatsStrip() {
   // Para quê: evitar iniciar métricas antes de o usuário alcançá-las.
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, amount: 0.4 });
+  const [numeros, setNumeros] = useState(null);
+
+  // O quê: carrega os números reais do banco uma vez.
+  // Como: AbortController cancela a requisição se a página for desmontada; falhas mantêm "—".
+  // Para quê: a faixa refletir resgates, adoções e animais aguardando de verdade.
+  useEffect(() => {
+    const controller = new AbortController();
+    buscarNumeros({ signal: controller.signal })
+      .then((dados) => {
+        if (!controller.signal.aborted) setNumeros(dados);
+      })
+      .catch(() => {});
+    return () => controller.abort();
+  }, []);
+
+  const stats = buildStats(numeros);
 
   // O quê: renderiza a faixa e uma célula para cada estatística.
   // Como: map cria elementos animados com atraso baseado no índice e CountUp recebe o estado de visibilidade.
@@ -104,7 +123,7 @@ function StatsStrip() {
             }}
           >
             <div className="stat-num">
-              <CountUp value={stat.value} inView={inView} />
+              {stat.value === null ? '—' : <CountUp value={stat.value} inView={inView} />}
             </div>
             <div className="stat-label">{stat.label}</div>
           </motion.div>

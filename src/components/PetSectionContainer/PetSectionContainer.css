@@ -647,3 +647,15 @@
     row-gap: 28px;
   }
 }
+
+/* O quê: mostra o resultado do compartilhamento abaixo da vitrine.
+  Como: altura mínima reservada evita que a página "pule" quando o aviso aparece.
+  Para quê: confirmar que o link foi copiado sem abrir janelas extras. */
+.pet-section-notice {
+  min-height: 1.5em;
+  margin-top: 18px;
+  text-align: center;
+  color: var(--sage-dark);
+  font-size: 14px;
+  font-weight: 500;
+}

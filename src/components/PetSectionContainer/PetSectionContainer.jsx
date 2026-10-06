@@ -1,100 +1,32 @@
-// O quê: importa estilos, estado, efeitos, animações, ícone e cliente HTTP da vitrine.
+// O quê: importa estilos, estado, efeitos, navegação, animações, serviço e utilitários da vitrine.
 // Como: os hooks controlam a consulta, enquanto Framer Motion anima a grade de pets.
 // Para quê: separar busca e normalização dos dados da apresentação da seção inicial.
 import './PetSectionContainer.css';
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
-import api from '../../services/api';
-
-// O quê: busca todos os animais usados pela vitrine da landing page.
-// Como: ignora chamadas reais em testes e trata cancelamentos e falhas retornando lista vazia.
-// Para quê: fornecer uma fonte resiliente de dados e evitar que erros de rede interrompam a página.
-export async function buscarTodoAnimais(signal) {
-  if (process.env.NODE_ENV === 'test') {
-    return [];
-  }
-
-  try {
-    const resposta = await api.get('/animais/BuscaTodoAnimais', { signal });
-    return resposta.data ?? [];
-  } catch (error) {
-    if (signal?.aborted || error.name === 'CanceledError' || error.code === 'ERR_CANCELED') {
-      return [];
-    }
-    return [];
-  }
-}
-// O quê: mapeia chaves técnicas de espécie para rótulos legíveis.
-// Como: usa um objeto de consulta com fallback para o valor recebido ou texto vazio.
-// Para quê: normalizar dados da API para o vocabulário da interface.
-const RACAS_POR_ESPECIE = {
-  cachorro: 'Cachorro',
-  gato: 'Gato',
-};
-
-// O quê: mapeia códigos de porte para descrições exibidas ao usuário.
-// Como: usa a mesma estratégia de lookup com fallback.
-// Para quê: manter a apresentação uniforme dos metadados dos animais.
-const PORTE_LABEL = {
-  pequeno: 'Porte pequeno',
-  medio: 'Porte médio',
-  grande: 'Porte grande',
-};
-
-// O quê: converte idade em anos para uma unidade legível.
-// Como: valores menores que um ano são convertidos para meses e os demais recebem singular/plural correto.
-// Para quê: evitar que o catálogo exiba números crus da API.
-function formatarIdade(idadeAnos) {
-  const anos = Number(idadeAnos);
-  if (Number.isNaN(anos)) return '';
-  if (anos < 1) return `${Math.round(anos * 12)} meses`;
-  return anos === 1 ? '1 ano' : `${anos} anos`;
-}
-
-// O quê: adapta um animal do contrato da API ao modelo consumido pelos componentes React.
-// Como: usa optional chaining, fallbacks, tags derivadas e um objeto de saída estável.
-// Para quê: isolar diferenças entre backend e interface, incluindo código, status, texto alternativo e metadados.
-export function mapPetFromApi(petApi) {
-  const especieLabel = RACAS_POR_ESPECIE[petApi?.especie] ?? petApi?.especie ?? '';
-  const idade = formatarIdade(petApi?.idade_anos);
-  const porteLabel = PORTE_LABEL[petApi?.porte] ?? petApi?.porte ?? '';
-
-  // O quê: calcula tags de sexo e cuidados básicos.
-  // Como: expressões condicionais produzem valores ou null e filter(Boolean) remove ausências.
-  // Para quê: formar uma lista limpa para filtros, cards e detalhes.
-  const tags = [
-    petApi?.sexo === 'macho' ? 'Macho' : 'Fêmea',
-    petApi?.castrado ? 'Castrado' : null,
-    petApi?.vacinado ? 'Vacinado' : null,
-  ].filter(Boolean);
-
-  return {
-    code: petApi?.id ? String(petApi.id).slice(0, 8).toUpperCase() : 'N/A',
-    name: petApi?.nome ?? 'Sem nome',
-    image: petApi?.foto_url ?? '',
-    alt: `${petApi?.nome ?? 'Pet'}, ${especieLabel.toLowerCase()} da raça ${petApi?.raca ?? 'SRD'}`,
-    stamp: petApi?.raca ?? '',
-    urgent: petApi?.status === 'urgente',
-    meta: `${especieLabel} • ${petApi?.raca ?? 'SRD'} • ${idade} • ${porteLabel}`,
-    tags: petApi?.tags ?? tags,
-    descricao: petApi?.descricao ?? '',
-  };
-}
-
-// O quê: adapta uma coleção inteira de animais.
-// Como: valida Array.isArray e aplica mapPetFromApi a cada item.
-// Para quê: garantir que a camada visual sempre receba uma lista iterável.
-export function mapPetsFromApi(petsApi = []) {
-  if (!Array.isArray(petsApi)) return [];
-  return petsApi.map(mapPetFromApi);
-}
+import { PetPhoto } from '../PetPhoto/PetPhoto';
+import { buscarTodoAnimais } from '../../services/animaisService';
+import { mapPetsFromApi } from '../../utils/petMapper';
+import { sharePet } from '../../utils/sharePet';
 
 export function PetSection({ pets = [] }) {
   // O quê: limita a vitrine inicial aos oito primeiros animais.
   // Como: slice cria uma visão não destrutiva da coleção recebida.
   // Para quê: manter a landing page compacta e direcionar para o catálogo completo.
   const displayedPets = pets.slice(0, 8);
+  const navigate = useNavigate();
+  const [aviso, setAviso] = useState('');
+
+  // O quê: compartilha a ficha do animal e informa o resultado.
+  // Como: usa o utilitário compartilhado (Web Share API ou cópia do link) e mostra um aviso curto.
+  // Para quê: divulgar um perfil com link que abre direto na ficha dele.
+  async function compartilhar(pet) {
+    const { status, url } = await sharePet(pet);
+    if (status === 'copied') setAviso(`Link da ficha de ${pet.name} copiado.`);
+    if (status === 'failed') setAviso(`Não foi possível copiar. Link: ${url}`);
+  }
 
   // O quê: renderiza a vitrine pública de animais.
   // Como: mapeia os pets para artigos animados e exibe ações e metadados derivados.
@@ -117,7 +49,7 @@ export function PetSection({ pets = [] }) {
               // Como: usa layout compartilhado, estados de entrada/saída e atraso proporcional ao índice.
               // Para quê: apresentar a coleção com movimento previsível e identidade estável por pet.
               <motion.article
-                key={`${pet.name}-${pet.code}`}
+                key={pet.id ?? `${pet.name}-${pet.code}`}
                 layout
                 initial={{ opacity: 0, y: 18, scale: 0.98 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -131,9 +63,9 @@ export function PetSection({ pets = [] }) {
                 className="pet-card"
               >
                 <div className="pet-photo">
-                  <img src={pet.image} alt={pet.alt} loading="lazy" decoding="async" />
+                  <PetPhoto pet={pet} loading="lazy" />
                   <div className={`pet-stamp ${pet.urgent ? 'urgent' : ''}`}>
-                    <span dangerouslySetInnerHTML={{ __html: pet.stamp }} />
+                    <span>{pet.stamp}</span>
                   </div>
                 </div>
 
@@ -165,11 +97,10 @@ export function PetSection({ pets = [] }) {
                       className={`pet-btn primary ${pet.urgent ? 'urgent-btn' : ''}`}
                       whileHover={{ y: -1, transition: { duration: 0.18 } }}
                       whileTap={{ scale: 0.98 }}
-                      onClick={() => {
-                        window.location.assign('/adotar');
-                      }}
+                      onClick={() => navigate(pet.id ? `/adotar?pet=${encodeURIComponent(pet.id)}` : '/adotar')}
+                      aria-label={`Ver ficha de ${pet.name}`}
                     >
-                      {pet.urgent ? 'Apadrinhar' : 'Ver ficha'}
+                      Ver ficha
                     </motion.button>
 
                     <motion.button
@@ -177,6 +108,8 @@ export function PetSection({ pets = [] }) {
                       className="pet-btn ghost"
                       whileHover={{ y: -1, transition: { duration: 0.18 } }}
                       whileTap={{ scale: 0.98 }}
+                      onClick={() => compartilhar(pet)}
+                      aria-label={`Compartilhar ficha de ${pet.name}`}
                     >
                       Compartilhar
                     </motion.button>
@@ -186,6 +119,10 @@ export function PetSection({ pets = [] }) {
             ))}
           </motion.div>
         </AnimatePresence>
+
+        <p className="pet-section-notice" role="status">
+          {aviso}
+        </p>
 
         {pets.length > 8 && (
           <div className="pet-section-actions">
@@ -231,7 +168,7 @@ export default function PetSectionContainer() {
       // Como: aguarda buscarTodoAnimais e só atualiza o estado quando o signal permanece ativo.
       // Para quê: alimentar a seção com o modelo usado pelos cards.
       try {
-        const dadosApi = await buscarTodoAnimais(controller.signal);
+        const dadosApi = await buscarTodoAnimais({ signal: controller.signal });
         if (!controller.signal.aborted) {
           setPets(mapPetsFromApi(dadosApi));
         }

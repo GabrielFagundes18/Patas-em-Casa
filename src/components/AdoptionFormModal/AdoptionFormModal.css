@@ -11,3 +11,34 @@
   outline: 2px solid var(--amber);
   outline-offset: 2px;
 }
+
+/* O quê: destaca falhas de envio e o protocolo gerado.
+  Como: usa um tom escuro do tijolo da marca, com contraste suficiente sobre o fundo claro.
+  Para quê: deixar claro o que corrigir e qual número informar à equipe. */
+.adoption-form-error {
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
+  background: rgba(178, 97, 76, 0.1);
+  color: #8f4433;
+  line-height: 1.5;
+}
+
+.adoption-form-error p {
+  margin: 0;
+  font-weight: 600;
+}
+
+.adoption-form-error ul {
+  margin: 6px 0 0;
+  padding-left: 18px;
+}
+
+.catalog-adoption-form .catalog-primary-button:disabled {
+  opacity: 0.65;
+  cursor: progress;
+}
+
+.adoption-protocol {
+  color: var(--sage-dark);
+  letter-spacing: 0.04em;
+}

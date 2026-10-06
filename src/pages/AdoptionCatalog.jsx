@@ -1,470 +1,450 @@
-// O quê: importa os hooks necessários para estado, efeitos, memorização e referências DOM.
-// Como: usa a API de hooks do React; useMemo evita recalcular a lista sem mudanças nas dependências.
-// Para quê: sustenta o ciclo de vida, os filtros derivados e o gatilho de carregamento incremental da página.
+// O quê: importa hooks, roteamento, animações e ícones usados pelo catálogo.
+// Como: useSearchParams guarda o animal aberto na URL (?pet=<id>); AnimatePresence anima overlays e cards.
+// Para quê: sustentar busca, filtros, paginação progressiva, ficha compartilhável e formulário de adoção.
 import { useEffect, useMemo, useRef, useState } from "react";
-// O quê: importa os componentes de animação usados nos elementos que entram e saem da tela.
-// Como: AnimatePresence observa a montagem/desmontagem e motion fornece propriedades animáveis.
-// Para quê: mantém transições visuais consistentes nos filtros, detalhes e formulário de adoção.
+import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
-// O quê: importa os ícones exibidos na busca, ordenação, filtros e estados vazios.
-// Como: cada ícone é um componente React configurável por propriedades como size e className.
-// Para quê: comunica visualmente as ações e os estados principais do catálogo.
 import {
+  AlertTriangle,
   ChevronDown,
   PawPrint,
+  RotateCw,
   Search,
   SlidersHorizontal,
   X,
 } from "lucide-react";
-// O quê: importa os componentes responsáveis pelos fluxos de interação do catálogo.
-// Como: cada componente recebe dados e callbacks por props, mantendo a página como coordenadora do estado.
-// Para quê: permite abrir filtros, detalhes do animal e formulário de adoção sem duplicar a lógica de interface.
 import { AdoptionFormModal } from "../components/AdoptionFormModal/AdoptionFormModal";
 import { FilterDrawer } from "../components/FilterDrawer/FilterDrawer";
 import { PetCard } from "../components/PetCard/PetCard";
 import { PetDetail } from "../components/PetDetail/PetDetail";
 import { PAGE_SIZE } from "../constants/catalogOptions";
+import { buscarTodoAnimais } from "../services/animaisService";
 import {
-  buscarTodoAnimais,
-  mapPetsFromApi,
-} from "../components/PetSectionContainer/PetSectionContainer";
-import { getAge, getSize, getSpecies } from "../utils/petHelpers";
+  createInitialFilters,
+  filterPets,
+  getActiveFilterChips,
+  removeFilter,
+  sortPets,
+} from "../utils/catalogFilters";
+import { mapPetsFromApi } from "../utils/petMapper";
+import { sharePet } from "../utils/sharePet";
 import "./AdoptionCatalog.css";
 
-// O quê: define os valores padrão de todos os critérios disponíveis no catálogo.
-// Como: combina listas vazias, limite numérico, texto sentinela e flags booleanas.
-// Para quê: representa o estado inicial sem restrições, permitindo listar todos os animais compatíveis.
-const initialFilters = {
-  species: [],
-  size: [],
-  sex: [],
-  age: 15,
-  city: "Todas as cidades",
-  castrado: false,
-  vacinado: false,
-  urgent: false,
-};
-
-// O quê: cria uma nova instância do estado inicial dos filtros.
-// Como: usa spread para copiar os campos base e recria as listas, evitando compartilhar referências mutáveis.
-// Para quê: fornece um reset independente sempre que o usuário solicita limpar a filtragem.
-function createInitialFilters() {
-  return {
-    ...initialFilters,
-    species: [],
-    size: [],
-    sex: [],
-  };
-}
+const NOTICE_DURATION_MS = 4000;
 
 export default function AdoptionCatalog() {
-  // O quê: declara o estado dos animais e dos controles da página.
-  // Como: useState mantém valores entre renderizações e expõe setters para atualizar cada fluxo isoladamente.
-  // Para quê: coordena os dados remotos, busca, filtros, paginação virtual e os overlays do catálogo.
+  // O quê: declara o estado dos animais, da busca, dos filtros e dos overlays.
+  // Como: status separa carregamento, erro e sucesso; o animal aberto vem da URL.
+  // Para quê: permitir voltar com o botão do navegador e compartilhar o link de uma ficha.
+  const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const locationRef = useRef(location);
+  const requestedPetId = searchParams.get("pet");
   const [pets, setPets] = useState([]);
+  const [status, setStatus] = useState("loading");
+  const [reloadKey, setReloadKey] = useState(0);
   const [inputQuery, setInputQuery] = useState("");
   const [query, setQuery] = useState("");
   const [filters, setFilters] = useState(createInitialFilters);
   const [sort, setSort] = useState("recent");
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [selectedPet, setSelectedPet] = useState(null);
   const [adoptionPet, setAdoptionPet] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [notice, setNotice] = useState("");
   const loadMoreRef = useRef(null);
 
-  // O quê: carrega os animais uma única vez quando o catálogo é montado.
-  // Como: encadeia Promise.then, catch e finally, e usa a flag active para ignorar respostas após desmontagem.
-  // Para quê: evita atualizar estado de um componente desmontado e mantém estados de sucesso, erro e carregamento separados.
   useEffect(() => {
-    let active = true;
+    locationRef.current = location;
+  }, [location]);
 
-    buscarTodoAnimais()
-      // O quê: transforma a resposta da API e armazena os animais no formato da interface.
-      // Como: mapPetsFromApi adapta o contrato externo antes de chamar o setter do React.
-      // Para quê: desacopla o catálogo do formato bruto fornecido pelo serviço.
+  // O quê: carrega os animais ao montar a página e a cada "Tentar novamente".
+  // Como: AbortController cancela a requisição na desmontagem; falhas viram status "error".
+  // Para quê: diferenciar servidor indisponível de catálogo vazio.
+  useEffect(() => {
+    const controller = new AbortController();
+    setStatus("loading");
+
+    buscarTodoAnimais({ signal: controller.signal })
       .then((data) => {
-        if (active) setPets(mapPetsFromApi(data));
+        if (controller.signal.aborted) return;
+        setPets(mapPetsFromApi(data));
+        setStatus("ready");
       })
-      // O quê: substitui a coleção por uma lista vazia quando a busca falha.
-      // Como: captura a rejeição da Promise e atualiza o estado somente se o componente ainda estiver ativo.
-      // Para quê: evita exibir dados inválidos e permite que a interface trate o resultado como catálogo vazio.
       .catch(() => {
-        if (active) setPets([]);
-      })
-      // O quê: encerra o estado visual de carregamento após sucesso ou erro.
-      // Como: finally executa independentemente do resultado da Promise, condicionado à flag active.
-      // Para quê: remove os skeletons sem duplicar essa atualização nos dois caminhos de saída.
-      .finally(() => {
-        if (active) setLoading(false);
+        if (!controller.signal.aborted) setStatus("error");
       });
 
-    return () => {
-      // O quê: marca a operação como inativa durante a desmontagem.
-      // Como: altera a variável fechada pelo efeito, que é consultada antes de cada atualização.
-      // Para quê: impede atualizações assíncronas depois que o usuário saiu da página.
-      active = false;
-    };
-  }, []);
+    return () => controller.abort();
+  }, [reloadKey]);
 
   // O quê: aplica debounce ao texto digitado na busca.
-  // Como: aguarda 300 ms antes de copiar inputQuery para query e cancela o timer anterior quando há nova digitação.
-  // Para quê: reduz recomputações sucessivas enquanto o usuário ainda está escrevendo.
+  // Como: aguarda 300 ms antes de copiar inputQuery para query e cancela o timer anterior.
+  // Para quê: reduzir recomputações enquanto o usuário ainda está escrevendo.
   useEffect(() => {
     const timer = window.setTimeout(() => setQuery(inputQuery), 300);
     return () => window.clearTimeout(timer);
   }, [inputQuery]);
 
-  // O quê: reinicia a quantidade de cards visíveis quando a consulta, os filtros ou a ordenação mudam.
-  // Como: observa esses valores no array de dependências e restaura PAGE_SIZE.
-  // Para quê: faz cada nova combinação de critérios começar pela primeira página de resultados.
+  // O quê: volta para o primeiro lote quando a busca, os filtros ou a ordenação mudam.
+  // Como: observa esses valores e restaura PAGE_SIZE.
+  // Para quê: cada nova combinação de critérios começa do topo da lista.
   useEffect(() => {
     setVisibleCount(PAGE_SIZE);
   }, [query, filters, sort]);
 
-  // O quê: configura o carregamento automático de mais resultados ao alcançar o fim da lista.
-  // Como: IntersectionObserver monitora loadMoreRef e incrementa visibleCount quando o sentinel entra na área observada.
-  // Para quê: implementa paginação progressiva sem exigir um botão explícito de “carregar mais”.
+  // O quê: esconde o aviso (link copiado, animal indisponível) depois de alguns segundos.
+  // Como: agenda a limpeza sempre que um novo aviso é definido.
+  // Para quê: dar retorno sem exigir que o usuário feche a mensagem.
   useEffect(() => {
-    // O quê: verifica se o navegador oferece a API de observação de interseção.
-    // Como: retorna antecipadamente quando a propriedade global não existe.
-    // Para quê: preserva a renderização em ambientes sem suporte, como alguns testes ou navegadores antigos.
-    if (typeof IntersectionObserver === "undefined") return undefined;
+    if (!notice) return undefined;
+    const timer = window.setTimeout(() => setNotice(""), NOTICE_DURATION_MS);
+    return () => window.clearTimeout(timer);
+  }, [notice]);
 
-    // O quê: cria o observador responsável por detectar a proximidade do fim da lista.
-    // Como: recebe uma callback com a entrada observada e uma margem antecipada de 260 pixels.
-    // Para quê: inicia a próxima leva antes de o usuário atingir exatamente o último card.
+  // O quê: deriva a lista exibida, os chips de filtro e o animal aberto.
+  // Como: filterPets e sortPets são funções puras; o animal aberto é buscado pelo id da URL.
+  // Para quê: manter uma única fonte de verdade para contador, grade e ficha.
+  const filteredPets = useMemo(
+    () => sortPets(filterPets(pets, query, filters), sort),
+    [pets, query, filters, sort],
+  );
+  const visiblePets = filteredPets.slice(0, visibleCount);
+  const hasMore = visibleCount < filteredPets.length;
+  const activeChips = getActiveFilterChips(filters);
+  const selectedPet = status === "ready" && requestedPetId
+    ? pets.find((pet) => pet.id === requestedPetId) ?? null
+    : null;
+
+  // O quê: avisa quando o link aponta para um animal que não está mais disponível.
+  // Como: após carregar, se o id da URL não existir na lista, remove o parâmetro e mostra um aviso.
+  // Para quê: links antigos compartilhados não abrem uma ficha vazia.
+  useEffect(() => {
+    if (status !== "ready" || !requestedPetId || selectedPet) return;
+    setNotice("Este animal não está mais disponível para adoção.");
+    setSearchParams(
+      (current) => {
+        const next = new URLSearchParams(current);
+        next.delete("pet");
+        return next;
+      },
+      { replace: true },
+    );
+  }, [status, requestedPetId, selectedPet, setSearchParams]);
+
+  // O quê: carrega mais cards quando o fim da lista se aproxima.
+  // Como: o observador é recriado a cada lote, então dispara de novo se o sentinel continuar visível.
+  // Para quê: evitar que a paginação trave em telas altas ou com poucos cards por lote.
+  useEffect(() => {
+    if (!hasMore || typeof IntersectionObserver === "undefined") return undefined;
+    const sentinel = loadMoreRef.current;
+    if (!sentinel) return undefined;
+
     const observer = new IntersectionObserver(
       ([entry]) => {
-        // O quê: aumenta a quantidade de animais renderizados quando o sentinel está visível.
-        // Como: usa atualização funcional para calcular o novo valor a partir do estado mais recente.
-        // Para quê: suporta múltiplas interseções sem perder incrementos concorrentes.
-        if (entry.isIntersecting) {
-          setVisibleCount((count) => count + PAGE_SIZE);
-        }
+        if (entry.isIntersecting) setVisibleCount((count) => count + PAGE_SIZE);
       },
       { rootMargin: "260px" },
     );
-
-    // O quê: conecta o observador ao elemento sentinel do catálogo.
-    // Como: só chama observe quando a referência já aponta para um elemento DOM.
-    // Para quê: ativa o carregamento incremental no ponto correto da página.
-    if (loadMoreRef.current) observer.observe(loadMoreRef.current);
-    // O quê: remove o observador quando o efeito é desmontado.
-    // Como: disconnect encerra todas as observações mantidas pela instância.
-    // Para quê: evita vazamentos e callbacks após a saída da página.
+    observer.observe(sentinel);
     return () => observer.disconnect();
-  }, []);
+  }, [hasMore, visibleCount]);
 
-  // O quê: calcula a lista de animais que atende à busca, aos filtros e à ordenação atuais.
-  // Como: useMemo memoriza o resultado até que pets, query, filters ou sort mudem; filter e sort percorrem a coleção derivada.
-  // Para quê: fornece uma única fonte de dados para contador, cards, estado vazio e paginação visual.
-  const filteredPets = useMemo(() => {
-    // O quê: normaliza a consulta textual recebida do campo de busca.
-    // Como: remove espaços nas extremidades e converte o texto para minúsculas.
-    // Para quê: torna a comparação independente de capitalização e de espaços acidentais.
-    const normalized = query.toLowerCase().trim();
+  // O quê: abre a ficha de um animal.
+  // Como: grava ?pet=<id> numa nova entrada de histórico, marcada como aberta pelo catálogo.
+  // Para quê: o botão Voltar do navegador fecha a ficha e o link pode ser compartilhado.
+  function openPet(pet) {
+    if (!pet.id) return;
+    setSearchParams(
+      (current) => {
+        const next = new URLSearchParams(current);
+        next.set("pet", pet.id);
+        return next;
+      },
+      { state: { openedFromCatalog: true } },
+    );
+  }
 
-    // O quê: filtra e ordena os animais carregados.
-    // Como: cada predicado calcula uma regra isolada e o resultado é ordenado por nome ou prioridade de urgência.
-    // Para quê: transforma dados brutos em resultados prontos para renderização no catálogo.
-    return pets
-      .filter((pet) => {
-        // O quê: verifica se a busca aparece no nome, código ou metadados do animal.
-        // Como: agrupa os campos em uma string normalizada e usa includes para uma busca parcial.
-        // Para quê: permite localizar perfis por diferentes identificadores com um único campo.
-        const matchesQuery =
-          !normalized ||
-          [pet.name, pet.code, pet.meta]
-            .join(" ")
-            .toLowerCase()
-            .includes(normalized);
-        // O quê: verifica a espécie selecionada, quando houver alguma seleção.
-        // Como: aceita todos os animais com uma lista vazia ou exige inclusão do valor derivado de getSpecies.
-        // Para quê: restringe o catálogo ao tipo de animal desejado sem impor filtro por padrão.
-        const matchesSpecies =
-          !filters.species.length || filters.species.includes(getSpecies(pet));
-        // O quê: verifica o porte selecionado, quando houver alguma seleção.
-        // Como: usa a mesma estratégia de lista vazia ou includes sobre o valor calculado por getSize.
-        // Para quê: permite encontrar animais compatíveis com o espaço e a preferência do adotante.
-        const matchesSize =
-          !filters.size.length || filters.size.includes(getSize(pet));
-        // O quê: verifica se a idade do animal está dentro do limite configurado.
-        // Como: converte o limite para número e compara com a idade normalizada por getAge.
-        // Para quê: elimina perfis acima da faixa etária escolhida.
-        const matchesAge = getAge(pet) <= Number(filters.age);
-        // O quê: verifica a cidade do animal, respeitando a opção que representa todas as cidades.
-        // Como: usa comparação direta apenas quando o valor selecionado não é o texto sentinela.
-        // Para quê: limita resultados à localidade escolhida sem filtrar quando não há preferência geográfica.
-        const matchesCity =
-          filters.city === "Todas as cidades" || pet.city === filters.city;
-        // O quê: verifica o requisito de urgência.
-        // Como: deixa todos passarem quando urgent é falso e exige pet.urgent quando é verdadeiro.
-        // Para quê: destaca animais que precisam de encaminhamento prioritário.
-        const matchesStatus = !filters.urgent || pet.urgent;
-        // O quê: verifica os requisitos de castração e vacinação.
-        // Como: combina condições com AND e usa optional chaining antes de consultar tags.
-        // Para quê: garante que cada cuidado selecionado seja atendido sem falhar quando tags estiver ausente.
-        const matchesCare =
-          (!filters.castrado || pet.tags?.includes("Castrado")) &&
-          (!filters.vacinado || pet.tags?.includes("Vacinado"));
-        // O quê: verifica se alguma opção de sexo aparece nas tags do animal.
-        // Como: permite todos sem seleção e usa some para aceitar qualquer correspondência quando há opções.
-        // Para quê: aplica corretamente filtros de seleção múltipla.
-        const matchesSex =
-          !filters.sex.length ||
-          filters.sex.some((sex) => pet.tags?.includes(sex));
+  // O quê: fecha a ficha aberta.
+  // Como: se a ficha foi aberta pelo catálogo, volta uma entrada no histórico; se veio de um
+  //       link compartilhado, apenas remove o parâmetro. Sem ?pet na URL, não faz nada.
+  // Para quê: não acumular entradas no histórico nem sair do site ao fechar a ficha.
+  function closeDetail() {
+    const current = locationRef.current;
+    if (!new URLSearchParams(current.search).has("pet")) return;
 
-        return (
-          matchesQuery &&
-          matchesSpecies &&
-          matchesSize &&
-          matchesAge &&
-          matchesCity &&
-          matchesStatus &&
-          matchesCare &&
-          matchesSex
-        );
-      })
-      // O quê: ordena os resultados filtrados conforme a opção selecionada.
-      // Como: usa localeCompare para nomes e comparação numérica de flags para urgência.
-      // Para quê: apresenta os cards na ordem esperada sem alterar a coleção original de pets.
-      .sort((a, b) =>
-        sort === "name"
-          ? a.name.localeCompare(b.name)
-          : Number(b.urgent) - Number(a.urgent),
-      );
-  }, [pets, query, filters, sort]);
+    if (current.state?.openedFromCatalog) {
+      navigate(-1);
+      return;
+    }
 
-  // O quê: restaura todos os filtros para o estado inicial.
-  // Como: cria um novo objeto por meio de createInitialFilters e o envia ao setter.
-  // Para quê: centraliza o comportamento de limpeza usado pela toolbar e pelo estado vazio.
-  function clearFilters() {
+    setSearchParams(
+      (params) => {
+        const next = new URLSearchParams(params);
+        next.delete("pet");
+        return next;
+      },
+      { replace: true },
+    );
+  }
+
+  // O quê: compartilha a ficha e informa o resultado.
+  // Como: usa a Web Share API ou copia o link; cancelamento pelo usuário não gera aviso.
+  // Para quê: divulgar o animal com um link que abre direto na ficha dele.
+  async function handleShare(pet) {
+    const { status: result, url } = await sharePet(pet);
+    if (result === "copied") setNotice(`Link da ficha de ${pet.name} copiado.`);
+    if (result === "failed") setNotice(`Não foi possível copiar o link: ${url}`);
+  }
+
+  // O quê: limpa busca e filtros de uma vez.
+  // Como: zera o texto digitado, a consulta aplicada e recria os filtros iniciais.
+  // Para quê: ação do estado vazio quando nenhum animal atende aos critérios.
+  function clearSearchAndFilters() {
+    setInputQuery("");
+    setQuery("");
     setFilters(createInitialFilters());
   }
 
-  // O quê: constrói os rótulos dos filtros atualmente ativos.
-  // Como: concatena arrays de seleção e converte flags/cidade em textos, removendo valores falsos no final.
-  // Para quê: alimenta os chips informativos exibidos acima da grade de resultados.
-  const activeFilters = [
-    ...filters.species,
-    ...filters.size,
-    ...filters.sex,
-    filters.city !== "Todas as cidades" ? filters.city : "",
-    filters.urgent ? "Urgentes" : "",
-    filters.castrado ? "Castrados" : "",
-    filters.vacinado ? "Vacinados" : "",
-  ].filter(Boolean);
-
-  // O quê: compartilha o perfil de um animal usando a capacidade nativa do dispositivo ou uma cópia de URL.
-  // Como: prefere navigator.share e usa clipboard como fallback opcional quando a API não existe.
-  // Para quê: permite divulgar o animal mesmo em navegadores que não oferecem compartilhamento nativo.
-  async function sharePet(pet) {
-    if (navigator.share) {
-      await navigator.share({
-        title: `${pet.name} espera por um lar`,
-        text: `Conheça ${pet.name} na Patas em Casa.`,
-      });
-    } else {
-      navigator.clipboard?.writeText(window.location.href);
-    }
-  }
+  const resultCount = filteredPets.length;
+  const headerText = {
+    loading: "Buscando animais disponíveis...",
+    error: "Não foi possível carregar a lista agora.",
+    ready: (
+      <>
+        <strong>{resultCount}</strong>{" "}
+        {resultCount === 1 ? "animal esperando" : "animais esperando"} por um lar
+        cheio de carinho.
+      </>
+    ),
+  }[status];
 
   // O quê: renderiza a página completa do catálogo de adoção.
   // Como: combina JSX condicional, componentes controlados e callbacks para refletir o estado local.
-  // Para quê: oferece busca, filtros, ordenação, navegação pelos animais e início do processo de adoção.
+  // Para quê: oferecer busca, filtros, ordenação, navegação pelos animais e início do processo de adoção.
   return (
-    // O quê: cria o contêiner semântico principal e sinaliza quando o detalhe está aberto.
-    // Como: monta a classe CSS dinamicamente a partir de selectedPet.
-    // Para quê: permite ajustar layout e comportamento visual quando um painel de detalhes ocupa a tela.
     <main className={`catalog-page ${selectedPet ? "has-detail" : ""}`}>
-      {/* O quê: agrupa o conteúdo central da página.
-          Como: aplica a estrutura de layout definida por catalog-wrap.
-          Para quê: mantém breadcrumb, cabeçalho, controles e resultados alinhados no catálogo. */}
       <div className="catalog-wrap">
-        {/* O quê: oferece um link de retorno para a página inicial.
-            Como: usa navegação HTML convencional para apontar à raiz da aplicação.
-            Para quê: dá contexto de localização e uma saída rápida do catálogo. */}
-        <a className="catalog-breadcrumb" href="/">
-          Início <span>/</span> Adotar
-        </a>
+        <Link className="catalog-breadcrumb" to="/">
+          Início <span aria-hidden="true">/</span> Adotar
+        </Link>
 
-       
-        {/* O quê: apresenta o título, a descrição e a identidade visual do catálogo.
-          Como: combina texto derivado de filteredPets com o ícone PawPrint.
-          Para quê: informa o propósito da página e a quantidade atual de resultados. */}
         <div className="catalog-header">
           <div>
             <span className="catalog-eyebrow">Adoção responsável</span>
             <h1>Encontre seu novo melhor amigo</h1>
-            <p>
-              <strong>{filteredPets.length}</strong> animais esperando por um
-              lar cheio de carinho.
-            </p>
+            <p aria-live="polite">{headerText}</p>
           </div>
-          <PawPrint className="header-paw" size={71} />
+          <PawPrint className="header-paw" size={71} aria-hidden="true" />
         </div>
 
         {/* O quê: renderiza busca, abertura de filtros e ordenação.
           Como: cada controle é controlado pelo estado e atualiza o componente por callbacks.
           Para quê: concentra os principais mecanismos de descoberta dos animais. */}
-        <section className="catalog-toolbar">
+        <section className="catalog-toolbar" aria-label="Busca e ordenação">
           <label className="catalog-search">
-            <Search size={19} />
+            <Search size={19} aria-hidden="true" />
             <input
+              type="search"
+              aria-label="Buscar animais por nome, raça ou código"
               value={inputQuery}
               onChange={(event) => setInputQuery(event.target.value)}
-              placeholder="Busque por nome, raça ou ID..."
+              placeholder="Busque por nome, raça ou código..."
             />
           </label>
           <button
             type="button"
             className="filter-trigger"
+            aria-haspopup="dialog"
             onClick={() => setDrawerOpen(true)}
           >
-            <SlidersHorizontal size={18} /> Filtros
-            {activeFilters.length > 0 && <b>{activeFilters.length}</b>}
+            <SlidersHorizontal size={18} aria-hidden="true" /> Filtros
+            {activeChips.length > 0 && (
+              <b aria-label={`${activeChips.length} ativos`}>{activeChips.length}</b>
+            )}
           </button>
           <label className="sort-select">
             <span>Ordenar por</span>
-            <select
-              value={sort}
-              onChange={(event) => setSort(event.target.value)}
-            >
+            <select value={sort} onChange={(event) => setSort(event.target.value)}>
               <option value="recent">Mais recentes</option>
               <option value="urgent">Mais urgentes</option>
               <option value="name">Nome (A-Z)</option>
             </select>
-            <ChevronDown size={16} />
+            <ChevronDown size={16} aria-hidden="true" />
           </label>
         </section>
 
-        {/* O quê: mostra os filtros ativos somente quando existe alguma restrição.
-          Como: percorre activeFilters com map e oferece ações que chamam clearFilters.
-          Para quê: torna visível o estado da filtragem e permite removê-la rapidamente. */}
-        {activeFilters.length > 0 && (
+        {/* O quê: mostra os filtros ativos como chips removíveis.
+          Como: cada chip remove apenas o próprio critério; "Limpar tudo" restaura o estado inicial.
+          Para quê: tornar visível o estado da filtragem e permitir ajustes rápidos. */}
+        {activeChips.length > 0 && (
           <div className="active-filters">
-            {activeFilters.map((filter) => (
-              <button type="button" key={filter} onClick={clearFilters}>
-                {filter} <X size={13} />
+            {activeChips.map((chip) => (
+              <button
+                type="button"
+                key={`${chip.key}-${chip.value ?? ""}`}
+                aria-label={`Remover filtro ${chip.label}`}
+                onClick={() => setFilters((current) => removeFilter(current, chip))}
+              >
+                {chip.label} <X size={13} aria-hidden="true" />
               </button>
             ))}
-            <button type="button" className="clear-all" onClick={clearFilters}>
+            <button
+              type="button"
+              className="clear-all"
+              onClick={() => setFilters(createInitialFilters())}
+            >
               Limpar tudo
             </button>
           </div>
         )}
 
-        {/* O quê: alterna entre skeletons de carregamento e a grade de cards.
-          Como: usa renderização condicional e limita a coleção com slice antes de mapear PetCard.
-          Para quê: fornece feedback durante a busca e evita renderizar todos os resultados de uma vez. */}
-        {loading ? (
-          <div className="catalog-grid">
+        {status === "loading" && (
+          <div className="catalog-grid" aria-hidden="true">
             {Array.from({ length: PAGE_SIZE }).map((_, index) => (
               <div className="catalog-skeleton" key={index} />
             ))}
           </div>
-        ) : (
-          <AnimatePresence mode="popLayout">
-            <div className="catalog-grid">
-              {filteredPets.slice(0, visibleCount).map((pet, index) => (
-                <PetCard
-                  key={pet.code || `${pet.name}-${index}`}
-                  pet={pet}
-                  onOpen={setSelectedPet}
-                  onShare={sharePet}
-                />
-              ))}
-            </div>
-          </AnimatePresence>
         )}
 
-        {/* O quê: exibe uma mensagem e uma ação quando nenhum resultado atende aos critérios.
-          Como: combina as condições de carregamento concluído e lista vazia.
-          Para quê: orienta o usuário a remover as restrições e recuperar a listagem completa. */}
-        {!loading && filteredPets.length === 0 && (
-          <div className="catalog-empty">
-            <PawPrint size={34} />
-            <h2>Nenhum animal encontrado</h2>
-            <p>
-              Não encontramos um perfil com esses filtros. Que tal ver todos?
-            </p>
+        {status === "error" && (
+          <div className="catalog-empty catalog-error" role="alert">
+            <AlertTriangle size={34} aria-hidden="true" />
+            <h2>Não conseguimos carregar os animais</h2>
+            <p>Verifique sua conexão e tente novamente em instantes.</p>
             <button
               type="button"
               className="catalog-primary-button"
-              onClick={() => {
-                setInputQuery("");
-                setQuery("");
-                clearFilters();
-              }}
+              onClick={() => setReloadKey((key) => key + 1)}
             >
-              Limpar filtros
+              <RotateCw size={16} aria-hidden="true" /> Tentar novamente
             </button>
           </div>
         )}
 
-        {/* O quê: renderiza o sentinel observado pela paginação incremental.
-          Como: associa loadMoreRef ao elemento e mostra o indicador apenas quando ainda há resultados ocultos.
-          Para quê: conecta a interface ao IntersectionObserver sem adicionar controles extras à grade. */}
-        <div ref={loadMoreRef} className="catalog-load-more">
-          {visibleCount < filteredPets.length && (
-            <>
-              <span />
-              Carregando mais amigos...
-            </>
-          )}
-        </div>
+        {status === "ready" && (
+          <div className="catalog-grid">
+            <AnimatePresence>
+              {visiblePets.map((pet) => (
+                <PetCard
+                  key={pet.id ?? pet.code}
+                  pet={pet}
+                  onOpen={openPet}
+                  onShare={handleShare}
+                />
+              ))}
+            </AnimatePresence>
+          </div>
+        )}
+
+        {/* O quê: orienta o usuário quando não há resultados.
+          Como: distingue catálogo sem nenhum animal de busca/filtros sem correspondência.
+          Para quê: só oferecer "limpar filtros" quando isso realmente pode trazer resultados. */}
+        {status === "ready" && resultCount === 0 && (
+          pets.length === 0 ? (
+            <div className="catalog-empty">
+              <PawPrint size={34} aria-hidden="true" />
+              <h2>Nenhum animal disponível no momento</h2>
+              <p>Novos animais chegam com frequência. Volte em breve ou ajude a ONG de outras formas.</p>
+              <a className="catalog-primary-button" href="/#ajudar">
+                Como ajudar
+              </a>
+            </div>
+          ) : (
+            <div className="catalog-empty">
+              <PawPrint size={34} aria-hidden="true" />
+              <h2>Nenhum animal encontrado</h2>
+              <p>Não encontramos um perfil com essa busca e esses filtros. Que tal ver todos?</p>
+              <button
+                type="button"
+                className="catalog-primary-button"
+                onClick={clearSearchAndFilters}
+              >
+                Limpar busca e filtros
+              </button>
+            </div>
+          )
+        )}
+
+        {/* O quê: sentinel da paginação progressiva, com botão para quem não rola até o fim.
+          Como: o IntersectionObserver observa este bloco; o botão faz o mesmo incremento.
+          Para quê: carregar mais cards automaticamente e também por teclado/clique. */}
+        {status === "ready" && hasMore && (
+          <div ref={loadMoreRef} className="catalog-load-more">
+            <button
+              type="button"
+              className="catalog-secondary-button"
+              onClick={() => setVisibleCount((count) => count + PAGE_SIZE)}
+            >
+              Mostrar mais animais ({resultCount - visibleCount} restantes)
+            </button>
+          </div>
+        )}
       </div>
 
-        {/* O quê: monta o drawer de filtros e sua camada de fundo quando drawerOpen é verdadeiro.
-          Como: AnimatePresence anima a saída e motion.button fornece a transição do overlay.
-          Para quê: permite editar critérios sem abandonar o contexto do catálogo. */}
-        <AnimatePresence>
+      <div className="catalog-notice" role="status" aria-live="polite">
+        {notice && <span>{notice}</span>}
+      </div>
+
+      {/* O quê: monta o drawer de filtros e sua camada de fundo.
+        Como: overlay e drawer são filhos diretos de AnimatePresence, cada um com key própria.
+        Para quê: permitir editar critérios sem abandonar o contexto do catálogo. */}
+      <AnimatePresence>
         {drawerOpen && (
-          <>
-            <motion.button
-              type="button"
-              className="drawer-overlay"
-              aria-label="Fechar filtros"
-              onClick={() => setDrawerOpen(false)}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-            />
-            <FilterDrawer
-              filters={filters}
-              setFilters={setFilters}
-              onClose={() => setDrawerOpen(false)}
-              onClear={clearFilters}
-            />
-          </>
+          <motion.button
+            key="filters-overlay"
+            type="button"
+            className="drawer-overlay"
+            aria-label="Fechar filtros"
+            tabIndex={-1}
+            onClick={() => setDrawerOpen(false)}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          />
+        )}
+        {drawerOpen && (
+          <FilterDrawer
+            key="filters-drawer"
+            filters={filters}
+            setFilters={setFilters}
+            resultCount={resultCount}
+            onClose={() => setDrawerOpen(false)}
+            onClear={() => setFilters(createInitialFilters())}
+          />
         )}
       </AnimatePresence>
 
-        {/* O quê: monta os detalhes do animal selecionado.
-          Como: passa o animal atual e callbacks para fechar ou iniciar a adoção.
-          Para quê: mantém a seleção fora da grade e permite avançar para o próximo fluxo. */}
-        <AnimatePresence>
+      {/* O quê: monta a ficha do animal indicado na URL.
+        Como: "Quero adotar" fecha a ficha e abre o formulário do mesmo animal.
+        Para quê: aprofundar a decisão antes de iniciar a solicitação. */}
+      <AnimatePresence>
         {selectedPet && (
           <PetDetail
+            key={selectedPet.id}
             pet={selectedPet}
-            onClose={() => setSelectedPet(null)}
+            onClose={closeDetail}
             onAdopt={(pet) => {
-              setSelectedPet(null);
+              closeDetail();
               setAdoptionPet(pet);
             }}
           />
         )}
       </AnimatePresence>
 
-        {/* O quê: monta o formulário de adoção para o animal escolhido.
-          Como: usa adoptionPet como condição de montagem e fornece onClose para limpar o estado.
-          Para quê: inicia a coleta de dados necessária para a solicitação de adoção. */}
-        <AnimatePresence>
+      {/* O quê: monta o formulário de adoção para o animal escolhido.
+        Como: "Voltar para a ficha" reabre a ficha; "Fechar" apenas encerra o formulário.
+        Para quê: coletar os dados da solicitação sem perder o contexto do animal. */}
+      <AnimatePresence>
         {adoptionPet && (
           <AdoptionFormModal
+            key={adoptionPet.id ?? adoptionPet.code}
             pet={adoptionPet}
             onClose={() => setAdoptionPet(null)}
+            onBack={() => {
+              setAdoptionPet(null);
+              openPet(adoptionPet);
+            }}
           />
         )}
       </AnimatePresence>

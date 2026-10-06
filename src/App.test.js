@@ -6,20 +6,27 @@ import { act, fireEvent, render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import App from './App';
 import Hero from './components/Hero/Hero';
-import { buscarTodoAnimais } from './components/PetSectionContainer/PetSectionContainer';
+import { buscarTodoAnimais } from './services/animaisService';
+import { buscarEtapasAdocao, buscarHistorias, buscarNumeros } from './services/conteudoService';
+import { fetchAdminMe } from './services/adminService';
 
 // O quê: substitui a busca de animais por um mock preservando as demais exportações reais.
 // Como: jest.mock intercepta o módulo e requireActual mantém os componentes necessários aos testes.
 // Para quê: controlar dados remotos e manter os testes determinísticos.
-jest.mock('./components/PetSectionContainer/PetSectionContainer', () => {
-  const actual = jest.requireActual('./components/PetSectionContainer/PetSectionContainer');
+jest.mock('./services/animaisService', () => ({
+  buscarTodoAnimais: jest.fn(),
+}));
 
-  return {
-    __esModule: true,
-    ...actual,
-    buscarTodoAnimais: jest.fn(),
-  };
-});
+jest.mock('./services/conteudoService', () => ({
+  buscarNumeros: jest.fn(),
+  buscarHistorias: jest.fn(),
+  buscarEtapasAdocao: jest.fn(),
+}));
+
+jest.mock('./services/adminService', () => ({
+  fetchAdminMe: jest.fn(),
+  loginAdmin: jest.fn(),
+}));
 
 // O quê: define o animal usado nos cenários de catálogo.
 // Como: representa o formato esperado pela camada de normalização da API.
@@ -55,6 +62,14 @@ beforeAll(() => {
 // Para quê: garantir que cada cenário comece com dados previsíveis.
 beforeEach(() => {
   buscarTodoAnimais.mockResolvedValue([mockAnimal]);
+  buscarNumeros.mockResolvedValue({ animais_resgatados: 11, adocoes_realizadas: 4, aguardando_lar: 6 });
+  buscarHistorias.mockResolvedValue([
+    { id: 'h1', autor_nome: 'Fernanda A.', texto: 'Pipoca trouxe paz para a casa.', foto_url: null, animal: { id: 'a1', nome: 'Pipoca', foto_url: null } },
+  ]);
+  buscarEtapasAdocao.mockResolvedValue([
+    { ordem: 1, titulo: 'Encontre', descricao: 'Navegue pelos pets.' },
+    { ordem: 2, titulo: 'Leve para casa', descricao: 'Comece a nova vida.' },
+  ]);
 });
 
 // O quê: limpa chamadas e estados dos mocks depois de cada teste.
@@ -100,12 +115,65 @@ test('opens the adoption form from a pet detail in the catalog', async () => {
   fireEvent.click(petButton);
 
   fireEvent.click(
-    await screen.findByRole('button', { name: /Quero adotar o\(a\) Nino/i })
+    await screen.findByRole('button', { name: /Quero adotar o Nino/i })
   );
 
   expect(
     screen.getByRole('heading', { name: /Quero adotar Nino/i })
   ).toBeInTheDocument();
+});
+
+test('renders the admin login page at the admin route', () => {
+  render(
+    <MemoryRouter initialEntries={['/admin/login']}>
+      <App />
+    </MemoryRouter>
+  );
+
+  expect(
+    screen.getByRole('heading', { name: /acesso do painel/i })
+  ).toBeInTheDocument();
+  expect(screen.getByLabelText(/e-mail/i)).toBeInTheDocument();
+  expect(screen.getByLabelText(/senha/i)).toBeInTheDocument();
+});
+
+test('admin navigation and direct routes respect permissions from the backend', async () => {
+  fetchAdminMe.mockResolvedValueOnce({
+    id: 'user-volunteer',
+    nome: 'Luiza',
+    role: 'voluntariado',
+    permissions: ['volunteers:read'],
+  });
+  localStorage.setItem('patas_admin_token', 'valid-token');
+
+  render(
+    <MemoryRouter initialEntries={['/admin/doacoes']}>
+      <App />
+    </MemoryRouter>
+  );
+
+  expect(await screen.findByRole('heading', { name: /acesso sem permissão/i })).toBeInTheDocument();
+  expect(screen.getByRole('link', { name: 'Voluntários' })).toBeInTheDocument();
+  expect(screen.queryByRole('link', { name: 'Doações' })).not.toBeInTheDocument();
+  localStorage.clear();
+});
+
+test('clears an expired admin session and returns to login', async () => {
+  fetchAdminMe.mockRejectedValueOnce({ response: { status: 401 } });
+  localStorage.setItem('patas_admin_token', 'expired-token');
+  localStorage.setItem('patas_admin_user', '{"nome":"Admin"}');
+
+  render(
+    <MemoryRouter initialEntries={['/admin']}>
+      <App />
+    </MemoryRouter>
+  );
+
+  expect(
+    await screen.findByRole('heading', { name: /acesso do painel/i })
+  ).toBeInTheDocument();
+  expect(localStorage.getItem('patas_admin_token')).toBeNull();
+  expect(localStorage.getItem('patas_admin_user')).toBeNull();
 });
 
 // O quê: verifica a rotação automática da história do hero.
@@ -131,4 +199,16 @@ test('rotates the hero story automatically', () => {
   expect(screen.getByText(/Milo/i)).toBeInTheDocument();
 
   jest.useRealTimers();
+});
+
+test('home shows stories and adoption steps from the backend', async () => {
+  render(
+    <MemoryRouter initialEntries={['/']}>
+      <App />
+    </MemoryRouter>
+  );
+
+  expect(await screen.findByText(/Pipoca trouxe paz para a casa/)).toBeInTheDocument();
+  expect(screen.getByText('— Fernanda A., adotou Pipoca')).toBeInTheDocument();
+  expect(await screen.findByText('Comece a nova vida.')).toBeInTheDocument();
 });

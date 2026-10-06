@@ -3,12 +3,28 @@
 // Para quê: apresentar a proposta de adoção e o principal caminho para encontrar um animal.
 import { motion } from 'framer-motion';
 import { ArrowRight, Dog, Heart, HeartPulse, PawPrint } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import Fundo from '../../assets/fundo.png';
 import './Hero.css';
 import SvgOnda from '../SvgOnda/SvgOnda';
 
+const stories = ['Bento', 'Luna', 'Milo'];
+
 function Hero() {
+  const [activeStory, setActiveStory] = useState(stories[0]);
+
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      setActiveStory((currentStory) => {
+        const index = stories.indexOf(currentStory);
+        const nextIndex = (index + 1) % stories.length;
+        return stories[nextIndex];
+      });
+    }, 3500);
+
+    return () => window.clearInterval(timer);
+  }, []);
+
   // O quê: renderiza o hero e a seção de benefícios iniciais.
   // Como: agrupa texto, chamadas para ação, imagem e cards em seções sem estado local.
   // Para quê: comunicar o propósito da plataforma e preparar o visitante para o fluxo de adoção.
@@ -23,9 +39,8 @@ function Hero() {
             transition={{ duration: 0.6 }}
           >
             <span className="hero-kicker"><PawPrint size={15} /> Adoção responsável, todos os dias</span>
-            <h1 id="hero-title" className="hero-title">
-              Um lar muda tudo.
-              <strong>Comece por uma história.</strong>
+            <h1 id="hero-title" className="hero-title" aria-live="polite">
+              Cada focinho tem uma <strong>{activeStory}</strong>
             </h1>
 
             <p className="hero-description">
@@ -33,9 +48,12 @@ function Hero() {
             </p>
 
             <div className="hero-actions hero">
-              <Link to="/adotar" className="btn-hero-pill">
+              <a href="/adotar" className="btn-hero-pill" aria-label="Quero adotar">
+                Quero adotar
+              </a>
+              <a href="/adotar" className="btn-hero-pill">
                 Encontrar um companheiro <ArrowRight size={18} />
-              </Link>
+              </a>
               <a href="#como-funciona" className="hero-text-link">Entender o processo</a>
             </div>
 

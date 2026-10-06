@@ -1,0 +1,483 @@
+/* Painel inicial: destaque, indicadores, gráficos e agenda.
+  Cores: SOMENTE papéis --admin-* (src/admin/styles/admin.css); séries dos gráficos vêm de --admin-series-N.
+  Cartões, selos, selects e tabela reaproveitam as classes admin-*; aqui fica só o que é do painel. */
+
+.dashboard {
+  display: grid;
+  gap: 18px;
+}
+
+.dashboard-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--admin-text-muted);
+  font-size: 12px;
+}
+
+/* ---------- Grade: 3 colunas (destaque + 2/3 de indicadores, depois terços) ---------- */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.dashboard-third {
+  grid-column: span 1;
+}
+
+.dashboard-two-thirds,
+.dashboard-metrics {
+  grid-column: span 2;
+}
+
+.dashboard-full {
+  grid-column: 1 / -1;
+}
+
+/* ---------- Destaque: animais sob cuidado ---------- */
+.dashboard-highlight {
+  display: grid;
+  align-content: start;
+  gap: 14px;
+  padding: 22px;
+  border-radius: var(--admin-radius-lg);
+  background: var(--admin-sidebar-bg);
+  color: var(--admin-sidebar-text);
+  box-shadow: var(--admin-shadow-soft);
+}
+
+.dashboard-highlight-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dashboard-highlight .dashboard-highlight-head h2 {
+  color: var(--admin-sidebar-text);
+  font-size: 15px;
+}
+
+.dashboard-highlight-icon {
+  display: inline-grid;
+  width: 38px;
+  height: 38px;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--admin-sidebar-active);
+  color: var(--admin-sidebar-text);
+}
+
+.dashboard-highlight-value {
+  font-size: 48px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.dashboard-highlight-caption {
+  margin-top: -6px;
+  color: var(--admin-sidebar-muted);
+  font-size: 13px;
+}
+
+.dashboard-mini-stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.dashboard-mini-stats > div {
+  display: grid;
+  gap: 2px;
+  padding: 10px 12px;
+  border-radius: var(--admin-radius);
+  background: var(--admin-sidebar-active);
+}
+
+.dashboard-mini-stats dt {
+  color: var(--admin-sidebar-muted);
+  font-size: 11px;
+}
+
+.dashboard-mini-stats dd {
+  color: var(--admin-sidebar-text);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.dashboard-highlight-search {
+  display: flex;
+  min-height: 40px;
+  align-items: center;
+  gap: 8px;
+  padding: 0 14px;
+  border-radius: 999px;
+  background: var(--admin-surface);
+  color: var(--admin-text-muted);
+}
+
+.dashboard-highlight-search:focus-within {
+  outline: 2px solid var(--admin-action);
+  outline-offset: 2px;
+}
+
+.dashboard-highlight-search input {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: none;
+  color: var(--admin-text);
+  font: inherit;
+  font-size: 13px;
+}
+
+/* ---------- Indicadores (2 × 2) ---------- */
+.dashboard-metrics {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.dashboard-metric {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 18px 20px;
+  border: 1px solid var(--admin-border);
+  border-radius: var(--admin-radius-lg);
+  background: var(--admin-surface);
+  box-shadow: var(--admin-shadow-soft);
+}
+
+.dashboard-metric > div:first-child {
+  display: grid;
+  align-content: start;
+  gap: 4px;
+  min-width: 0;
+}
+
+.dashboard-metric-label,
+.dashboard-metric small {
+  color: var(--admin-text-muted);
+  font-size: 12px;
+}
+
+.dashboard-metric-value {
+  font-size: 26px;
+  line-height: 1.2;
+}
+
+.dashboard-metric-side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.dashboard-sparkline {
+  width: 96px;
+  height: 32px;
+  overflow: visible;
+}
+
+/* ---------- Pizza (rosca) com legenda ---------- */
+.dashboard-pie {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+}
+
+.dashboard-pie-chart {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: var(--admin-surface-sunken);
+}
+
+.dashboard-pie-chart > span {
+  position: absolute;
+  inset: 26px;
+  display: grid;
+  place-content: center;
+  border-radius: 50%;
+  background: var(--admin-surface);
+  color: var(--admin-text-muted);
+  font-size: 11px;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.dashboard-pie-chart strong {
+  display: block;
+  color: var(--admin-text);
+  font-size: 22px;
+}
+
+.dashboard-legend {
+  display: grid;
+  flex: 1 1 180px;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.dashboard-legend li {
+  display: grid;
+  grid-template-columns: 10px minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+}
+
+.dashboard-legend strong {
+  font-variant-numeric: tabular-nums;
+}
+
+.dashboard-legend small {
+  min-width: 4ch;
+  color: var(--admin-text-muted);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.dashboard-swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+}
+
+/* ---------- Medidores circulares ---------- */
+.dashboard-gauges {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.dashboard-gauge {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  text-align: center;
+}
+
+.dashboard-gauge-ring {
+  position: relative;
+  width: min(88px, 100%);
+  aspect-ratio: 1;
+  border-radius: 50%;
+}
+
+.dashboard-gauge-ring > span {
+  position: absolute;
+  inset: 10px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--admin-surface);
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.dashboard-gauge figcaption {
+  display: grid;
+  gap: 2px;
+}
+
+.dashboard-gauge figcaption strong {
+  font-size: 13px;
+}
+
+.dashboard-gauge figcaption small {
+  color: var(--admin-text-muted);
+  font-size: 11px;
+}
+
+/* ---------- Colunas mensais ---------- */
+.dashboard-columns {
+  display: grid;
+  grid-auto-columns: minmax(0, 1fr);
+  grid-auto-flow: column;
+  height: 220px;
+}
+
+.dashboard-column {
+  display: grid;
+  grid-template-rows: 16px minmax(0, 1fr) auto;
+  gap: 6px;
+  min-width: 0;
+}
+
+/* Valor centrado sobre a coluna; pode passar da largura da coluna sem ser cortado. */
+.dashboard-column small {
+  position: relative;
+  left: 50%;
+  justify-self: start;
+  align-self: end;
+  color: var(--admin-text);
+  font-size: 11px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+  white-space: nowrap;
+  transform: translateX(-50%);
+}
+
+/* Com mais de 6 meses, os valores alternam em duas linhas para não se sobreporem. */
+.dashboard-columns:has(> .dashboard-column:nth-child(7)) .dashboard-column {
+  grid-template-rows: 30px minmax(0, 1fr) auto;
+}
+
+.dashboard-columns:has(> .dashboard-column:nth-child(7)) .dashboard-column:nth-child(odd) small {
+  align-self: start;
+}
+
+.dashboard-column-track {
+  position: relative;
+  display: block;
+  border-bottom: 1px solid var(--admin-border);
+}
+
+.dashboard-column-fill {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: min(24px, 70%);
+  border-radius: 4px 4px 0 0;
+  transform: translateX(-50%);
+  transition: height 300ms ease;
+}
+
+.dashboard-column-label {
+  color: var(--admin-text-muted);
+  font-size: 11px;
+  text-align: center;
+  text-transform: capitalize;
+}
+
+/* ---------- Filtros dos cartões ---------- */
+.dashboard-chart-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.dashboard-chart-filters .admin-select {
+  width: auto;
+}
+
+/* ---------- Listas, agenda e textos de apoio ---------- */
+.dashboard-list {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.dashboard-list li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 2px 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--admin-border);
+  font-size: 13px;
+}
+
+.dashboard-list li:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.dashboard-list li span:not(.admin-badge) {
+  grid-column: 1;
+  color: var(--admin-text-muted);
+  font-size: 12px;
+}
+
+.dashboard-list .admin-badge {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  align-self: center;
+}
+
+.dashboard-subtitle {
+  margin: 20px 0 10px;
+  padding-top: 16px;
+  border-top: 1px solid var(--admin-border);
+  font-size: 14px;
+}
+
+.dashboard-agenda {
+  box-shadow: none;
+}
+
+.dashboard-empty {
+  color: var(--admin-text-muted);
+  font-size: 13px;
+}
+
+.dashboard-link {
+  color: var(--admin-brand);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* ---------- Responsivo ---------- */
+@media (max-width: 1100px) {
+  .dashboard-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-auto-flow: dense;
+  }
+
+  .dashboard-highlight,
+  .dashboard-metrics,
+  .dashboard-two-thirds {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 760px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-third {
+    grid-column: 1 / -1;
+  }
+
+  /* Muitas colunas no celular: rolagem horizontal em vez de valores sobrepostos. */
+  .dashboard-columns {
+    grid-auto-columns: minmax(48px, 1fr);
+    overflow-x: auto;
+    padding-inline: 8px;
+  }
+}
+
+@media (max-width: 560px) {
+  .dashboard-metrics {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-highlight-value {
+    font-size: 40px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dashboard-column-fill {
+    transition: none;
+  }
+}

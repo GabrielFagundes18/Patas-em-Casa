@@ -1,0 +1,542 @@
+/* Casca do painel: barra lateral, barra superior, área de conteúdo, trilha e cabeçalho de página.
+  Papéis de cor definidos em src/admin/styles/admin.css (somente tokens do :root). */
+
+.admin-layout {
+  min-height: 100vh;
+}
+
+/* ---------- Barra lateral ---------- */
+.admin-sidebar {
+  position: fixed;
+  inset: 0 auto 0 0;
+  z-index: 70;
+  display: flex;
+  width: 264px;
+  flex-direction: column;
+  gap: 24px;
+  padding: 22px 16px 18px;
+  background: var(--admin-sidebar-bg);
+  color: var(--admin-sidebar-text);
+  transition: width 200ms ease, transform 200ms ease;
+}
+
+.is-collapsed .admin-sidebar {
+  width: 88px;
+  padding-inline: 14px;
+}
+
+.admin-sidebar-brand {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 46px;
+}
+
+.is-collapsed .admin-sidebar-brand {
+  flex-direction: column;
+}
+
+.admin-brand-link {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 12px;
+  color: var(--admin-sidebar-text);
+  text-decoration: none;
+}
+
+.admin-brand-link > span:last-child {
+  display: grid;
+  min-width: 0;
+  gap: 1px;
+}
+
+.admin-brand-link strong {
+  overflow: hidden;
+  font-family: 'Fraunces', serif;
+  font-size: 17px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-brand-link small {
+  color: var(--admin-sidebar-muted);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+
+.admin-brand-mark {
+  display: grid;
+  flex: 0 0 auto;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border-radius: 14px;
+  background: var(--admin-action);
+  color: var(--admin-text);
+}
+
+.admin-collapse-button {
+  display: inline-grid;
+  flex: 0 0 auto;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border: 1px solid var(--admin-sidebar-active);
+  border-radius: 10px;
+  background: none;
+  color: var(--admin-sidebar-text);
+  cursor: pointer;
+}
+
+.admin-collapse-button:hover {
+  background: var(--admin-sidebar-active);
+}
+
+.admin-navigation {
+  display: grid;
+  align-content: start;
+  gap: 20px;
+  /* Ocupa a largura toda da barra para o marcador do item ativo não ser cortado pela rolagem. */
+  margin-inline: -16px;
+  padding-inline: 16px;
+  overflow-y: auto;
+}
+
+.admin-navigation-group {
+  display: grid;
+  gap: 4px;
+}
+
+.admin-navigation-group h2 {
+  padding: 0 12px 6px;
+  color: var(--admin-sidebar-muted);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+
+.admin-navigation-link,
+.admin-sidebar-action {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  min-height: 44px;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border: 0;
+  border-radius: 12px;
+  background: none;
+  color: var(--admin-sidebar-text);
+  font: inherit;
+  font-size: 14px;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* Fundo do item em camada própria: hover mais suave que o item ativo, sem cor fora do :root. */
+.admin-navigation-link::after,
+.admin-sidebar-action::after {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--admin-sidebar-active);
+  content: '';
+  opacity: 0;
+  transition: opacity 150ms ease;
+}
+
+.admin-navigation-link:hover::after,
+.admin-sidebar-action:hover::after {
+  opacity: 0.5;
+}
+
+.admin-navigation-link.is-active {
+  font-weight: 600;
+}
+
+.admin-navigation-link.is-active::after {
+  opacity: 1;
+}
+
+.admin-navigation-link.is-active::before {
+  position: absolute;
+  top: 10px;
+  bottom: 10px;
+  left: -16px;
+  width: 4px;
+  border-radius: 0 4px 4px 0;
+  background: var(--admin-action);
+  content: '';
+}
+
+.admin-navigation-link span,
+.admin-sidebar-action span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.is-collapsed .admin-navigation-link,
+.is-collapsed .admin-sidebar-action {
+  justify-content: center;
+  padding-inline: 0;
+}
+
+.is-collapsed .admin-navigation-link.is-active::before {
+  left: -14px;
+}
+
+.admin-navigation-empty {
+  padding: 8px 12px;
+  color: var(--admin-sidebar-muted);
+  font-size: 13px;
+}
+
+.admin-sidebar-footer {
+  display: grid;
+  gap: 4px;
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid var(--admin-sidebar-active);
+}
+
+.admin-sidebar-action.is-logout {
+  color: var(--admin-sidebar-muted);
+}
+
+.admin-sidebar :focus-visible {
+  outline-color: var(--admin-action);
+}
+
+/* ---------- Área principal e barra superior ---------- */
+.admin-main {
+  min-height: 100vh;
+  margin-left: 264px;
+  transition: margin-left 200ms ease;
+}
+
+.is-collapsed .admin-main {
+  margin-left: 88px;
+}
+
+.admin-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  display: flex;
+  min-height: 72px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 12px 32px;
+  border-bottom: 1px solid var(--admin-border);
+  background: var(--admin-surface);
+}
+
+.admin-mobile-menu-button {
+  display: none;
+}
+
+.admin-topbar-user {
+  display: flex;
+  min-width: 200px;
+  align-items: center;
+  gap: 12px;
+}
+
+.admin-avatar {
+  display: grid;
+  flex: 0 0 auto;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--admin-action);
+  color: var(--admin-text);
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.admin-user-copy {
+  display: grid;
+  gap: 1px;
+  min-width: 0;
+}
+
+.admin-user-copy strong {
+  overflow: hidden;
+  font-size: 14px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-user-copy small {
+  color: var(--admin-text-muted);
+  font-size: 12px;
+}
+
+.admin-global-search {
+  display: flex;
+  width: min(440px, 40vw);
+  min-height: 44px;
+  align-items: center;
+  gap: 10px;
+  padding: 0 16px;
+  border: 1px solid var(--admin-border);
+  border-radius: 999px;
+  background: var(--admin-surface-sunken);
+  color: var(--admin-text-muted);
+}
+
+.admin-global-search:focus-within {
+  border-color: var(--admin-brand);
+  outline: 2px solid var(--admin-focus);
+  outline-offset: 2px;
+}
+
+.admin-global-search input {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: none;
+  color: var(--admin-text);
+  font: inherit;
+  font-size: 14px;
+}
+
+.admin-global-search input::placeholder {
+  color: var(--admin-text-muted);
+}
+
+.admin-global-search kbd {
+  flex: 0 0 auto;
+  padding: 2px 7px;
+  border: 1px solid var(--admin-border);
+  border-radius: 6px;
+  background: var(--admin-surface);
+  color: var(--admin-text-muted);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+}
+
+.admin-topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.admin-notification-wrap {
+  position: relative;
+}
+
+.admin-popover {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  z-index: 60;
+  width: min(300px, calc(100vw - 32px));
+  padding: 16px 18px;
+  border: 1px solid var(--admin-border);
+  border-radius: var(--admin-radius-lg);
+  background: var(--admin-surface);
+  box-shadow: var(--admin-shadow);
+}
+
+.admin-popover p {
+  margin-top: 6px;
+  color: var(--admin-text-muted);
+  font-size: 13px;
+}
+
+/* ---------- Conteúdo ---------- */
+.admin-content-area {
+  width: min(1440px, 100%);
+  margin: 0 auto;
+  padding: 26px 32px 48px;
+}
+
+.admin-breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--admin-text-muted);
+  font-size: 12px;
+}
+
+.admin-breadcrumbs [aria-current='page'] {
+  color: var(--admin-text);
+  font-weight: 600;
+}
+
+.admin-page-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 0 24px;
+}
+
+.admin-page-heading > div {
+  display: grid;
+  gap: 4px;
+}
+
+.admin-page-heading h1 {
+  font-size: 28px;
+  line-height: 1.2;
+}
+
+.admin-page-heading p:last-child {
+  max-width: 640px;
+  color: var(--admin-text-muted);
+  font-size: 14px;
+}
+
+/* ---------- Central de ajuda ---------- */
+.admin-help-dialog {
+  width: min(460px, calc(100% - 32px));
+  gap: 18px;
+  justify-content: space-between;
+  padding: 22px;
+  border: 1px solid var(--admin-border);
+  border-radius: var(--admin-radius-lg);
+  background: var(--admin-surface);
+  color: var(--admin-text);
+  box-shadow: var(--admin-shadow);
+}
+
+.admin-help-dialog[open] {
+  display: flex;
+}
+
+.admin-help-dialog::backdrop {
+  background: var(--admin-sidebar-bg);
+  opacity: 0.7;
+}
+
+.admin-help-dialog h2 {
+  font-size: 18px;
+}
+
+.admin-help-dialog p {
+  margin-top: 6px;
+  color: var(--admin-text-muted);
+}
+
+.admin-mobile-backdrop {
+  display: none;
+}
+
+/* ---------- Tablet e celular: barra lateral vira menu deslizante ---------- */
+@media (max-width: 900px) {
+  .admin-sidebar,
+  .is-collapsed .admin-sidebar {
+    width: min(300px, calc(100vw - 52px));
+    padding-inline: 16px;
+    box-shadow: var(--admin-shadow);
+    transform: translateX(-105%);
+  }
+
+  .admin-sidebar.is-mobile-open {
+    transform: translateX(0);
+  }
+
+  .is-collapsed .admin-sidebar-brand {
+    flex-direction: row;
+  }
+
+  .is-collapsed .admin-navigation-link,
+  .is-collapsed .admin-sidebar-action {
+    justify-content: flex-start;
+    padding-inline: 12px;
+  }
+
+  .admin-main,
+  .is-collapsed .admin-main {
+    margin-left: 0;
+  }
+
+  .admin-collapse-button {
+    display: none;
+  }
+
+  .admin-mobile-menu-button {
+    display: inline-grid;
+  }
+
+  .admin-mobile-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    display: block;
+    border: 0;
+    background: var(--admin-sidebar-bg);
+    opacity: 0.6;
+  }
+
+  .admin-topbar {
+    justify-content: flex-start;
+    gap: 12px;
+    padding: 12px 20px;
+  }
+
+  .admin-topbar-user {
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+
+  .admin-global-search {
+    width: min(320px, 34vw);
+  }
+
+  .admin-content-area {
+    padding: 22px 20px 40px;
+  }
+}
+
+@media (max-width: 600px) {
+  .admin-topbar {
+    flex-wrap: wrap;
+  }
+
+  .admin-topbar-actions {
+    margin-left: auto;
+  }
+
+  .admin-global-search {
+    order: 3;
+    width: 100%;
+  }
+
+  .admin-global-search kbd {
+    display: none;
+  }
+
+  .admin-content-area {
+    padding: 18px 16px 32px;
+  }
+
+  .admin-page-heading h1 {
+    font-size: 24px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-sidebar,
+  .admin-main,
+  .admin-navigation-link::after,
+  .admin-sidebar-action::after {
+    transition: none;
+  }
+}

@@ -1,38 +1,47 @@
-// O quê: importa os estilos da seção de histórias.
-// Como: o componente usa apenas dados estáticos e marcação sem estado local.
-// Para quê: separar conteúdo de impacto social da estrutura visual.
+// O quê: importa estado, efeitos, foto com alternativa, serviço de conteúdo e estilos da seção.
+// Como: as histórias publicadas vêm do backend e são exibidas em cards.
+// Para quê: mostrar no site os depoimentos reais cadastrados pela equipe.
+import { useEffect, useState } from 'react';
+import { PetPhoto } from '../PetPhoto/PetPhoto';
+import { buscarHistorias } from '../../services/conteudoService';
 import './Stories.css';
 
-// O quê: reúne imagem, texto alternativo, depoimento e autoria de cada história.
-// Como: a lista é percorrida para gerar cards com chaves estáveis.
-// Para quê: apresentar evidências do impacto da adoção e do apadrinhamento.
-const stories = [
-  {
-    image:
-      'https://images.unsplash.com/photo-1601979031925-424e53b6caaa?q=80&w=500&auto=format&fit=crop',
-    alt: 'Cachorra adotada no novo lar',
-    quote: '"A Mel chegou assustada e hoje dorme na cama, esperando o café da manhã."',
-    author: '— Fernanda, adotou em jun/2026',
-  },
-  {
-    image:
-      'https://images.unsplash.com/photo-1450778869180-41d0601e046e?q=80&w=500&auto=format&fit=crop',
-    alt: 'Gato adotado em novo lar',
-    quote: '"O processo foi simples e a equipe acompanhou cada etapa com muito cuidado."',
-    author: '— Rafael, adotou em mai/2026',
-  },
-  {
-    image:
-      'https://images.unsplash.com/photo-1568640347023-a616a30bc3bd?q=80&w=500&auto=format&fit=crop',
-    alt: 'Cachorro brincando no quintal',
-    quote: '"Apadrinhar o Duque virou rotina. Ver as fotos dele todo mês não tem preço."',
-    author: '— Camila, madrinha desde 2025',
-  },
-];
+// O quê: adapta uma história da API para o card.
+// Como: usa a foto da história ou do animal; sem foto, PetPhoto mostra o quadro com a pata.
+// Para quê: manter o card completo mesmo quando não há imagem cadastrada.
+function toCard(story) {
+  const animalName = story.animal?.nome;
+  return {
+    id: story.id,
+    photo: {
+      image: story.foto_url || story.animal?.foto_url || '',
+      alt: animalName ? `${animalName} no novo lar` : `História contada por ${story.autor_nome}`,
+    },
+    quote: `"${story.texto}"`,
+    author: `— ${story.autor_nome}${animalName ? `, adotou ${animalName}` : ''}`,
+  };
+}
 
 function Stories() {
+  // O quê: guarda as histórias publicadas.
+  // Como: começa vazio; a seção só aparece quando houver histórias para mostrar.
+  // Para quê: não exibir depoimentos inventados nem uma seção vazia.
+  const [stories, setStories] = useState([]);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    buscarHistorias({ signal: controller.signal })
+      .then((historias) => {
+        if (!controller.signal.aborted) setStories(historias.map(toCard));
+      })
+      .catch(() => {});
+    return () => controller.abort();
+  }, []);
+
+  if (stories.length === 0) return null;
+
   // O quê: renderiza o título da seção e os cards de depoimentos.
-  // Como: map transforma cada objeto de stories em uma composição de imagem e texto.
+  // Como: map transforma cada história em uma composição de imagem e texto.
   // Para quê: mostrar resultados concretos da atuação da organização.
   return (
     <section id="historias">
@@ -43,9 +52,9 @@ function Stories() {
         </div>
         <div className="impact-grid">
           {stories.map((story) => (
-            <div className="impact-card" key={story.author}>
+            <div className="impact-card" key={story.id}>
               <div className="impact-photo">
-                <img src={story.image} alt={story.alt} loading="lazy" decoding="async" />
+                <PetPhoto pet={story.photo} loading="lazy" />
               </div>
               <div className="impact-body">
                 <p className="impact-quote">{story.quote}</p>

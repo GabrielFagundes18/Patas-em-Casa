@@ -32,6 +32,13 @@
   --shadow-main: 0 26px 60px rgba(31, 42, 36, 0.12);
   --radius-md: 14px;
   --radius-lg: 24px;
+
+  /* Aliases curtos usados por catálogo, header e vitrine */
+  --bg: var(--bg-primary);
+  --paper: var(--bg-card);
+  --ink: var(--text-main);
+  --ink-soft: var(--text-muted);
+  --line: var(--border-color);
 }
 
 /* O quê: define regras globais de reset, foco, tipografia e layout.
