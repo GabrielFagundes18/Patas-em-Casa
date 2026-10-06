@@ -24,6 +24,12 @@
   gap: 16px;
 }
 
+/* min-width: 0 impede que conteúdo largo (ex.: as 12 colunas do gráfico mensal no celular) alargue
+   a coluna inteira da grade; o gráfico rola sozinho dentro do cartão. */
+.dashboard-grid > * {
+  min-width: 0;
+}
+
 .dashboard-third {
   grid-column: span 1;
 }

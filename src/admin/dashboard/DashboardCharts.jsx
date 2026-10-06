@@ -1,5 +1,6 @@
 // Gráficos do painel em CSS/SVG puros (sem biblioteca), com alternativa em texto para leitores de tela.
 // Cores sempre via --admin-series-N (mapa em constants/statusLabels.js).
+import { useEffect, useRef } from 'react';
 import { seriesColor } from '../constants/statusLabels';
 
 // Linha pequena (sparkline) para os cartões de indicador.
@@ -75,10 +76,17 @@ export function Gauge({ label, value, detail, series = 1 }) {
 // Barras verticais por mês, com valor sobre cada barra e tabela alternativa.
 export function MonthlyBars({ rows, formatValue, caption, series = 1 }) {
   const max = Math.max(...rows.map((row) => row.value), 1);
+  const columnsRef = useRef(null);
+
+  // No celular as colunas rolam na horizontal: começa mostrando os meses mais recentes (à direita).
+  useEffect(() => {
+    const element = columnsRef.current;
+    if (element) element.scrollLeft = element.scrollWidth;
+  }, [rows]);
 
   return (
     <>
-      <div aria-hidden="true" className="dashboard-columns">
+      <div aria-hidden="true" className="dashboard-columns" ref={columnsRef}>
         {rows.map((row) => (
           <div className="dashboard-column" key={row.key}>
             <small>{row.value ? formatValue(row.value) : ''}</small>

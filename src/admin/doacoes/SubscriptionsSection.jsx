@@ -93,7 +93,9 @@ export default function SubscriptionsSection({ canCancel }) {
                         <small>{subscription.doador_email}</small>
                       </td>
                       <td data-label="Valor mensal">{formatCurrency(subscription.valor)}</td>
-                      <td data-label="Arrecadado">{formatCurrency(subscription.total_arrecadado)} ({subscription.pagamentos_confirmados} pagamentos)</td>
+                      <td data-label="Arrecadado">
+                        {formatCurrency(subscription.total_arrecadado)} ({subscription.pagamentos_confirmados} {subscription.pagamentos_confirmados === 1 ? 'pagamento' : 'pagamentos'})
+                      </td>
                       <td data-label="Situação"><span className={`admin-badge is-${subscriptionStatus.variant}`}>{subscriptionStatus.label}</span></td>
                       <td data-label="Desde">{formatDate(subscription.criado_em)}</td>
                       {canCancel ? (

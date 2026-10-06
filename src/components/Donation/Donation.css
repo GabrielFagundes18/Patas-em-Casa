@@ -140,6 +140,7 @@
 
 .pix-key-row {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 10px;
@@ -149,11 +150,14 @@
   padding: 12px 14px;
 }
 
+/* A chave ocupa a linha inteira antes de quebrar; o botão "Copiar" desce quando falta espaço. */
 .pix-key-value {
+  flex: 1 1 170px;
+  min-width: 0;
   font-family: 'IBM Plex Mono', monospace;
   font-size: 12.5px;
   color: var(--bg-primary);
-  word-break: break-all;
+  overflow-wrap: anywhere;
 }
 
 .copy-btn {

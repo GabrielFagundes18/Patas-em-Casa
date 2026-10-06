@@ -366,7 +366,7 @@ export default function AnimalsPage({ user }) {
                       <td data-label="Cuidados">{[animal.castrado && 'Castrado', animal.vacinado && 'Vacinado'].filter(Boolean).join(', ') || 'Não informados'}</td>
                       <td data-label="Ações">
                         <div className="admin-row-actions">
-                          {canWrite ? <button className="admin-button is-small" onClick={() => openEditForm(animal)} type="button">Editar</button> : null}
+                          {canWrite ? <button aria-label={`Editar ${animal.nome}`} className="admin-button is-small" onClick={() => openEditForm(animal)} type="button">Editar</button> : null}
                           {canDelete ? (
                             <button aria-label={`Excluir ${animal.nome}`} className="admin-icon-button is-small is-danger" onClick={() => removeAnimal(animal)} type="button">
                               <Trash2 aria-hidden="true" size={16} />
