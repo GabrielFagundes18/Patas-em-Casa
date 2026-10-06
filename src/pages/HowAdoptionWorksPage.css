@@ -1,0 +1,141 @@
+/* O quê: passo a passo, requisitos, documentos, dúvidas e chamada final da página "Como funciona".
+  Como: listas em grade que viram uma coluna no celular; cores dos tokens globais.
+  Para quê: leitura rápida do processo, com o próximo passo sempre à vista. */
+.how-page h1 {
+  font-size: clamp(2.4rem, 5vw, 3.4rem);
+  line-height: 1.05;
+}
+
+.how-steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin: 12px 0 44px;
+  list-style: none;
+}
+
+.how-steps li {
+  display: flex;
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  background: var(--bg-card);
+}
+
+.how-step-number {
+  display: grid;
+  flex: 0 0 auto;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--sage);
+  color: var(--bg-card);
+  font-weight: 700;
+}
+
+.how-steps h2 {
+  font-size: 1.15rem;
+}
+
+.how-steps p,
+.how-card li,
+.how-faq p,
+.how-cta p {
+  color: var(--text-muted);
+  line-height: 1.65;
+}
+
+.how-columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.how-card {
+  padding: 22px;
+  border-radius: var(--radius-lg);
+  background: var(--sage-pale);
+}
+
+.how-card h2,
+.how-faq h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  font-size: 1.3rem;
+}
+
+.how-card ul {
+  display: grid;
+  gap: 8px;
+  padding-left: 20px;
+}
+
+.how-faq {
+  margin-top: 40px;
+}
+
+.how-faq details {
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.how-faq summary {
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.how-faq summary:focus-visible,
+.how-page .btn:focus-visible {
+  outline: 2px solid var(--amber-dark);
+  outline-offset: 3px;
+}
+
+.how-faq p {
+  margin-top: 8px;
+}
+
+.how-cta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin-top: 44px;
+  padding: 28px;
+  border-radius: var(--radius-lg);
+  background: var(--sage-dark);
+}
+
+.how-cta h2 {
+  color: var(--bg-card);
+  font-size: 1.5rem;
+}
+
+.how-cta p {
+  color: var(--sage-pale);
+}
+
+.how-cta-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.how-cta .btn-secondary {
+  border-color: var(--sage-pale);
+  color: var(--bg-card);
+}
+
+.how-cta .btn-secondary:hover {
+  background: var(--sage);
+}
+
+@media (max-width: 760px) {
+  .how-columns {
+    grid-template-columns: 1fr;
+  }
+}

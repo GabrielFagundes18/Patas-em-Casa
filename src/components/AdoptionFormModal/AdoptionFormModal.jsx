@@ -11,6 +11,13 @@ import "./AdoptionFormModal.css";
 // O quê: traduz a falha do envio em mensagens exibíveis.
 // Como: usa os detalhes por campo da API quando existem e trata falta de conexão separadamente.
 // Para quê: mostrar ao interessado exatamente o que precisa corrigir.
+// O quê: data e hora atuais no formato do <input type="datetime-local"> (AAAA-MM-DDTHH:mm).
+// Para quê: impedir que o calendário ofereça datas passadas.
+function agoraLocal() {
+  const agora = new Date();
+  return new Date(agora.getTime() - agora.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+}
+
 function lerErro(error) {
   if (!error?.response) {
     return {
@@ -59,6 +66,7 @@ export function AdoptionFormModal({ pet, onClose, onBack }) {
         rotina: dados.get("rotina"),
         ambiente_seguro: dados.get("ambiente_seguro") === "on",
         ciente_pos_adocao: dados.get("ciente_pos_adocao") === "on",
+        visita_preferida_em: dados.get("visita_preferida_em") || undefined,
       });
       setPedido(resultado);
     } catch (error) {
@@ -138,6 +146,13 @@ export function AdoptionFormModal({ pet, onClose, onBack }) {
               <label>
                 Conte um pouco sobre seu lar e rotina
                 <textarea name="rotina" rows="4" minLength={10} maxLength={2000} required />
+              </label>
+
+              {/* Sugestão do adotante; a equipe confirma o horário da visita por e-mail. */}
+              <label>
+                Melhor dia e horário para a visita (opcional)
+                <input type="datetime-local" name="visita_preferida_em" min={agoraLocal()} aria-describedby={`${titleId}-visita`} />
+                <small id={`${titleId}-visita`} className="adoption-form-hint">A equipe confirma o horário com você.</small>
               </label>
 
               <div className="catalog-form-checks">

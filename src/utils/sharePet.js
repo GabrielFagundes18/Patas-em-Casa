@@ -1,10 +1,8 @@
-// O quê: monta o link público que abre a ficha de um animal no catálogo.
-// Como: usa a origem atual e o parâmetro ?pet=<id>, lido pelo catálogo ao carregar.
-// Para quê: permitir que quem recebe o link caia direto no perfil divulgado.
+// O quê: monta o link público do perfil do animal (/animais/:id).
+// Como: usa a origem atual; sem id, aponta para o catálogo.
+// Para quê: quem recebe o link cai direto na página do animal divulgado.
 export function buildPetUrl(pet) {
-  const url = new URL('/adotar', window.location.origin);
-  if (pet?.id) url.searchParams.set('pet', pet.id);
-  return url.toString();
+  return new URL(pet?.id ? `/animais/${encodeURIComponent(pet.id)}` : '/adotar', window.location.origin).toString();
 }
 
 // O quê: compartilha a ficha de um animal.

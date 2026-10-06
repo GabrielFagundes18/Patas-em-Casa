@@ -199,3 +199,12 @@
     max-width: 88%;
   }
 }
+/* O quê: atalhos da seção para a página completa e para o catálogo.
+  Como: botões globais lado a lado, quebrando linha no celular.
+  Para quê: a seção resumida da Home levar ao detalhe (requisitos e documentos) ou direto aos animais. */
+.how-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 4px;
+}

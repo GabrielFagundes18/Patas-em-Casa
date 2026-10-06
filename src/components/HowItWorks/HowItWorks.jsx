@@ -4,6 +4,7 @@
 import './HowItWorks.css';
 import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
+import { Link } from 'react-router-dom';
 
 // O quê: associa chaves de etapa a representações SVG de ícones.
 // Como: o objeto permite selecionar uma figura por nome sem condicionais repetidos.
@@ -63,6 +64,10 @@ function HowItWorks({ steps, shelterName = 'Patas em Casa' }) {
         <div className="section-head">
           <span className="eyebrow">O caminho até a adoção</span>
           <h2>Como funciona</h2>
+          <div className="how-links">
+            <Link to="/como-funciona" className="btn btn-secondary">Requisitos e passo a passo completo</Link>
+            <Link to="/adotar" className="btn btn-primary">Ver animais</Link>
+          </div>
         </div>
 
         <div className="chat-mock">

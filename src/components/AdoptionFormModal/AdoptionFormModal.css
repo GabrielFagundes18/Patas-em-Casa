@@ -42,3 +42,12 @@
   color: var(--sage-dark);
   letter-spacing: 0.04em;
 }
+
+/* O quê: texto de apoio de um campo opcional.
+  Como: fonte menor e cor secundária, logo abaixo do campo.
+  Para quê: explicar que a data é uma sugestão, sem chamar mais atenção que os campos obrigatórios. */
+.adoption-form-hint {
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  font-weight: 400;
+}

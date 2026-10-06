@@ -1,10 +1,11 @@
-// O quê: importa estilos, animação, ícones e estado local da doação.
-// Como: Framer Motion controla entrada na viewport e useState registra o resultado da cópia do PIX.
-// Para quê: apresentar necessidades da ONG e permitir copiar a chave de contribuição.
+// O quê: importa estilos, animação, ícones, a chave Pix e o link da doação online.
+// Como: Framer Motion controla a entrada na viewport; PixKey cuida da cópia da chave.
+// Para quê: apresentar necessidades da ONG e os dois caminhos de doação (Pix direto ou online).
 import './Donation.css';
 import { motion } from 'framer-motion';
-import { Check, Copy, HeartHandshake, PawPrint, Package, ShieldPlus, Users } from 'lucide-react';
-import { useState } from 'react';
+import { HeartHandshake, PawPrint, Package, ShieldPlus, Users } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { PixKey } from '../PixKey/PixKey';
 
 // O quê: lista necessidades que podem ser apoiadas pela campanha.
 // Como: cada item associa um componente de ícone a um texto e é renderizado por map.
@@ -17,25 +18,6 @@ const donationNeeds = [
 ];
 
 function Donation() {
-  // O quê: define a chave PIX e o estado de confirmação da cópia.
-  // Como: a string é usada pela Clipboard API e copied alterna o ícone, texto e rótulo acessível.
-  // Para quê: dar feedback imediato ao usuário após a ação de contribuição.
-  const pixKey = 'doacoes@patasemcasa.org';
-  const [copied, setCopied] = useState(false);
-
-  // O quê: tenta copiar a chave PIX para a área de transferência.
-  // Como: aguarda navigator.clipboard.writeText, ativa o feedback por 2 segundos e trata falhas.
-  // Para quê: reduzir erros de digitação no momento de realizar a doação.
-  const handleCopy = async () => {
-    try {
-      await navigator.clipboard.writeText(pixKey);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch {
-      setCopied(false);
-    }
-  };
-
   // O quê: renderiza a seção de apoio financeiro e voluntário.
   // Como: lista necessidades e alterna o estado do botão de cópia com renderização condicional.
   // Para quê: transformar interesse em uma ação concreta de suporte à ONG.
@@ -70,27 +52,13 @@ function Donation() {
                 </li>
               ))}
             </ul>
+
+            <Link to="/doar" className="btn btn-primary donate-online">
+              Doar online: Pix, cartão ou boleto
+            </Link>
           </div>
 
-          <div className="pix-tag">
-            <span className="tag-hole" aria-hidden="true" />
-            <span className="pix-label">Doação via PIX</span>
-
-            <div className="pix-key-row">
-              <span className="pix-key-value">{pixKey}</span>
-              <button
-                type="button"
-                className="copy-btn"
-                onClick={handleCopy}
-                aria-label={copied ? 'Chave PIX copiada' : 'Copiar chave PIX'}
-              >
-                {copied ? <Check size={14} /> : <Copy size={14} />}
-                <span>{copied ? 'Copiada' : 'Copiar'}</span>
-              </button>
-            </div>
-
-            <p className="pix-note">Chave e-mail · CNPJ 00.000.000/0001-00</p>
-          </div>
+          <PixKey />
         </div>
       </motion.div>
     </section>

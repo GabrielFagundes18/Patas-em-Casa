@@ -85,6 +85,11 @@ export function mapPetFromApi(petApi) {
       .join(' • '),
     tags: petApi?.tags ?? tags,
     descricao: petApi?.descricao?.trim() ?? '',
+    temperament: Array.isArray(petApi?.temperamento) ? petApi.temperamento : [],
+    // Galeria: a foto principal vem primeiro (a API já ordena); sem galeria, usa a foto do cadastro.
+    photos: Array.isArray(petApi?.fotos) && petApi.fotos.length > 0
+      ? petApi.fotos.map((foto) => ({ id: foto.id, url: foto.url }))
+      : petApi?.foto_url ? [{ id: 'principal', url: petApi.foto_url }] : [],
   };
 }
 

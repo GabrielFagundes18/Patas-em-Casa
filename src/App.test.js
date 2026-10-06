@@ -123,7 +123,7 @@ test('opens the adoption form from a pet detail in the catalog', async () => {
   ).toBeInTheDocument();
 });
 
-test('renders the admin login page at the admin route', () => {
+test('renders the admin login page at the admin route', async () => {
   render(
     <MemoryRouter initialEntries={['/admin/login']}>
       <App />
@@ -131,7 +131,7 @@ test('renders the admin login page at the admin route', () => {
   );
 
   expect(
-    screen.getByRole('heading', { name: /acesso do painel/i })
+    await screen.findByRole('heading', { name: /acesso do painel/i })
   ).toBeInTheDocument();
   expect(screen.getByLabelText(/e-mail/i)).toBeInTheDocument();
   expect(screen.getByLabelText(/senha/i)).toBeInTheDocument();
@@ -211,4 +211,27 @@ test('home shows stories and adoption steps from the backend', async () => {
   expect(await screen.findByText(/Pipoca trouxe paz para a casa/)).toBeInTheDocument();
   expect(screen.getByText('— Fernanda A., adotou Pipoca')).toBeInTheDocument();
   expect(await screen.findByText('Comece a nova vida.')).toBeInTheDocument();
+});
+
+test('unknown addresses show the 404 page instead of the home', () => {
+  render(
+    <MemoryRouter initialEntries={['/pagina-que-nao-existe']}>
+      <App />
+    </MemoryRouter>
+  );
+
+  expect(screen.getByRole('heading', { name: 'Página não encontrada' })).toBeInTheDocument();
+});
+
+test('admin routes without a session go to login, keeping the requested page', async () => {
+  localStorage.removeItem('patas_admin_token');
+  render(
+    <MemoryRouter initialEntries={['/admin/historias']}>
+      <App />
+    </MemoryRouter>
+  );
+
+  expect(await screen.findByRole('heading', { name: /acesso do painel/i })).toBeInTheDocument();
+  expect(screen.getByRole('link', { name: 'Esqueci minha senha' })).toHaveAttribute('href', '/admin/esqueci-senha');
+  expect(fetchAdminMe).not.toHaveBeenCalled();
 });

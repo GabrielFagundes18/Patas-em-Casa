@@ -1,0 +1,191 @@
+/* O quê: formulário de doação online, alternativa Pix e páginas de retorno/cancelamento.
+  Como: escolhas como "pílulas" (radio estilizado), duas colunas no desktop e uma no celular.
+  Para quê: doar em poucos toques, deixando claro valor, tipo e que o pagamento é no Mercado Pago. */
+.donation-page h1 {
+  font-size: clamp(2.2rem, 4.5vw, 3.2rem);
+  line-height: 1.06;
+}
+
+.donation-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: 40px;
+  align-items: start;
+}
+
+.donation-form {
+  display: grid;
+  gap: 18px;
+  max-width: 620px;
+}
+
+.donation-inline-form {
+  width: 100%;
+  max-width: 420px;
+}
+
+.donation-type,
+.donation-values {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+}
+
+.donation-type legend,
+.donation-values legend {
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.donation-type label,
+.donation-values label {
+  display: inline-flex;
+  min-height: 46px;
+  align-items: center;
+  padding: 10px 18px;
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
+  background: var(--bg-card);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.donation-type label.is-selected,
+.donation-values label.is-selected {
+  border-color: var(--sage);
+  background: var(--sage-pale);
+  color: var(--sage-dark);
+}
+
+/* O rádio fica invisível, mas continua acessível pelo teclado; o foco aparece na pílula. */
+.donation-type input,
+.donation-values input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.donation-type label:focus-within,
+.donation-values label:focus-within,
+.donation-field input:focus-visible,
+.donation-page .btn:focus-visible {
+  outline: 2px solid var(--amber-dark);
+  outline-offset: 2px;
+}
+
+.donation-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.donation-field {
+  display: grid;
+  gap: 6px;
+  font-weight: 600;
+}
+
+.donation-field input {
+  width: 100%;
+  min-height: 46px;
+  padding: 10px 14px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background: var(--bg-card);
+  color: var(--text-main);
+  font: inherit;
+  font-weight: 400;
+}
+
+.donation-honeypot {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+}
+
+.donation-submit {
+  justify-self: start;
+}
+
+.donation-submit:disabled {
+  opacity: 0.7;
+  cursor: progress;
+}
+
+.donation-secure {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+.donation-secure svg {
+  flex: 0 0 auto;
+  margin-top: 3px;
+}
+
+.donation-error {
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
+  background: rgba(178, 97, 76, 0.1);
+  color: #8f4433;
+  line-height: 1.5;
+}
+
+.donation-error p {
+  font-weight: 600;
+}
+
+.donation-error ul {
+  margin-top: 6px;
+  padding-left: 18px;
+}
+
+.donation-aside {
+  display: grid;
+  gap: 12px;
+  padding: 24px;
+  border-radius: var(--radius-lg);
+  background: var(--sage-pale);
+}
+
+.donation-aside h2 {
+  font-size: 1.4rem;
+}
+
+.donation-aside p {
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.donation-aside .pix-tag {
+  margin: 0;
+}
+
+.donation-aside-note a {
+  color: var(--sage-dark);
+  font-weight: 600;
+}
+
+@media (max-width: 900px) {
+  .donation-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  .donation-fields {
+    grid-template-columns: 1fr;
+  }
+
+  .donation-submit {
+    justify-self: stretch;
+    justify-content: center;
+  }
+}

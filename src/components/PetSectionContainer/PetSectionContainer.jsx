@@ -97,7 +97,7 @@ export function PetSection({ pets = [] }) {
                       className={`pet-btn primary ${pet.urgent ? 'urgent-btn' : ''}`}
                       whileHover={{ y: -1, transition: { duration: 0.18 } }}
                       whileTap={{ scale: 0.98 }}
-                      onClick={() => navigate(pet.id ? `/adotar?pet=${encodeURIComponent(pet.id)}` : '/adotar')}
+                      onClick={() => navigate(pet.id ? `/animais/${encodeURIComponent(pet.id)}` : '/adotar')}
                       aria-label={`Ver ficha de ${pet.name}`}
                     >
                       Ver ficha

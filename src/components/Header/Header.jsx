@@ -7,12 +7,20 @@ import { Link } from 'react-router-dom';
 // O quê: define os destinos da navegação principal.
 // Como: cada item combina href e label para ser iterado em desktop e mobile.
 // Para quê: manter os menus sincronizados e evitar duplicação de conteúdo.
+// Endereços absolutos: o menu também aparece nas páginas internas (perfil, doação, "Como funciona").
 const navLinks = [
-  { href: '#adotar', label: 'Adotar' },
-  { href: '#como-funciona', label: 'Como funciona' },
-  { href: '#ajudar', label: 'Ajudar' },
-  { href: '#historias', label: 'Histórias' },
+  { href: '/#adotar', label: 'Adotar' },
+  { href: '/como-funciona', label: 'Como funciona' },
+  { href: '/doar', label: 'Doar' },
+  { href: '/#historias', label: 'Histórias' },
 ];
+
+// Âncoras da Home usam <a> (o navegador rola até a seção); páginas usam Link (sem recarregar).
+function NavItem({ link, onClick }) {
+  return link.href.startsWith('/#')
+    ? <a href={link.href} className="nav-link" onClick={onClick}>{link.label}</a>
+    : <Link to={link.href} className="nav-link" onClick={onClick}>{link.label}</Link>;
+}
 
 function Header() {
   // O quê: armazena se o drawer mobile está aberto e se a página foi rolada.
@@ -40,16 +48,12 @@ function Header() {
   return (
     <header className={scrolled ? 'scrolled' : ''}>
       <nav className="nav">
-        <a href="#main-content" className="logo" aria-label="Ir para o início">
+        <Link to="/" className="logo" aria-label="Patas em Casa — página inicial">
           Patas em Casa
-        </a>
+        </Link>
 
         <div className="nav-links" aria-label="Navegação principal">
-          {navLinks.map((link) => (
-            <a key={link.href} href={link.href} className="nav-link">
-              {link.label}
-            </a>
-          ))}
+          {navLinks.map((link) => <NavItem key={link.href} link={link} />)}
         </div>
 
         <div className="nav-actions">
@@ -73,16 +77,7 @@ function Header() {
       </nav>
 
       <div className={`mobile-drawer ${isOpen ? 'open' : ''}`} id="mobileDrawer">
-        {navLinks.map((link) => (
-          <a
-            key={link.href}
-            href={link.href}
-            className="nav-link"
-            onClick={() => setIsOpen(false)}
-          >
-            {link.label}
-          </a>
-        ))}
+        {navLinks.map((link) => <NavItem key={link.href} link={link} onClick={() => setIsOpen(false)} />)}
         <Link to="/adotar" className="mobile-cta" onClick={() => setIsOpen(false)}>
           Quero adotar →
         </Link>

@@ -13,18 +13,7 @@ import Donation from '../components/Donation/Donation';
 import Stories from '../components/Stories/Stories';
 import Footer from '../components/Footer/Footer';
 import PetSectionContainer from '../components/PetSectionContainer/PetSectionContainer';
-import { buscarEtapasAdocao } from '../services/conteudoService';
-
-// O quê: descreve as etapas apresentadas na seção “Como funciona”.
-// Como: cada objeto reúne título, explicação e chave de ícone consumidos pelo componente filho.
-// Para quê: mantém conteúdo e renderização separados, facilitando a evolução do fluxo de adoção.
-// Etapas padrão usadas só se o backend estiver indisponível; o conteúdo oficial vem de adoption_steps.
-const defaultSteps = [
-  { title: 'Encontre', description: 'Navegue pelos pets disponíveis perto de você.', icon: 'search' },
-  { title: 'Conecte-se', description: 'Converse com o abrigo e conheça a história dele.', icon: 'heart' },
-  { title: 'Cadastre-se', description: 'Preencha um formulário rápido de responsabilidade.', icon: 'clipboard' },
-  { title: 'Leve para casa', description: 'Combine a retirada e comece a nova vida juntos.', icon: 'home' },
-];
+import { useAdoptionSteps } from '../hooks/useAdoptionSteps';
 
 function LandingPage() {
   // O quê: declara o progresso de rolagem e a visibilidade da barra correspondente.
@@ -32,21 +21,17 @@ function LandingPage() {
   // Para quê: dá ao visitante uma indicação visual de quanto falta para concluir a página.
   const [scrollProgress, setScrollProgress] = useState(0);
   const [showProgressBar, setShowProgressBar] = useState(false);
-  const [steps, setSteps] = useState(defaultSteps);
+  const steps = useAdoptionSteps();
 
-  // O quê: carrega as etapas de adoção cadastradas no banco.
-  // Como: substitui as etapas padrão quando a API responde com ao menos uma etapa ativa.
-  // Para quê: a seção "Como funciona" refletir o que a equipe mantém no sistema.
+  // O quê: rola até a seção do endereço (ex.: /#adotar vindo de outra página).
+  // Como: espera o primeiro desenho da Home e chama scrollIntoView no elemento do hash.
+  // Para quê: os links do menu funcionam a partir de qualquer página do site.
   useEffect(() => {
-    const controller = new AbortController();
-    buscarEtapasAdocao({ signal: controller.signal })
-      .then((etapas) => {
-        if (!controller.signal.aborted && etapas.length > 0) {
-          setSteps(etapas.map((etapa) => ({ title: etapa.titulo, description: etapa.descricao })));
-        }
-      })
-      .catch(() => {});
-    return () => controller.abort();
+    if (!window.location.hash) return undefined;
+    const frame = window.requestAnimationFrame(() => {
+      document.getElementById(decodeURIComponent(window.location.hash.slice(1)))?.scrollIntoView();
+    });
+    return () => window.cancelAnimationFrame(frame);
   }, []);
 
   // O quê: prepara a animação de revelação das seções ao entrarem na viewport.

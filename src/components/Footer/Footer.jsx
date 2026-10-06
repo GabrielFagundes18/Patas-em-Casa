@@ -3,26 +3,27 @@
 // Para quê: estruturar informações institucionais, navegação e contato com pouca duplicação.
 import './Footer.css';
 import { Clock3, Heart, Mail, MapPin, PawPrint, Phone, Send } from 'lucide-react';
+import { ORGANIZACAO } from '../../constants/organizacao';
 
 // O quê: define links e dados de contato exibidos no rodapé.
 // Como: arrays de objetos são percorridos com map e usam chaves estáveis para cada item.
 // Para quê: separar conteúdo configurável da marcação visual.
 const navLinks = [
-  { label: 'Adotar', href: '#adotar' },
-  { label: 'Como funciona', href: '#como-funciona' },
-  { label: 'Ajudar', href: '#ajudar' },
-  { label: 'Histórias', href: '#historias' },
+  { label: 'Adotar', href: '/adotar' },
+  { label: 'Como funciona', href: '/como-funciona' },
+  { label: 'Doar', href: '/doar' },
+  { label: 'Histórias', href: '/#historias' },
 ];
 
 const contactItems = [
-  { icon: Mail, label: 'contato@patasemcasa.org' },
-  { icon: Phone, label: '(11) 4000-0000' },
-  { icon: MapPin, label: 'Rua das Acácias, 120 — SP' },
+  { icon: Mail, label: ORGANIZACAO.email },
+  { icon: Phone, label: ORGANIZACAO.telefone },
+  { icon: MapPin, label: ORGANIZACAO.endereco },
 ];
 
 const visitItems = [
-  { icon: Clock3, label: 'Ter–Sáb: 9h às 17h' },
-  { icon: Send, label: '@patasemcasa' },
+  { icon: Clock3, label: ORGANIZACAO.horario },
+  { icon: Send, label: ORGANIZACAO.instagram },
 ];
 
 function Footer() {

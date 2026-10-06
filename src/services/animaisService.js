@@ -25,3 +25,11 @@ export async function buscarTodoAnimais({ signal } = {}) {
 
   return animais;
 }
+
+// O quê: busca o perfil público de um animal (com galeria de fotos e temperamento).
+// Como: GET /api/v1/public/animals/:id; 404 (não existe) e 410 (já adotado) sobem como erro do axios.
+// Para quê: alimentar a página /animais/:id, que mostra cada caso com uma mensagem própria.
+export async function buscarAnimal(id, { signal } = {}) {
+  const resposta = await api.get(`/api/v1/public/animals/${encodeURIComponent(id)}`, { signal });
+  return resposta.data.data;
+}

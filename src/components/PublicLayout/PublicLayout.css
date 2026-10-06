@@ -1,0 +1,29 @@
+/* O quê: base das páginas internas do site.
+  Como: altura mínima para o rodapé não subir em páginas curtas; seções mais compactas que na Home.
+  Para quê: manter o mesmo ritmo visual da Home sem repetir estilos em cada página. */
+.public-page {
+  min-height: 60vh;
+}
+
+.public-page > section:first-child {
+  padding-top: 48px;
+}
+
+.public-state {
+  display: grid;
+  justify-items: start;
+  gap: 14px;
+  max-width: 560px;
+  padding: 48px 0 24px;
+}
+
+.public-state p {
+  color: var(--text-muted);
+  line-height: 1.7;
+}
+
+.public-state .public-state-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
