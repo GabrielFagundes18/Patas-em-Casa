@@ -6,7 +6,7 @@ import { Link, useParams } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import { CalendarDays, Heart, PawPrint, Share2, Stethoscope, Syringe } from 'lucide-react';
 import { PublicLayout } from '../../shared/components/layout/PublicLayout/PublicLayout';
-import { AdoptionFormModal } from '../../components/AdoptionFormModal/AdoptionFormModal';
+import { AdoptionFormModal } from '../adoption/AdoptionFormModal/AdoptionFormModal';
 import { buscarAnimal } from '../../api/animals';
 import { mapPetFromApi } from '../../shared/utils/petMapper';
 import { sharePet } from '../../shared/utils/sharePet';

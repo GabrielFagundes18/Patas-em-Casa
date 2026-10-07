@@ -7,9 +7,9 @@ import { useEffect, useId, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowLeft, ArrowRight, Check, Copy, PawPrint, X } from "lucide-react";
-import { useDialog } from "../../shared/hooks/useDialog";
-import { enviarPedidoAdocao } from "../../api/adoptions";
-import { artigo } from "../../shared/utils/petText";
+import { useDialog } from "../../../shared/hooks/useDialog";
+import { enviarPedidoAdocao } from "../../../api/adoptions";
+import { artigo } from "../../../shared/utils/petText";
 import "./AdoptionFormModal.css";
 
 const STEPS = ["Seus dados", "Seu lar e rotina", "Visita e envio"];

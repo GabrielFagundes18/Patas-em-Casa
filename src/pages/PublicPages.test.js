@@ -5,7 +5,7 @@ import AnimalProfilePage from '../features/animal-profile/AnimalProfilePage';
 import CancelSubscriptionPage from './CancelSubscriptionPage';
 import DonationPage, { redirectTo } from './DonationPage';
 import DonationReturnPage from './DonationReturnPage';
-import HowAdoptionWorksPage from './HowAdoptionWorksPage';
+import HowAdoptionWorksPage from '../features/adoption/HowAdoptionWorksPage';
 import { buscarAnimal } from '../api/animals';
 import { buscarEtapasAdocao } from '../api/content';
 import { cancelarDoacaoMensal, consultarDoacao, iniciarDoacao, pedirLinkCancelamento } from '../api/donations';

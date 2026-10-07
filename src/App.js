@@ -10,7 +10,7 @@ import AnimalProfilePage from './features/animal-profile/AnimalProfilePage';
 import CancelSubscriptionPage from './pages/CancelSubscriptionPage';
 import DonationPage from './pages/DonationPage';
 import DonationReturnPage from './pages/DonationReturnPage';
-import HowAdoptionWorksPage from './pages/HowAdoptionWorksPage';
+import HowAdoptionWorksPage from './features/adoption/HowAdoptionWorksPage';
 import NotFoundPage from './pages/NotFoundPage';
 import { Route, Routes } from 'react-router-dom';
 

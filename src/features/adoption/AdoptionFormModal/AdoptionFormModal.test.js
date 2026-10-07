@@ -2,9 +2,9 @@ import '@testing-library/jest-dom';
 import { fireEvent, render, screen, within } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { AdoptionFormModal, composeRotina, formatPhone } from './AdoptionFormModal';
-import { enviarPedidoAdocao } from '../../api/adoptions';
+import { enviarPedidoAdocao } from '../../../api/adoptions';
 
-jest.mock('../../api/adoptions', () => ({
+jest.mock('../../../api/adoptions', () => ({
   enviarPedidoAdocao: jest.fn(),
 }));
 
