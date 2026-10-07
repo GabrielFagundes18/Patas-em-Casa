@@ -5,7 +5,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { PublicLayout } from '../components/PublicLayout/PublicLayout';
-import { consultarDoacao } from '../services/doacaoService';
+import { consultarDoacao } from '../api/donations';
 
 const MAX_ATTEMPTS = 6;
 export const POLL_INTERVAL_MS = { value: 3000 };

@@ -1,4 +1,4 @@
-import api from '../../services/api';
+import api from '../../api/client';
 
 export async function listTeam(params) {
   const response = await api.get('/api/v1/users', { params });

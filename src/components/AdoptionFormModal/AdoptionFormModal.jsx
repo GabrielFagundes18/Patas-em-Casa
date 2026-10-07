@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowLeft, ArrowRight, Check, Copy, PawPrint, X } from "lucide-react";
 import { useDialog } from "../../hooks/useDialog";
-import { enviarPedidoAdocao } from "../../services/adocaoService";
+import { enviarPedidoAdocao } from "../../api/adoptions";
 import { artigo } from "../../utils/petText";
 import "./AdoptionFormModal.css";
 

@@ -6,13 +6,13 @@ import CancelSubscriptionPage from './CancelSubscriptionPage';
 import DonationPage, { redirectTo } from './DonationPage';
 import DonationReturnPage from './DonationReturnPage';
 import HowAdoptionWorksPage from './HowAdoptionWorksPage';
-import { buscarAnimal } from '../services/animaisService';
-import { buscarEtapasAdocao } from '../services/conteudoService';
-import { cancelarDoacaoMensal, consultarDoacao, iniciarDoacao, pedirLinkCancelamento } from '../services/doacaoService';
+import { buscarAnimal } from '../api/animals';
+import { buscarEtapasAdocao } from '../api/content';
+import { cancelarDoacaoMensal, consultarDoacao, iniciarDoacao, pedirLinkCancelamento } from '../api/donations';
 
-jest.mock('../services/animaisService', () => ({ buscarAnimal: jest.fn() }));
-jest.mock('../services/conteudoService', () => ({ buscarEtapasAdocao: jest.fn() }));
-jest.mock('../services/doacaoService', () => ({
+jest.mock('../api/animals', () => ({ buscarAnimal: jest.fn() }));
+jest.mock('../api/content', () => ({ buscarEtapasAdocao: jest.fn() }));
+jest.mock('../api/donations', () => ({
   iniciarDoacao: jest.fn(),
   consultarDoacao: jest.fn(),
   pedirLinkCancelamento: jest.fn(),

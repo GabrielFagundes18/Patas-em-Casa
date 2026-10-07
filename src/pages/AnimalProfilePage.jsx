@@ -7,7 +7,7 @@ import { AnimatePresence } from 'framer-motion';
 import { CalendarDays, Heart, PawPrint, Share2, Stethoscope, Syringe } from 'lucide-react';
 import { PublicLayout } from '../components/PublicLayout/PublicLayout';
 import { AdoptionFormModal } from '../components/AdoptionFormModal/AdoptionFormModal';
-import { buscarAnimal } from '../services/animaisService';
+import { buscarAnimal } from '../api/animals';
 import { mapPetFromApi } from '../utils/petMapper';
 import { sharePet } from '../utils/sharePet';
 import './AnimalProfilePage.css';

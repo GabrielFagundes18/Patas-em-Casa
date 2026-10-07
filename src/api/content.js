@@ -1,7 +1,7 @@
 // O quê: importa o cliente HTTP centralizado.
 // Como: reutiliza a instância Axios configurada em services/api.js.
 // Para quê: buscar o conteúdo público da home (números, histórias e etapas) no backend.
-import api from './api';
+import api from './client';
 
 // O quê: busca os números agregados exibidos na faixa de impacto.
 // Como: GET /api/v1/public/stats devolve apenas contagens, sem dados pessoais.

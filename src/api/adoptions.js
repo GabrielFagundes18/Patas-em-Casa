@@ -1,7 +1,7 @@
 // O quê: importa o cliente HTTP centralizado.
 // Como: reutiliza a instância Axios com baseURL definida em services/api.js.
 // Para quê: manter o envio do pedido desacoplado do componente de formulário.
-import api from './api';
+import api from './client';
 
 // O quê: envia uma solicitação de pré-adoção para o backend.
 // Como: faz POST em /api/v1/public/adoption-requests e devolve o conteúdo de data (protocolo, status e animal).

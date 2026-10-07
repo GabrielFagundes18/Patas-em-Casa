@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
-import { loginAdmin } from '../../services/adminService';
+import { loginAdmin } from './authService';
 import AdminAuthShell from './AdminAuthShell';
 
 export default function AdminLoginPage() {

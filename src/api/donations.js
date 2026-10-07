@@ -1,4 +1,4 @@
-import api from './api';
+import api from './client';
 
 // O quê: inicia a doação online (única ou mensal) no Mercado Pago.
 // Como: POST /api/v1/public/donations/checkout devolve a URL do checkout para redirecionar o doador.

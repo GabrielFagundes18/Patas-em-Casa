@@ -1,7 +1,7 @@
 // O quê: importa o cliente HTTP centralizado.
 // Como: o módulo reutiliza a instância Axios com baseURL e cabeçalhos definidos na camada de infraestrutura.
 // Para quê: mantém o serviço focado no contrato de animais, sem conhecer detalhes do transporte.
-import api from './api';
+import api from './client';
 
 const PAGE_SIZE = 100;
 

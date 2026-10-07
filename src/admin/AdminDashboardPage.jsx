@@ -10,8 +10,8 @@ import TeamPage from './equipe/TeamPage';
 import VolunteersPage from './voluntarios/VolunteersPage';
 import AdoptersPage from './adotantes/AdoptersPage';
 import StoriesPage from './historias/StoriesPage';
-import { fetchAdminMe, logoutAdmin } from '../services/adminService';
-import { clearSession, SESSION_EXPIRED_EVENT } from '../services/api';
+import { fetchAdminMe, logoutAdmin } from './security/authService';
+import { clearSession, SESSION_EXPIRED_EVENT } from '../api/client';
 
 // Cada aba do menu abre a tela do módulo correspondente, com dados da API.
 function renderSection(activeTab, user) {

@@ -3,7 +3,7 @@
 // Para quê: recuperar o acesso sem depender do administrador. A resposta é sempre a mesma (não revela contas).
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { requestPasswordReset } from '../../services/adminService';
+import { requestPasswordReset } from './authService';
 import AdminAuthShell from './AdminAuthShell';
 
 export default function AdminForgotPasswordPage() {

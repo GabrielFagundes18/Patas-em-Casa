@@ -6,25 +6,25 @@ import { fireEvent, render, screen, waitFor, within } from '@testing-library/rea
 import { MemoryRouter } from 'react-router-dom';
 import App from '../App';
 import { anosDeAtuacao } from '../components/StatsStrip/StatsStrip';
-import { buscarTodoAnimais } from '../services/animaisService';
-import { buscarEtapasAdocao, buscarHistorias, buscarNumeros } from '../services/conteudoService';
-import { enviarInscricaoVoluntario } from '../services/voluntariadoService';
+import { buscarTodoAnimais } from '../api/animals';
+import { buscarEtapasAdocao, buscarHistorias, buscarNumeros } from '../api/content';
+import { enviarInscricaoVoluntario } from '../api/volunteers';
 
-jest.mock('../services/animaisService', () => ({
+jest.mock('../api/animals', () => ({
   buscarTodoAnimais: jest.fn(),
 }));
 
-jest.mock('../services/conteudoService', () => ({
+jest.mock('../api/content', () => ({
   buscarNumeros: jest.fn(),
   buscarHistorias: jest.fn(),
   buscarEtapasAdocao: jest.fn(),
 }));
 
-jest.mock('../services/voluntariadoService', () => ({
+jest.mock('../api/volunteers', () => ({
   enviarInscricaoVoluntario: jest.fn(),
 }));
 
-jest.mock('../services/doacaoService', () => ({
+jest.mock('../api/donations', () => ({
   iniciarDoacao: jest.fn(),
 }));
 

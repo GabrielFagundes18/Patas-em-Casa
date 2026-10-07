@@ -4,7 +4,7 @@
 // Para quê: transformar quem não pode adotar nem doar em ajuda concreta.
 import { useState } from 'react';
 import { VOLUNTEER_AREAS } from '../../constants/voluntariado';
-import { enviarInscricaoVoluntario } from '../../services/voluntariadoService';
+import { enviarInscricaoVoluntario } from '../../api/volunteers';
 import './VolunteerSignup.css';
 
 const EMPTY_FORM = { nome: '', email: '', telefone: '', areas: [] };

@@ -4,7 +4,7 @@
 import { useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { PublicLayout } from '../components/PublicLayout/PublicLayout';
-import { cancelarDoacaoMensal, pedirLinkCancelamento } from '../services/doacaoService';
+import { cancelarDoacaoMensal, pedirLinkCancelamento } from '../api/donations';
 import './DonationPage.css';
 
 const currency = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });

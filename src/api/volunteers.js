@@ -1,4 +1,4 @@
-import api from './api';
+import api from './client';
 
 // O quê: envia a inscrição pública de voluntário.
 // Como: POST /api/v1/public/volunteers com nome, e-mail, telefone, áreas e o campo-isca "website"

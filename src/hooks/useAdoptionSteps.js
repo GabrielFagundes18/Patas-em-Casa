@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { buscarEtapasAdocao } from '../services/conteudoService';
+import { buscarEtapasAdocao } from '../api/content';
 
 // O quê: etapas padrão, usadas enquanto a API responde ou se ela estiver indisponível.
 export const defaultSteps = [

@@ -4,9 +4,9 @@ import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import AdminForgotPasswordPage from './AdminForgotPasswordPage';
 import AdminLoginPage from './AdminLoginPage';
 import AdminResetPasswordPage from './AdminResetPasswordPage';
-import { requestPasswordReset, resetPassword } from '../../services/adminService';
+import { requestPasswordReset, resetPassword } from './authService';
 
-jest.mock('../../services/adminService', () => ({ loginAdmin: jest.fn(), requestPasswordReset: jest.fn(), resetPassword: jest.fn() }));
+jest.mock('./authService', () => ({ loginAdmin: jest.fn(), requestPasswordReset: jest.fn(), resetPassword: jest.fn() }));
 
 function renderAt(path) {
   return render(

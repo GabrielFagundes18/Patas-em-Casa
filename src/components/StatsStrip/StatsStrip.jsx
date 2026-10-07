@@ -4,7 +4,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion, useInView, useReducedMotion } from 'framer-motion';
 import './StatsStrip.css';
-import { buscarNumeros } from '../../services/conteudoService';
+import { buscarNumeros } from '../../api/content';
 import { ORGANIZACAO } from '../../constants/organizacao';
 
 export function anosDeAtuacao(hoje = new Date()) {

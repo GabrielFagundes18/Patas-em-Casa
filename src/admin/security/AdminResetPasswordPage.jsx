@@ -3,7 +3,7 @@
 // Para quê: concluir o "esqueci minha senha" e o convite de novos membros da equipe.
 import { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { resetPassword } from '../../services/adminService';
+import { resetPassword } from './authService';
 import AdminAuthShell from './AdminAuthShell';
 
 export default function AdminResetPasswordPage() {

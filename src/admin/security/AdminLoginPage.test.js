@@ -2,9 +2,9 @@ import '@testing-library/jest-dom';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import AdminLoginPage from './AdminLoginPage';
-import { loginAdmin } from '../../services/adminService';
+import { loginAdmin } from './authService';
 
-jest.mock('../../services/adminService', () => ({
+jest.mock('./authService', () => ({
   loginAdmin: jest.fn(),
 }));
 

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { buscarTodoAnimais } from '../services/animaisService';
+import { buscarTodoAnimais } from '../api/animals';
 import { mapPetsFromApi } from '../utils/petMapper';
 
 // O quê: animais disponíveis para adoção, já no formato dos componentes.
