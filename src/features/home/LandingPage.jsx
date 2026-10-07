@@ -11,7 +11,7 @@ import PetSection from './sections/PetSection/PetSection';
 import HowItWorks from './sections/HowItWorks/HowItWorks';
 import Donation from './sections/Donation/Donation';
 import Stories from './sections/Stories/Stories';
-import VolunteerSignup from '../../components/VolunteerSignup/VolunteerSignup';
+import VolunteerSignup from '../volunteers/VolunteerSignup/VolunteerSignup';
 import Footer from '../../shared/components/layout/Footer/Footer';
 import { useAdoptionSteps } from '../../shared/hooks/useAdoptionSteps';
 import { useAvailableAnimals } from '../../shared/hooks/useAvailableAnimals';
