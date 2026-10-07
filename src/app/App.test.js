@@ -5,26 +5,26 @@ import '@testing-library/jest-dom';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import App from './App';
-import Hero from '../features/home/sections/Hero/Hero';
-import { buscarAnimal, buscarTodoAnimais } from '../api/animals';
-import { buscarEtapasAdocao, buscarHistorias, buscarNumeros } from '../api/content';
-import { fetchAdminMe } from '../admin/security/authService';
+import Hero from 'features/home/sections/Hero/Hero';
+import { buscarAnimal, buscarTodoAnimais } from 'api/animals';
+import { buscarEtapasAdocao, buscarHistorias, buscarNumeros } from 'api/content';
+import { fetchAdminMe } from 'admin/security/authService';
 
 // O quê: substitui a busca de animais por um mock preservando as demais exportações reais.
 // Como: jest.mock intercepta o módulo e requireActual mantém os componentes necessários aos testes.
 // Para quê: controlar dados remotos e manter os testes determinísticos.
-jest.mock('../api/animals', () => ({
+jest.mock('api/animals', () => ({
   buscarTodoAnimais: jest.fn(),
   buscarAnimal: jest.fn(),
 }));
 
-jest.mock('../api/content', () => ({
+jest.mock('api/content', () => ({
   buscarNumeros: jest.fn(),
   buscarHistorias: jest.fn(),
   buscarEtapasAdocao: jest.fn(),
 }));
 
-jest.mock('../admin/security/authService', () => ({
+jest.mock('admin/security/authService', () => ({
   fetchAdminMe: jest.fn(),
   loginAdmin: jest.fn(),
 }));

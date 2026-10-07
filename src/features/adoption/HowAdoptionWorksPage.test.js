@@ -2,9 +2,9 @@ import '@testing-library/jest-dom';
 import { render, screen, within } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import HowAdoptionWorksPage from './HowAdoptionWorksPage';
-import { buscarEtapasAdocao } from '../../api/content';
+import { buscarEtapasAdocao } from 'api/content';
 
-jest.mock('../../api/content', () => ({ buscarEtapasAdocao: jest.fn() }));
+jest.mock('api/content', () => ({ buscarEtapasAdocao: jest.fn() }));
 
 function renderAt(path, element, route) {
   return render(

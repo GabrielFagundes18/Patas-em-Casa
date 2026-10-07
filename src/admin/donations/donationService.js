@@ -1,4 +1,4 @@
-import api from '../../api/client';
+import api from 'api/client';
 
 export async function listDonations(params) {
   const response = await api.get('/api/v1/donations', { params });

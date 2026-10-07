@@ -1,4 +1,4 @@
-import api from '../../api/client';
+import api from 'api/client';
 
 function mapAdminUser(user = {}) {
   return {

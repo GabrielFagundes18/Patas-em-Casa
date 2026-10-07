@@ -10,8 +10,8 @@ import {
   sexOptions,
   sizeOptions,
   speciesOptions,
-} from "../catalogOptions";
-import { useDialog } from "../../../shared/hooks/useDialog";
+} from "features/catalog/catalogOptions";
+import { useDialog } from "shared/hooks/useDialog";
 import { FilterGroup } from "./FilterGroup";
 import "./FilterDrawer.css";
 

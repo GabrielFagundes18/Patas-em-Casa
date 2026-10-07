@@ -12,9 +12,9 @@ import {
   formatDateTime,
   priorityMap,
   statusOf,
-} from '../constants/statusLabels';
-import ListState from '../shared/ListState';
-import { errorMessage } from '../shared/usePaginatedList';
+} from 'admin/constants/statusLabels';
+import ListState from 'admin/shared/ListState';
+import { errorMessage } from 'admin/shared/usePaginatedList';
 import './DashboardOverview.css';
 
 const REFRESH_INTERVAL_MS = 60000;

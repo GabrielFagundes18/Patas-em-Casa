@@ -6,7 +6,7 @@ import './Donation.css';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CircleCheck, Heart, ShieldCheck } from 'lucide-react';
-import { PixKey } from '../../../../shared/components/PixKey/PixKey';
+import { PixKey } from 'shared/components/PixKey/PixKey';
 
 // Necessidades permanentes de qualquer abrigo; campanhas específicas ficam fora da Home para não envelhecer.
 const NEEDS = ['Ração e alimentação', 'Vacinas e vermífugos', 'Castrações', 'Consultas e remédios'];

@@ -4,9 +4,9 @@ import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import CancelSubscriptionPage from './CancelSubscriptionPage';
 import DonationPage, { redirectTo } from './DonationPage';
 import DonationReturnPage from './DonationReturnPage';
-import { cancelarDoacaoMensal, consultarDoacao, iniciarDoacao, pedirLinkCancelamento } from '../../api/donations';
+import { cancelarDoacaoMensal, consultarDoacao, iniciarDoacao, pedirLinkCancelamento } from 'api/donations';
 
-jest.mock('../../api/donations', () => ({
+jest.mock('api/donations', () => ({
   iniciarDoacao: jest.fn(),
   consultarDoacao: jest.fn(),
   pedirLinkCancelamento: jest.fn(),

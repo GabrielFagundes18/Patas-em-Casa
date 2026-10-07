@@ -2,9 +2,9 @@
 // Como: autor, texto, foto (URL) e animal adotado opcional; "publicar no site" decide se aparece na Home.
 // Para quê: mostrar finais felizes no site, só depois de revisados pela equipe.
 import { useEffect, useState } from 'react';
-import { listAnimals } from '../animals/animalService';
-import AdminDialog from '../shared/AdminDialog';
-import FormError from '../shared/FormError';
+import { listAnimals } from 'admin/animals/animalService';
+import AdminDialog from 'admin/shared/AdminDialog';
+import FormError from 'admin/shared/FormError';
 
 export default function StoryFormDialog({ story, onClose, onSubmit }) {
   const editing = Boolean(story);

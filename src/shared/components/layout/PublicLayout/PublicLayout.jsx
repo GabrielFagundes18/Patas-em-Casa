@@ -1,8 +1,8 @@
 // O quê: moldura das páginas internas do site (cabeçalho, conteúdo e rodapé).
 // Como: o conteúdo fica em <main id="main-content">, alvo do link "pular para o conteúdo".
 // Para quê: perfil do animal, "Como funciona", doação e 404 com a mesma navegação da Home.
-import Header from '../Header/Header';
-import Footer from '../Footer/Footer';
+import Header from 'shared/components/layout/Header/Header';
+import Footer from 'shared/components/layout/Footer/Footer';
 import './PublicLayout.css';
 
 export function PublicLayout({ children, className = '' }) {

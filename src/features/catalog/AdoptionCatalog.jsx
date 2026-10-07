@@ -15,11 +15,11 @@ import {
   SlidersHorizontal,
   X,
 } from "lucide-react";
-import { AnimalCard } from "../../shared/components/AnimalCard/AnimalCard";
+import { AnimalCard } from "shared/components/AnimalCard/AnimalCard";
 import { FilterDrawer } from "./FilterDrawer/FilterDrawer";
-import { PublicLayout } from "../../shared/components/layout/PublicLayout/PublicLayout";
+import { PublicLayout } from "shared/components/layout/PublicLayout/PublicLayout";
 import { PAGE_SIZE, SORT_OPTIONS } from "./catalogOptions";
-import { useAvailableAnimals } from "../../shared/hooks/useAvailableAnimals";
+import { useAvailableAnimals } from "shared/hooks/useAvailableAnimals";
 import { useFavorites } from "./useFavorites";
 import {
   QUICK_FILTERS,
@@ -34,7 +34,7 @@ import {
   toggleFilter,
   writeCatalogParams,
 } from "./catalogFilters";
-import { sharePet } from "../../shared/utils/sharePet";
+import { sharePet } from "shared/utils/sharePet";
 import "./AdoptionCatalog.css";
 
 const NOTICE_DURATION_MS = 4000;

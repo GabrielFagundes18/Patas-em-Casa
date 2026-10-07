@@ -4,9 +4,9 @@
 // Para quê: o administrador gerenciar quem acessa o painel e com qual perfil.
 import { useState } from 'react';
 import { KeyRound } from 'lucide-react';
-import { roleLabels } from '../constants/adminNavigation';
-import AdminDialog from '../shared/AdminDialog';
-import FormError from '../shared/FormError';
+import { roleLabels } from 'admin/constants/adminNavigation';
+import AdminDialog from 'admin/shared/AdminDialog';
+import FormError from 'admin/shared/FormError';
 
 const PASSWORD_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789';
 

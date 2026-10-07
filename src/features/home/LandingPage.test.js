@@ -4,27 +4,27 @@
 import '@testing-library/jest-dom';
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import App from '../../app/App';
+import App from 'app/App';
 import { anosDeAtuacao } from './sections/StatsStrip/StatsStrip';
-import { buscarTodoAnimais } from '../../api/animals';
-import { buscarEtapasAdocao, buscarHistorias, buscarNumeros } from '../../api/content';
-import { enviarInscricaoVoluntario } from '../../api/volunteers';
+import { buscarTodoAnimais } from 'api/animals';
+import { buscarEtapasAdocao, buscarHistorias, buscarNumeros } from 'api/content';
+import { enviarInscricaoVoluntario } from 'api/volunteers';
 
-jest.mock('../../api/animals', () => ({
+jest.mock('api/animals', () => ({
   buscarTodoAnimais: jest.fn(),
 }));
 
-jest.mock('../../api/content', () => ({
+jest.mock('api/content', () => ({
   buscarNumeros: jest.fn(),
   buscarHistorias: jest.fn(),
   buscarEtapasAdocao: jest.fn(),
 }));
 
-jest.mock('../../api/volunteers', () => ({
+jest.mock('api/volunteers', () => ({
   enviarInscricaoVoluntario: jest.fn(),
 }));
 
-jest.mock('../../api/donations', () => ({
+jest.mock('api/donations', () => ({
   iniciarDoacao: jest.fn(),
 }));
 

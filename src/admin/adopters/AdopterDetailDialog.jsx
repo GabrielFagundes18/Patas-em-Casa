@@ -12,12 +12,12 @@ import {
   formatCurrency,
   formatDate,
   statusOf,
-} from '../constants/statusLabels';
-import AdminDialog from '../shared/AdminDialog';
-import FormError from '../shared/FormError';
-import ListState from '../shared/ListState';
-import { downloadFile } from '../shared/downloadFile';
-import { errorMessage } from '../shared/usePaginatedList';
+} from 'admin/constants/statusLabels';
+import AdminDialog from 'admin/shared/AdminDialog';
+import FormError from 'admin/shared/FormError';
+import ListState from 'admin/shared/ListState';
+import { downloadFile } from 'admin/shared/downloadFile';
+import { errorMessage } from 'admin/shared/usePaginatedList';
 
 const LGPD_ACTIONS = {
   anonimizar: {

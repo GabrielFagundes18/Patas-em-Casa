@@ -6,12 +6,12 @@ import { KeyRound, Mail, Pencil, UserPlus } from 'lucide-react';
 import { createTeamMember, listTeam, resetTeamMemberPassword, sendTeamInvite, updateTeamMember } from './teamService';
 import TeamMemberDialog from './TeamMemberDialog';
 import ResetPasswordDialog from './ResetPasswordDialog';
-import { roleLabels } from '../constants/adminNavigation';
-import { formatDate } from '../constants/statusLabels';
-import ListState from '../shared/ListState';
-import Pagination from '../shared/Pagination';
-import SearchField from '../shared/SearchField';
-import { errorMessage, usePaginatedList } from '../shared/usePaginatedList';
+import { roleLabels } from 'admin/constants/adminNavigation';
+import { formatDate } from 'admin/constants/statusLabels';
+import ListState from 'admin/shared/ListState';
+import Pagination from 'admin/shared/Pagination';
+import SearchField from 'admin/shared/SearchField';
+import { errorMessage, usePaginatedList } from 'admin/shared/usePaginatedList';
 
 function inviteNotice(nome, convite) {
   if (!convite) return null;

@@ -5,9 +5,9 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight, Heart, PawPrint } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import Fundo from '../../../../assets/fundo.webp';
-import { ORGANIZACAO } from '../../../../shared/constants/organization';
-import { artigo } from '../../../../shared/utils/petText';
+import Fundo from 'assets/fundo.webp';
+import { ORGANIZACAO } from 'shared/constants/organization';
+import { artigo } from 'shared/utils/petText';
 import './Hero.css';
 
 export function pickHighlight(pets) {

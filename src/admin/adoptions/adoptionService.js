@@ -1,4 +1,4 @@
-import api from '../../api/client';
+import api from 'api/client';
 
 export async function listAdoptionRequests(params) {
   const response = await api.get('/api/v1/adoption-requests', { params });

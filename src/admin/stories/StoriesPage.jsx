@@ -6,10 +6,10 @@ import { useState } from 'react';
 import { Pencil, Plus, Trash2 } from 'lucide-react';
 import { createStory, deleteStory, listStories, updateStory } from './storyService';
 import StoryFormDialog from './StoryFormDialog';
-import { formatDate } from '../constants/statusLabels';
-import ListState from '../shared/ListState';
-import Pagination from '../shared/Pagination';
-import { errorMessage, usePaginatedList } from '../shared/usePaginatedList';
+import { formatDate } from 'admin/constants/statusLabels';
+import ListState from 'admin/shared/ListState';
+import Pagination from 'admin/shared/Pagination';
+import { errorMessage, usePaginatedList } from 'admin/shared/usePaginatedList';
 
 export default function StoriesPage({ user }) {
   const { items, meta, loading, error, filters, setFilter, setPage, reload } = usePaginatedList(

@@ -4,17 +4,17 @@
 // Ordem: topo, números, vitrine, como funciona, doação, histórias, voluntariado.
 import { useEffect, useState } from 'react';
 import { MotionConfig } from 'framer-motion';
-import Header from '../../shared/components/layout/Header/Header';
+import Header from 'shared/components/layout/Header/Header';
 import Hero from './sections/Hero/Hero';
 import StatsStrip from './sections/StatsStrip/StatsStrip';
 import PetSection from './sections/PetSection/PetSection';
 import HowItWorks from './sections/HowItWorks/HowItWorks';
 import Donation from './sections/Donation/Donation';
 import Stories from './sections/Stories/Stories';
-import VolunteerSignup from '../volunteers/VolunteerSignup/VolunteerSignup';
-import Footer from '../../shared/components/layout/Footer/Footer';
-import { useAdoptionSteps } from '../../shared/hooks/useAdoptionSteps';
-import { useAvailableAnimals } from '../../shared/hooks/useAvailableAnimals';
+import VolunteerSignup from 'features/volunteers/VolunteerSignup/VolunteerSignup';
+import Footer from 'shared/components/layout/Footer/Footer';
+import { useAdoptionSteps } from 'shared/hooks/useAdoptionSteps';
+import { useAvailableAnimals } from 'shared/hooks/useAvailableAnimals';
 import './LandingPage.css';
 
 function LandingPage() {

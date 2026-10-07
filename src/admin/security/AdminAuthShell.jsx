@@ -2,7 +2,7 @@
 // Como: painel lateral com a marca e um cartão com título, descrição e o formulário passado em children.
 // Para quê: as três telas têm a mesma aparência sem repetir a estrutura.
 import { PawPrint } from 'lucide-react';
-import '../styles/admin.css';
+import 'admin/styles/admin.css';
 import './AdminLoginPage.css';
 
 export default function AdminAuthShell({ titleId, eyebrow = 'Área administrativa', title, description, children }) {

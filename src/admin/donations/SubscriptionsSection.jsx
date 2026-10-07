@@ -4,10 +4,10 @@
 // Para quê: acompanhar quem doa todo mês e atender pedidos de cancelamento.
 import { useCallback, useEffect, useState } from 'react';
 import { cancelSubscription, listSubscriptions } from './donationService';
-import { formatCurrency, formatDate, statusOf, subscriptionStatusMap } from '../constants/statusLabels';
-import ListState from '../shared/ListState';
-import Pagination from '../shared/Pagination';
-import { errorMessage } from '../shared/usePaginatedList';
+import { formatCurrency, formatDate, statusOf, subscriptionStatusMap } from 'admin/constants/statusLabels';
+import ListState from 'admin/shared/ListState';
+import Pagination from 'admin/shared/Pagination';
+import { errorMessage } from 'admin/shared/usePaginatedList';
 
 export default function SubscriptionsSection({ canCancel }) {
   const [page, setPage] = useState(1);

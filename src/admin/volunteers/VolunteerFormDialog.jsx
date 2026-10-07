@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { volunteerAreaLabels, volunteerStatusMap } from '../constants/statusLabels';
-import AdminDialog from '../shared/AdminDialog';
-import FormError from '../shared/FormError';
+import { volunteerAreaLabels, volunteerStatusMap } from 'admin/constants/statusLabels';
+import AdminDialog from 'admin/shared/AdminDialog';
+import FormError from 'admin/shared/FormError';
 
 function today() {
   const now = new Date();

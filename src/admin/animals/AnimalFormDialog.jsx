@@ -2,8 +2,8 @@
 // Como: formulário único; na edição aparece a galeria de fotos (AnimalPhotos), que salva na hora.
 // Para quê: manter a ficha completa (dados, saúde, temperamento e fotos) usada pelo site.
 import { useState } from 'react';
-import { animalSizes, animalSpecies, animalStatusMap, animalSexes } from '../constants/animalOptions';
-import AdminDialog from '../shared/AdminDialog';
+import { animalSizes, animalSpecies, animalStatusMap, animalSexes } from 'admin/constants/animalOptions';
+import AdminDialog from 'admin/shared/AdminDialog';
 import AnimalPhotos from './AnimalPhotos';
 
 function createForm(animal) {

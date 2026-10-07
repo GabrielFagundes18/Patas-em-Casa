@@ -3,7 +3,7 @@
 // Para quê: doação direta sem intermediários: cartão na página de doação, linha na seção de doação da Home.
 import { useState } from 'react';
 import { Check, Copy } from 'lucide-react';
-import { ORGANIZACAO } from '../../constants/organization';
+import { ORGANIZACAO } from 'shared/constants/organization';
 import './PixKey.css';
 
 export function PixKey({ variant = 'card' }) {

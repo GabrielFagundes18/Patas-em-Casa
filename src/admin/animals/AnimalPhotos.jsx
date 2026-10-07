@@ -4,7 +4,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { ImagePlus, Star, Trash2 } from 'lucide-react';
 import { deleteAnimalPhoto, getAnimal, setMainAnimalPhoto, uploadAnimalPhotos } from './animalService';
-import FormError from '../shared/FormError';
+import FormError from 'admin/shared/FormError';
 
 const MAX_PHOTOS = 12;
 

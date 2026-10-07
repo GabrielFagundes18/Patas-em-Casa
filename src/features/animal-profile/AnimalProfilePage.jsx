@@ -5,11 +5,11 @@ import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import { CalendarDays, Heart, PawPrint, Share2, Stethoscope, Syringe } from 'lucide-react';
-import { PublicLayout } from '../../shared/components/layout/PublicLayout/PublicLayout';
-import { AdoptionFormModal } from '../adoption/AdoptionFormModal/AdoptionFormModal';
-import { buscarAnimal } from '../../api/animals';
-import { mapPetFromApi } from '../../shared/utils/petMapper';
-import { sharePet } from '../../shared/utils/sharePet';
+import { PublicLayout } from 'shared/components/layout/PublicLayout/PublicLayout';
+import { AdoptionFormModal } from 'features/adoption/AdoptionFormModal/AdoptionFormModal';
+import { buscarAnimal } from 'api/animals';
+import { mapPetFromApi } from 'shared/utils/petMapper';
+import { sharePet } from 'shared/utils/sharePet';
 import './AnimalProfilePage.css';
 
 const entryDateFormatter = new Intl.DateTimeFormat('pt-BR', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });

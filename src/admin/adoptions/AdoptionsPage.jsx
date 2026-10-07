@@ -2,11 +2,11 @@ import { useState } from 'react';
 import { Eye } from 'lucide-react';
 import { listAdoptionRequests } from './adoptionService';
 import AdoptionDetailDialog from './AdoptionDetailDialog';
-import { adoptionStatusMap, formatDate, priorityMap, statusOf } from '../constants/statusLabels';
-import ListState from '../shared/ListState';
-import Pagination from '../shared/Pagination';
-import SearchField from '../shared/SearchField';
-import { usePaginatedList } from '../shared/usePaginatedList';
+import { adoptionStatusMap, formatDate, priorityMap, statusOf } from 'admin/constants/statusLabels';
+import ListState from 'admin/shared/ListState';
+import Pagination from 'admin/shared/Pagination';
+import SearchField from 'admin/shared/SearchField';
+import { usePaginatedList } from 'admin/shared/usePaginatedList';
 
 export default function AdoptionsPage({ user }) {
   const { items, meta, loading, error, filters, setFilter, setPage, reload } = usePaginatedList(

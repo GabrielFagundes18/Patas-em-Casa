@@ -1,4 +1,4 @@
-import api from '../../api/client';
+import api from 'api/client';
 
 // Contatos chegam mascarados; o valor completo só via revealAdopter (registrado na auditoria).
 export async function listAdopters(params) {

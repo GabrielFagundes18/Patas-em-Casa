@@ -2,8 +2,8 @@
 // Como: senha digitada ou gerada; a API aplica a política de senha e encerra todas as sessões da pessoa.
 // Para quê: devolver o acesso quando o e-mail não está disponível (sem SMTP, por exemplo).
 import { useState } from 'react';
-import AdminDialog from '../shared/AdminDialog';
-import FormError from '../shared/FormError';
+import AdminDialog from 'admin/shared/AdminDialog';
+import FormError from 'admin/shared/FormError';
 import { PasswordField } from './TeamMemberDialog';
 
 export default function ResetPasswordDialog({ member, onClose, onSubmit }) {

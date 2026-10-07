@@ -2,9 +2,9 @@
 // Como: doador, tipo, valor, método, situação e data; doações online (Mercado Pago) não passam por aqui.
 // Para quê: as contas da ONG refletirem todas as entradas, não só as do site.
 import { useState } from 'react';
-import { donationMethodLabels, donationStatusMap, donationTypeLabels } from '../constants/statusLabels';
-import AdminDialog from '../shared/AdminDialog';
-import FormError from '../shared/FormError';
+import { donationMethodLabels, donationStatusMap, donationTypeLabels } from 'admin/constants/statusLabels';
+import AdminDialog from 'admin/shared/AdminDialog';
+import FormError from 'admin/shared/FormError';
 
 const MANUAL_METHODS = ['pix', 'cartao', 'boleto', 'transferencia'];
 const MANUAL_STATUSES = ['confirmada', 'pendente', 'cancelada'];

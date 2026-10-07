@@ -8,7 +8,7 @@ import {
   animalSpecies,
   animalStatusMap,
   animalSexes,
-} from '../constants/animalOptions';
+} from 'admin/constants/animalOptions';
 import {
   createAnimal,
   deleteAnimal,

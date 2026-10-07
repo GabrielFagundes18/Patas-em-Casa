@@ -11,7 +11,7 @@ import {
   toggleFilter,
   writeCatalogParams,
 } from './catalogFilters';
-import { mapPetsFromApi } from '../../shared/utils/petMapper';
+import { mapPetsFromApi } from 'shared/utils/petMapper';
 
 const pets = mapPetsFromApi([
   { id: 'a', nome: 'Nino', especie: 'cachorro', raca: 'Vira-lata', sexo: 'macho', idade_anos: '2.0', porte: 'medio', status: 'urgente', data_entrada: '2026-08-02', castrado: true, vacinado: true, temperamento: ['Brincalhão', 'convive com gatos'] },

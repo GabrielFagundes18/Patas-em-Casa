@@ -2,9 +2,9 @@ import '@testing-library/jest-dom';
 import { fireEvent, render, screen, within } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import AnimalProfilePage from './AnimalProfilePage';
-import { buscarAnimal } from '../../api/animals';
+import { buscarAnimal } from 'api/animals';
 
-jest.mock('../../api/animals', () => ({ buscarAnimal: jest.fn() }));
+jest.mock('api/animals', () => ({ buscarAnimal: jest.fn() }));
 
 const nino = {
   id: '11111111-1111-4111-8111-111111111111',

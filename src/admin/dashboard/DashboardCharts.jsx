@@ -1,7 +1,7 @@
 // Gráficos do painel em CSS/SVG puros (sem biblioteca), com alternativa em texto para leitores de tela.
 // Cores sempre via --admin-series-N (mapa em constants/statusLabels.js).
 import { useEffect, useRef } from 'react';
-import { seriesColor } from '../constants/statusLabels';
+import { seriesColor } from 'admin/constants/statusLabels';
 
 // Linha pequena (sparkline) para os cartões de indicador.
 export function Sparkline({ values, series = 1 }) {

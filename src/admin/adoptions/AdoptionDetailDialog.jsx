@@ -15,7 +15,7 @@ import {
   revealAdoptionRequest,
   scheduleAdoptionRequest,
 } from './adoptionService';
-import { animalSpecies, animalStatusMap } from '../constants/animalOptions';
+import { animalSpecies, animalStatusMap } from 'admin/constants/animalOptions';
 import {
   adoptionStatusMap,
   appointmentStatusMap,
@@ -24,11 +24,11 @@ import {
   formatDateTime,
   priorityMap,
   statusOf,
-} from '../constants/statusLabels';
-import AdminDialog from '../shared/AdminDialog';
-import FormError from '../shared/FormError';
-import ListState from '../shared/ListState';
-import { errorMessage } from '../shared/usePaginatedList';
+} from 'admin/constants/statusLabels';
+import AdminDialog from 'admin/shared/AdminDialog';
+import FormError from 'admin/shared/FormError';
+import ListState from 'admin/shared/ListState';
+import { errorMessage } from 'admin/shared/usePaginatedList';
 
 const OPEN_STATUSES = ['novo', 'em_analise', 'visita_agendada'];
 const APPOINTMENT_TYPES = {

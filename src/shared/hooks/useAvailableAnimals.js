@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
-import { buscarTodoAnimais } from '../../api/animals';
-import { mapPetsFromApi } from '../utils/petMapper';
+import { buscarTodoAnimais } from 'api/animals';
+import { mapPetsFromApi } from 'shared/utils/petMapper';
 
 // O quê: animais disponíveis para adoção, já no formato dos componentes.
 // Como: uma busca ao montar; a requisição é cancelada se a página sair antes da resposta.

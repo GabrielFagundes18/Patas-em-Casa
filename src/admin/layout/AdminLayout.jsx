@@ -19,8 +19,8 @@ import {
   X,
   Heart,
 } from 'lucide-react';
-import { adminNavigationGroups, adminSections, roleLabels } from '../constants/adminNavigation';
-import '../styles/admin.css';
+import { adminNavigationGroups, adminSections, roleLabels } from 'admin/constants/adminNavigation';
+import 'admin/styles/admin.css';
 import './AdminLayout.css';
 
 const navigationIcons = {

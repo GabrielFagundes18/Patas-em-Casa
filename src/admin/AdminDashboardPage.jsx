@@ -11,7 +11,7 @@ import VolunteersPage from './volunteers/VolunteersPage';
 import AdoptersPage from './adopters/AdoptersPage';
 import StoriesPage from './stories/StoriesPage';
 import { fetchAdminMe, logoutAdmin } from './security/authService';
-import { clearSession, SESSION_EXPIRED_EVENT } from '../api/client';
+import { clearSession, SESSION_EXPIRED_EVENT } from 'api/client';
 
 // Cada aba do menu abre a tela do módulo correspondente, com dados da API.
 function renderSection(activeTab, user) {

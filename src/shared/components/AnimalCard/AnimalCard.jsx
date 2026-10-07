@@ -5,8 +5,8 @@
 import './AnimalCard.css';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Clock3, Heart, Share2 } from 'lucide-react';
-import { PetPhoto } from '../PetPhoto/PetPhoto';
-import { artigo, concordar, especieDoAnimal, tempoDeEspera } from '../../utils/petText';
+import { PetPhoto } from 'shared/components/PetPhoto/PetPhoto';
+import { artigo, concordar, especieDoAnimal, tempoDeEspera } from 'shared/utils/petText';
 
 const MAX_TRAITS = 3;
 

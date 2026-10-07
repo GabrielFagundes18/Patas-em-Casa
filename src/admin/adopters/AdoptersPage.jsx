@@ -5,12 +5,12 @@ import { useState } from 'react';
 import { Download, Eye } from 'lucide-react';
 import { exportAdoptersCsv, listAdopters } from './adopterService';
 import AdopterDetailDialog from './AdopterDetailDialog';
-import { adopterStatusMap, formatDate, statusOf } from '../constants/statusLabels';
-import ListState from '../shared/ListState';
-import Pagination from '../shared/Pagination';
-import SearchField from '../shared/SearchField';
-import { downloadFile } from '../shared/downloadFile';
-import { errorMessage, usePaginatedList } from '../shared/usePaginatedList';
+import { adopterStatusMap, formatDate, statusOf } from 'admin/constants/statusLabels';
+import ListState from 'admin/shared/ListState';
+import Pagination from 'admin/shared/Pagination';
+import SearchField from 'admin/shared/SearchField';
+import { downloadFile } from 'admin/shared/downloadFile';
+import { errorMessage, usePaginatedList } from 'admin/shared/usePaginatedList';
 
 const BRAZILIAN_STATES = [
   'AC', 'AL', 'AM', 'AP', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MG', 'MS', 'MT', 'PA',

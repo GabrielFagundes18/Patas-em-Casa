@@ -5,9 +5,9 @@
 import { useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { HeartHandshake, Lock } from 'lucide-react';
-import { PublicLayout } from '../../shared/components/layout/PublicLayout/PublicLayout';
-import { PixKey } from '../../shared/components/PixKey/PixKey';
-import { iniciarDoacao } from '../../api/donations';
+import { PublicLayout } from 'shared/components/layout/PublicLayout/PublicLayout';
+import { PixKey } from 'shared/components/PixKey/PixKey';
+import { iniciarDoacao } from 'api/donations';
 import './DonationPage.css';
 
 const SUGGESTED_VALUES = [25, 50, 100, 200];
