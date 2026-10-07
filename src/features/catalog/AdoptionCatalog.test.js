@@ -2,9 +2,9 @@ import '@testing-library/jest-dom';
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { MemoryRouter, Route, Routes, useLocation, useParams } from 'react-router-dom';
 import AdoptionCatalog from './AdoptionCatalog';
-import { buscarTodoAnimais } from '../api/animals';
+import { buscarTodoAnimais } from '../../api/animals';
 
-jest.mock('../api/animals', () => ({
+jest.mock('../../api/animals', () => ({
   buscarTodoAnimais: jest.fn(),
 }));
 

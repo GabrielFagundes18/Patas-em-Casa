@@ -10,9 +10,9 @@ import {
   sexOptions,
   sizeOptions,
   speciesOptions,
-} from "../../constants/catalogOptions";
-import { useDialog } from "../../shared/hooks/useDialog";
-import { FilterGroup } from "../FilterGroup/FilterGroup";
+} from "../catalogOptions";
+import { useDialog } from "../../../shared/hooks/useDialog";
+import { FilterGroup } from "./FilterGroup";
 import "./FilterDrawer.css";
 
 export function FilterDrawer({ filters, setFilters, onClose, onClear, resultCount, temperamentOptions = [] }) {

@@ -1,4 +1,4 @@
-import { AGE_GROUPS, SORT_OPTIONS } from '../constants/catalogOptions';
+import { AGE_GROUPS, SORT_OPTIONS } from './catalogOptions';
 
 // O quê: cria uma nova instância do estado inicial dos filtros.
 // Como: recria as listas a cada chamada, evitando compartilhar arrays entre resets.
