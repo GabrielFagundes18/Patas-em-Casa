@@ -3,10 +3,10 @@ import { fireEvent, render, screen, waitFor, within } from '@testing-library/rea
 import { MemoryRouter } from 'react-router-dom';
 import StoriesPage from './StoriesPage';
 import { createStory, listStories, updateStory } from './storyService';
-import { listAnimals } from '../animais/animalService';
+import { listAnimals } from '../animals/animalService';
 
 jest.mock('./storyService', () => ({ listStories: jest.fn(), createStory: jest.fn(), updateStory: jest.fn(), deleteStory: jest.fn() }));
-jest.mock('../animais/animalService', () => ({ listAnimals: jest.fn() }));
+jest.mock('../animals/animalService', () => ({ listAnimals: jest.fn() }));
 
 const editor = { permissions: ['stories:read', 'stories:create', 'stories:update', 'stories:delete'] };
 const story = { id: 's1', autor_nome: 'Fernanda A.', texto: 'Pipoca trouxe paz para a casa.', publicado: false, criado_em: '2026-09-01T12:00:00.000Z', animal_nome: 'Pipoca' };

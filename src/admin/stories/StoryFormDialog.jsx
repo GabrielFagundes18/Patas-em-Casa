@@ -2,7 +2,7 @@
 // Como: autor, texto, foto (URL) e animal adotado opcional; "publicar no site" decide se aparece na Home.
 // Para quê: mostrar finais felizes no site, só depois de revisados pela equipe.
 import { useEffect, useState } from 'react';
-import { listAnimals } from '../animais/animalService';
+import { listAnimals } from '../animals/animalService';
 import AdminDialog from '../shared/AdminDialog';
 import FormError from '../shared/FormError';
 
