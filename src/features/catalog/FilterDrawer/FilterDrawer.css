@@ -14,7 +14,7 @@
 
 /* O quê: camada de fundo, painel lateral e grupos de opções da gaveta de filtros.
   Como: position fixed acima da página; opções em pílulas com estado pressionado.
-  Para quê: editar filtros sem perder a posição no catálogo. (Vinham de AdoptionCatalog.css.) */
+  Para quê: editar filtros sem perder a posição no catálogo. (Vinham do CSS do catálogo.) */
 .drawer-overlay {
   position: fixed;
   inset: 0;

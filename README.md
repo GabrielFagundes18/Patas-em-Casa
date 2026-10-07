@@ -2,7 +2,7 @@
 
 Frontend React para divulgação institucional de uma ONG de proteção animal e encaminhamento de interessados ao processo de adoção responsável.
 
-> **Estado atual:** este repositório contém apenas o frontend. Não há backend, banco de dados, autenticação, painel administrativo nem persistência das solicitações de adoção.
+> **Estado atual:** este repositório contém o frontend (site público e painel administrativo). A API fica no repositório `Patas-em-Casa-BackEnd` (Node.js + Express + PostgreSQL); o endereço dela vem de `REACT_APP_API_URL`.
 
 ## Sumário
 
@@ -97,11 +97,12 @@ Os requisitos abaixo foram inferidos exclusivamente do código existente.
 
 | Regra | Implementação |
 | --- | --- |
-| O catálogo começa sem filtros, com idade máxima de 15 anos e todas as cidades. | `src/pages/AdoptionCatalog.jsx`, `initialFilters` |
-| A idade do pet deve ser menor ou igual ao limite selecionado. | `matchesAge` em `src/pages/AdoptionCatalog.jsx` |
-| Espécie, porte e sexo aceitam múltiplas seleções. | `AdoptionCatalog.jsx` e `FilterDrawer.jsx` |
-| Castração e vacinação são condições cumulativas. | `matchesCare` em `AdoptionCatalog.jsx` |
-| O filtro urgente retorna apenas pets urgentes. | `matchesStatus` em `AdoptionCatalog.jsx` |
+| O catálogo começa sem filtros, com os casos urgentes primeiro. | `createInitialFilters` e `sortPets` em `src/features/catalog/catalogFilters.js` |
+| A idade é filtrada por faixas (filhote, jovem, adulto, idoso); animal sem idade cadastrada não entra em nenhuma faixa. | `ageGroupOf` em `src/features/catalog/catalogFilters.js` |
+| Espécie, porte, sexo, idade e temperamento aceitam múltiplas seleções. | `src/features/catalog/FilterDrawer/FilterDrawer.jsx` e `filterPets` |
+| Castração e vacinação são condições cumulativas. | `filterPets` em `src/features/catalog/catalogFilters.js` |
+| O filtro urgente retorna apenas pets urgentes. | `filterPets` em `src/features/catalog/catalogFilters.js` |
+| Busca, filtros e ordenação ficam no endereço (`/adotar?especie=gato&urgente=1`). | `readCatalogParams` e `writeCatalogParams` em `catalogFilters.js` |
 | `status === "urgente"` vira `urgent: true`. | `mapPetFromApi` |
 | Idade menor que um ano é exibida em meses. | `formatarIdade` |
 | A lista visível é limitada a oito itens por lote. | `PAGE_SIZE` em `catalogOptions.js` |
@@ -157,40 +158,39 @@ As responsabilidades observáveis são:
 1. apresentação: JSX e CSS;
 2. orquestração de tela: `pages/` e `App.js`;
 3. integração HTTP: `services/` e consulta da vitrine;
-4. normalização: `mapPetFromApi`, `mapPetsFromApi` e `petHelpers.js`;
-5. dados estáticos: `constants/` e conteúdo institucional.
+4. normalização: `mapPetFromApi` e `mapPetsFromApi` em `src/shared/utils/petMapper.js`;
+5. dados estáticos: constantes de cada funcionalidade e `src/shared/constants/organization.js` (dados da ONG).
 
 ### Árvore de diretórios
 
 ```text
 Patas-em-Casa/
 ├── public/index.html                       # HTML base do CRA
+├── jsconfig.json                           # baseUrl "src": imports absolutos (api/..., shared/..., features/...)
 ├── src/
-│   ├── App.js                              # rotas /adotar e fallback da home
-│   ├── App.test.js                         # testes de navegação e adoção
-│   ├── index.js                            # bootstrap React + BrowserRouter
-│   ├── assets/                             # imagens importadas
-│   ├── components/
-│   │   ├── AdoptionFormModal/              # formulário e confirmação local
-│   │   ├── Donation/                       # campanha PIX
-│   │   ├── FilterDrawer/                   # painel lateral de filtros
-│   │   ├── FilterGroup/                    # agrupador de filtros
-│   │   ├── Footer/                         # rodapé institucional
-│   │   ├── Header/                         # navegação desktop/mobile
-│   │   ├── Hero/                           # hero e diferenciais
-│   │   ├── HowItWorks/                     # etapas do processo
-│   │   ├── PetCard/                        # card do catálogo
-│   │   ├── PetDetail/                      # ficha detalhada
-│   │   ├── PetSectionContainer/            # consulta e vitrine da home
-│   │   ├── StatsStrip/                     # métricas animadas
-│   │   ├── Stories/                        # histórias de impacto
-│   │   ├── SvgOnda/                        # divisor SVG
-│   │   └── SvgOndaInvertida/               # variação do divisor
-│   ├── constants/catalogOptions.js         # opções e PAGE_SIZE
-│   ├── pages/                              # telas da aplicação
-│   ├── services/                           # cliente e serviço HTTP
-│   ├── styles/globals.css                 # tokens e estilos globais
-│   └── utils/petHelpers.js                # helpers de metadados
+│   ├── index.js                            # bootstrap React + BrowserRouter (caminho exigido pelo CRA)
+│   ├── setupTests.js                       # configuração do Jest (caminho exigido pelo CRA)
+│   ├── app/                                # App.js (rotas), App.test.js e NotFoundPage
+│   ├── api/                                # client.js (Axios) e um módulo por recurso: animals, adoptions,
+│   │                                       #   content, donations, volunteers
+│   ├── shared/                             # o que mais de uma funcionalidade usa
+│   │   ├── components/layout/              # Header, Footer, PublicLayout
+│   │   ├── components/                     # AnimalCard, PetPhoto, PixKey
+│   │   ├── constants/organization.js       # dados públicos da ONG (contato, Pix, CNPJ)
+│   │   ├── hooks/                          # useDialog, useAvailableAnimals, useAdoptionSteps
+│   │   └── utils/                          # petMapper, petText, sharePet (+ testes)
+│   ├── features/                           # uma pasta por funcionalidade do site público
+│   │   ├── home/                           # LandingPage + sections/ (Hero, StatsStrip, PetSection, HowItWorks,
+│   │   │                                   #   Donation, Stories)
+│   │   ├── catalog/                        # AdoptionCatalog, FilterDrawer, catalogFilters, favoritos
+│   │   ├── animal-profile/                 # AnimalProfilePage (ficha /animais/:id)
+│   │   ├── adoption/                       # AdoptionFormModal, HowAdoptionWorksPage, adoptionGuide
+│   │   ├── donation/                       # DonationPage, DonationReturnPage, CancelSubscriptionPage
+│   │   └── volunteers/                     # VolunteerSignup e áreas de voluntariado
+│   ├── admin/                              # painel: adoptions, adopters, animals, donations, team, stories,
+│   │                                       #   volunteers, dashboard, layout, security, shared, constants, styles
+│   ├── assets/                             # imagens importadas (fundo.webp)
+│   └── styles/globals.css                  # tokens e estilos globais
 ├── build/                                  # artefato gerado; não é fonte
 ├── package.json                            # scripts e dependências
 ├── package-lock.json                       # lockfile npm
@@ -200,14 +200,17 @@ Patas-em-Casa/
 ### Fluxo de comunicação
 
 ```text
-index.js -> BrowserRouter -> App.js
-                          ├── /adotar -> AdoptionCatalog
-                          │     ├── buscarTodoAnimais -> Axios -> API externa
-                          │     ├── mapPetsFromApi -> filtros/ordenação
-                          │     ├── PetCard -> PetDetail -> AdoptionFormModal
-                          │     └── FilterDrawer -> estado de filtros
-                          └── demais rotas -> LandingPage
-                                └── PetSectionContainer -> API externa
+index.js -> BrowserRouter -> app/App.js
+                          ├── / -> features/home/LandingPage
+                          │     └── useAvailableAnimals -> api/animals -> API
+                          ├── /adotar -> features/catalog/AdoptionCatalog
+                          │     ├── useAvailableAnimals -> api/animals -> API
+                          │     ├── catalogFilters (busca, filtros e ordenação no endereço)
+                          │     └── AnimalCard -> /animais/:id
+                          ├── /animais/:id -> features/animal-profile/AnimalProfilePage
+                          │     └── AdoptionFormModal -> api/adoptions -> API
+                          ├── /como-funciona, /doar, /doar/retorno, /doar/cancelar -> features/adoption e features/donation
+                          └── /admin/* -> admin/ (carregado sob demanda)
 ```
 
 ---
@@ -243,7 +246,7 @@ sequenceDiagram
     actor Usuario
     participant Router as BrowserRouter
     participant Catalogo as AdoptionCatalog
-    participant Servico as PetSectionContainer
+    participant Servico as PetSection
     participant API as API externa
 
     Usuario->>Router: Acessa /adotar
@@ -361,10 +364,10 @@ flowchart TB
     App[App.js / Routes]
     Home[LandingPage]
     Catalog[AdoptionCatalog]
-    API[services/api.js]
+    API[api/client.js]
     External[(API externa)]
     Mapper[mapPetsFromApi]
-    HomePets[PetSectionContainer]
+    HomePets[PetSection]
     Card[PetCard]
     Filters[FilterDrawer + FilterGroup]
     Detail[PetDetail]
@@ -428,7 +431,7 @@ npm install
 npm start
 ```
 
-O CRA normalmente abre `http://localhost:3000`. A URL base da API também está fixa em `src/services/api.js`; frontend e backend na mesma porta exigem proxy, origem separada ou ajuste dessa configuração.
+O CRA normalmente abre `http://localhost:3000`. A URL base da API vem de `REACT_APP_API_URL` (padrão `http://localhost:4000`), lida em `src/api/client.js`. Depois de criar ou alterar o `.env` ou o `jsconfig.json`, reinicie o `npm start`.
 
 ### Produção
 
@@ -441,17 +444,14 @@ O primeiro comando gera os arquivos estáticos em `build/`. Servidor, domínio, 
 
 ### Variáveis de ambiente
 
-Não existe `.env.example` e nenhuma variável é lida pelo código atual. O contrato recomendado para evolução é:
+Copie `.env.example` para `.env` e ajuste:
 
 ```env
-# URL do backend que fornece /animais/BuscaTodoAnimais.
-REACT_APP_API_URL=http://localhost:3001
-
-# Ambiente de execução, caso seja necessário habilitar telemetria no futuro.
-REACT_APP_ENV=development
+# Endereço da API (repositório Patas-em-Casa-BackEnd).
+REACT_APP_API_URL=http://localhost:4000
 ```
 
-Para usar esse arquivo, `src/services/api.js` precisaria trocar a URL fixa por `process.env.REACT_APP_API_URL`.
+O `.env` não vai para o Git (ver `.gitignore`).
 
 ---
 
@@ -526,13 +526,12 @@ npm test -- --watchAll=false
 
 ### Cobertura atual
 
-`src/App.test.js` verifica:
+Os testes ficam ao lado do código (`*.test.js`) e rodam com `npm test`. Entre eles:
 
-- renderização da landing page e CTA para `/adotar`;
-- carregamento assíncrono da vitrine;
-- abertura da ficha de um pet;
-- abertura do formulário de adoção;
-- conteúdo temporal do `Hero` conforme as expectativas atuais do teste.
+- `src/app/App.test.js`: Home, jornada catálogo → ficha → formulário, rotas do painel e 404;
+- `src/features/*/`: Home, catálogo (filtros, favoritos, endereço), ficha, Como funciona, doação e formulário de adoção;
+- `src/shared/utils/` e `src/features/catalog/catalogFilters.test.js`: regras puras (filtros, textos, tempo de espera);
+- `src/admin/*/`: telas do painel.
 
 ### Estratégia
 
@@ -542,8 +541,6 @@ npm test -- --watchAll=false
 - Testing Library consulta a árvore acessível e simula interações.
 
 ### Estado conhecido
-
-Na última execução registrada, 2 testes falharam porque `App.test.js` espera textos/rotação de hero que não correspondem à implementação atual de `Hero.jsx`. Também há avisos de atualizações assíncronas de `PetSectionContainer` fora de `act`. Isso deve ser corrigido antes de considerar a suíte verde.
 
 Não há relatório de cobertura configurado nem testes de integração com a API real.
 

@@ -1,5 +1,5 @@
 // O quê: rodapé do site: marca, links (Adote / Ajude), contato e acesso da equipe.
-// Como: os dados de contato vêm de ORGANIZACAO (constants/organizacao.js), o único lugar a atualizar.
+// Como: os dados de contato vêm de ORGANIZACAO (shared/constants/organization.js), o único lugar a atualizar.
 // Para quê: encerrar todas as páginas públicas com os mesmos caminhos e canais de contato.
 import './Footer.css';
 import { Link } from 'react-router-dom';

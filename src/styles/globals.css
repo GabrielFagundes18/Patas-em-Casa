@@ -172,7 +172,7 @@ h3 {
   box-shadow: var(--shadow-main);
 }
 
-/* Formato de pílula vindo de PetSectionContainer.css (mesmo motivo do .eyebrow acima). */
+/* Formato de pílula que vinha do CSS da vitrine da Home (hoje features/home/sections/PetSection). */
 .btn-secondary {
   min-height: 46px;
   padding-inline: 20px;
@@ -227,7 +227,7 @@ section {
 
 /* O quê: rótulo e botões do catálogo, da gaveta de filtros e do formulário de adoção.
   Como: botão principal verde com texto claro (contraste AA), secundário contornado, ícone redondo.
-  Para quê: o mesmo par de botões em todas essas telas; antes ficavam em AdoptionCatalog.css. */
+  Para quê: o mesmo par de botões em todas essas telas; antes ficavam no CSS do catálogo. */
 .catalog-eyebrow {
   font: 500 12px 'IBM Plex Mono', monospace;
   letter-spacing: 0.14em;
@@ -321,7 +321,7 @@ section {
     transition: none;
   }
 
-  /* Vinha de PetSectionContainer.css: botões e menu sem deslocamento ao passar o mouse. */
+  /* Vinha do CSS da vitrine da Home: botões e menu sem deslocamento ao passar o mouse. */
   .btn,
   .menu-toggle,
   .mobile-drawer {
