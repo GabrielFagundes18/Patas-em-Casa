@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
-import AnimalProfilePage from './AnimalProfilePage';
+import AnimalProfilePage from '../features/animal-profile/AnimalProfilePage';
 import CancelSubscriptionPage from './CancelSubscriptionPage';
 import DonationPage, { redirectTo } from './DonationPage';
 import DonationReturnPage from './DonationReturnPage';
