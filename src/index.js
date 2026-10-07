@@ -5,7 +5,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import './styles/globals.css';
-import App from './App';
+import App from './app/App';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 // O quê: monta a árvore React no elemento root do documento.

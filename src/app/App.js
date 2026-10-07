@@ -1,24 +1,24 @@
 // O quê: importa o estilo global e as páginas que participam do roteamento.
 // Como: os módulos ES são carregados uma vez e os componentes são usados como elementos React.
 // Para quê: reúne a composição visual e as telas principais em um ponto de entrada único.
-import './styles/globals.css';
-import LandingPage from './features/home/LandingPage';
-import AdoptionCatalog from './features/catalog/AdoptionCatalog';
+import '../styles/globals.css';
+import LandingPage from '../features/home/LandingPage';
+import AdoptionCatalog from '../features/catalog/AdoptionCatalog';
 import { lazy, Suspense } from 'react';
-import RequireAdminSession from './admin/security/RequireAdminSession';
-import AnimalProfilePage from './features/animal-profile/AnimalProfilePage';
-import CancelSubscriptionPage from './features/donation/CancelSubscriptionPage';
-import DonationPage from './features/donation/DonationPage';
-import DonationReturnPage from './features/donation/DonationReturnPage';
-import HowAdoptionWorksPage from './features/adoption/HowAdoptionWorksPage';
-import NotFoundPage from './pages/NotFoundPage';
+import RequireAdminSession from '../admin/security/RequireAdminSession';
+import AnimalProfilePage from '../features/animal-profile/AnimalProfilePage';
+import CancelSubscriptionPage from '../features/donation/CancelSubscriptionPage';
+import DonationPage from '../features/donation/DonationPage';
+import DonationReturnPage from '../features/donation/DonationReturnPage';
+import HowAdoptionWorksPage from '../features/adoption/HowAdoptionWorksPage';
+import NotFoundPage from './NotFoundPage';
 import { Route, Routes } from 'react-router-dom';
 
 // O painel só é baixado por quem abre /admin: visitantes do site não carregam o código administrativo.
-const AdminLoginPage = lazy(() => import('./admin/security/AdminLoginPage'));
-const AdminDashboardPage = lazy(() => import('./admin/AdminDashboardPage'));
-const AdminForgotPasswordPage = lazy(() => import('./admin/security/AdminForgotPasswordPage'));
-const AdminResetPasswordPage = lazy(() => import('./admin/security/AdminResetPasswordPage'));
+const AdminLoginPage = lazy(() => import('../admin/security/AdminLoginPage'));
+const AdminDashboardPage = lazy(() => import('../admin/AdminDashboardPage'));
+const AdminForgotPasswordPage = lazy(() => import('../admin/security/AdminForgotPasswordPage'));
+const AdminResetPasswordPage = lazy(() => import('../admin/security/AdminResetPasswordPage'));
 
 // Abas do painel: cada uma é uma rota protegida que abre a mesma página com a seção correspondente.
 const ADMIN_TABS = ['animais', 'adocoes', 'adotantes', 'historias', 'doacoes', 'voluntarios', 'configuracoes'];

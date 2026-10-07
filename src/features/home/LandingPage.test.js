@@ -4,7 +4,7 @@
 import '@testing-library/jest-dom';
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import App from '../../App';
+import App from '../../app/App';
 import { anosDeAtuacao } from './sections/StatsStrip/StatsStrip';
 import { buscarTodoAnimais } from '../../api/animals';
 import { buscarEtapasAdocao, buscarHistorias, buscarNumeros } from '../../api/content';
