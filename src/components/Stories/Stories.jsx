@@ -3,7 +3,7 @@
 // Sem nenhuma história publicada, a seção não aparece.
 // Para quê: mostrar resultados reais, sem depoimentos inventados nem seção vazia.
 import { useEffect, useState } from 'react';
-import { PetPhoto } from '../PetPhoto/PetPhoto';
+import { PetPhoto } from '../../shared/components/PetPhoto/PetPhoto';
 import { buscarHistorias } from '../../api/content';
 import './Stories.css';
 

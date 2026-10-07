@@ -4,7 +4,7 @@
 // Para quê: agradecer e dizer claramente se a doação foi confirmada, está em processamento ou falhou.
 import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { PublicLayout } from '../components/PublicLayout/PublicLayout';
+import { PublicLayout } from '../shared/components/layout/PublicLayout/PublicLayout';
 import { consultarDoacao } from '../api/donations';
 
 const MAX_ATTEMPTS = 6;

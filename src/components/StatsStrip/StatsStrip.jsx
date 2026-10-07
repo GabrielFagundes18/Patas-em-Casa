@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 import { motion, useInView, useReducedMotion } from 'framer-motion';
 import './StatsStrip.css';
 import { buscarNumeros } from '../../api/content';
-import { ORGANIZACAO } from '../../constants/organizacao';
+import { ORGANIZACAO } from '../../shared/constants/organization';
 
 export function anosDeAtuacao(hoje = new Date()) {
   return hoje.getFullYear() - ORGANIZACAO.fundacao;

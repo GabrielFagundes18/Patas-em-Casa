@@ -3,10 +3,10 @@
 // Para quê: o adotante saber o que esperar antes de enviar o pedido, com chamada para ver os animais.
 import { Link } from 'react-router-dom';
 import { CheckCircle2, FileText } from 'lucide-react';
-import { PublicLayout } from '../components/PublicLayout/PublicLayout';
-import { useAdoptionSteps } from '../hooks/useAdoptionSteps';
+import { PublicLayout } from '../shared/components/layout/PublicLayout/PublicLayout';
+import { useAdoptionSteps } from '../shared/hooks/useAdoptionSteps';
 import { ADOPTION_DOCUMENTS, ADOPTION_FAQ, ADOPTION_REQUIREMENTS } from '../constants/adoptionGuide';
-import { ORGANIZACAO } from '../constants/organizacao';
+import { ORGANIZACAO } from '../shared/constants/organization';
 import './HowAdoptionWorksPage.css';
 
 export default function HowAdoptionWorksPage() {

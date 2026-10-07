@@ -11,7 +11,7 @@ import {
   sizeOptions,
   speciesOptions,
 } from "../../constants/catalogOptions";
-import { useDialog } from "../../hooks/useDialog";
+import { useDialog } from "../../shared/hooks/useDialog";
 import { FilterGroup } from "../FilterGroup/FilterGroup";
 import "./FilterDrawer.css";
 

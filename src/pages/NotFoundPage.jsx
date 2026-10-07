@@ -2,7 +2,7 @@
 // Como: usa a moldura pública e oferece caminhos para a Home e o catálogo.
 // Para quê: links quebrados não caem na Home sem explicação.
 import { Link } from 'react-router-dom';
-import { PublicLayout } from '../components/PublicLayout/PublicLayout';
+import { PublicLayout } from '../shared/components/layout/PublicLayout/PublicLayout';
 
 export default function NotFoundPage() {
   return (

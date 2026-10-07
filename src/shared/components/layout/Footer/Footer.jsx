@@ -4,7 +4,7 @@
 import './Footer.css';
 import { Link } from 'react-router-dom';
 import { AtSign, Clock3, Mail, MapPin, PawPrint, Phone } from 'lucide-react';
-import { ORGANIZACAO } from '../../constants/organizacao';
+import { ORGANIZACAO } from '../../../constants/organization';
 
 const linkGroups = [
   {

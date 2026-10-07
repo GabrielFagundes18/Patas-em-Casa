@@ -4,7 +4,7 @@
 import './PetSectionContainer.css';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
-import { AnimalCard } from '../AnimalCard/AnimalCard';
+import { AnimalCard } from '../../shared/components/AnimalCard/AnimalCard';
 
 const SHOWCASE_SIZE = 4;
 

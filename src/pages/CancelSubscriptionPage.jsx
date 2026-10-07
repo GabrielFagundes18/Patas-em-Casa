@@ -3,7 +3,7 @@
 // Para quê: o doador cancelar sozinho, sem login e sem expor dados de outras pessoas.
 import { useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { PublicLayout } from '../components/PublicLayout/PublicLayout';
+import { PublicLayout } from '../shared/components/layout/PublicLayout/PublicLayout';
 import { cancelarDoacaoMensal, pedirLinkCancelamento } from '../api/donations';
 import './DonationPage.css';
 
