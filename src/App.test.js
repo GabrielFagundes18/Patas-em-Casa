@@ -5,7 +5,7 @@ import '@testing-library/jest-dom';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import App from './App';
-import Hero from './components/Hero/Hero';
+import Hero from './features/home/sections/Hero/Hero';
 import { buscarAnimal, buscarTodoAnimais } from './api/animals';
 import { buscarEtapasAdocao, buscarHistorias, buscarNumeros } from './api/content';
 import { fetchAdminMe } from './admin/security/authService';

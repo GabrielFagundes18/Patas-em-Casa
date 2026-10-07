@@ -1,10 +1,10 @@
 // O quê: vitrine da Home com 4 animais (urgentes primeiro) e o link para o catálogo completo.
 // Como: recebe a lista já carregada pela Home (useAvailableAnimals) e mostra carregando, erro ou vazio.
 // Para quê: apresentar quem precisa de um lar sem transformar a Home num catálogo.
-import './PetSectionContainer.css';
+import './PetSection.css';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
-import { AnimalCard } from '../../shared/components/AnimalCard/AnimalCard';
+import { AnimalCard } from '../../../../shared/components/AnimalCard/AnimalCard';
 
 const SHOWCASE_SIZE = 4;
 

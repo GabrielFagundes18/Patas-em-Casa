@@ -2,7 +2,7 @@
 // Como: os módulos ES são carregados uma vez e os componentes são usados como elementos React.
 // Para quê: reúne a composição visual e as telas principais em um ponto de entrada único.
 import './styles/globals.css';
-import LandingPage from './pages/LandingPage';
+import LandingPage from './features/home/LandingPage';
 import AdoptionCatalog from './pages/AdoptionCatalog';
 import { lazy, Suspense } from 'react';
 import RequireAdminSession from './admin/security/RequireAdminSession';
