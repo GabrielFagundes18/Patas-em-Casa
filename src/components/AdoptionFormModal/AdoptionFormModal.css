@@ -1,21 +1,349 @@
-/* O quê: isola o modal e define indicadores de foco dos controles do formulário.
-  Como: isolation cria contexto de pintura e outline visível usa a cor de destaque.
-  Para quê: evitar conflitos de camadas e garantir feedback de navegação acessível. */
-.adoption-form-modal {
+/* O quê: janela do pedido de adoção: cabeçalho com o animal, progresso, passos, navegação e confirmação.
+  Como: camada fixa com rolagem própria; cartão de até 720 px que ocupa a tela inteira no celular.
+  Para quê: preencher o pedido com calma, um passo de cada vez, no mesmo visual do site. */
+.adopt-backdrop {
+  position: fixed;
+  z-index: 70;
+  inset: 0;
+  overflow: auto;
+  padding: 40px 20px;
+  background: rgba(34, 61, 52, 0.92);
+  backdrop-filter: blur(6px);
+}
+
+.adopt-modal {
   isolation: isolate;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0; /* o cartão é um <section>: anula o espaçamento global de seções */
+  border-radius: 24px;
+  background: var(--paper);
+  box-shadow: var(--shadow-main);
+  overflow: hidden;
 }
 
-.catalog-adoption-form input:focus-visible,
-.catalog-adoption-form textarea:focus-visible,
-.adoption-form-modal button:focus-visible {
-  outline: 2px solid var(--amber);
-  outline-offset: 2px;
+/* ---------- Cabeçalho com o animal ---------- */
+.adopt-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 24px 28px 20px;
+  border-bottom: 1px solid var(--line);
 }
 
-/* O quê: destaca falhas de envio e o protocolo gerado.
-  Como: usa um tom escuro do tijolo da marca, com contraste suficiente sobre o fundo claro.
-  Para quê: deixar claro o que corrigir e qual número informar à equipe. */
-.adoption-form-error {
+.adopt-thumb {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  background: var(--sage-pale);
+  color: var(--sage);
+  object-fit: cover;
+}
+
+.adopt-header-text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.adopt-header h2 {
+  margin: 0;
+  font-size: clamp(1.6rem, 3.6vw, 2.2rem);
+  line-height: 1.1;
+}
+
+.adopt-header p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.adopt-close {
+  align-self: flex-start;
+}
+
+/* ---------- Corpo e progresso ---------- */
+.adopt-body {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 22px 28px 28px;
+}
+
+.adopt-progress {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.adopt-progress p {
+  margin: 0;
+  color: var(--text-muted);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.adopt-progress ol {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.adopt-progress li {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.adopt-progress li::before {
+  content: '';
+  height: 4px;
+  border-radius: 4px;
+  background: var(--border-color);
+}
+
+.adopt-progress li.is-done::before,
+.adopt-progress li.is-current::before {
+  background: var(--sage);
+}
+
+.adopt-progress li.is-current {
+  color: var(--sage-dark);
+  font-weight: 600;
+}
+
+.adopt-step-title {
+  margin: 0;
+  font-size: 24px;
+}
+
+.adopt-step-title:focus {
+  outline: none;
+}
+
+/* ---------- Campos ---------- */
+.adopt-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.adopt-grid .is-wide {
+  grid-column: 1 / -1;
+}
+
+.adopt-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.adopt-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: var(--text-main);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.adopt-field input,
+.adopt-field textarea {
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 14px;
+  border: 1px solid rgba(31, 42, 36, 0.25);
+  border-radius: 12px;
+  background: #ffffff;
+  color: var(--text-main);
+  font: inherit;
+  font-size: 16px;
+  font-weight: 400;
+}
+
+.adopt-field textarea {
+  min-height: 110px;
+  resize: vertical;
+}
+
+.adopt-field input:focus-visible,
+.adopt-field textarea:focus-visible {
+  outline: 2px solid var(--sage);
+  outline-offset: 1px;
+  border-color: var(--sage);
+}
+
+.adopt-field [aria-invalid='true'] {
+  border-color: #a03c28;
+}
+
+.adopt-error {
+  color: #8f3322;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.adopt-hint {
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.adopt-note {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.adopt-trap {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* ---------- Perguntas de clique ---------- */
+.adopt-fieldset {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.adopt-fieldset legend {
+  margin-bottom: 10px;
+  padding: 0;
+  color: var(--text-main);
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.adopt-choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.adopt-choices label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 14px;
+  border: 1.5px solid rgba(31, 42, 36, 0.2);
+  border-radius: 999px;
+  background: #ffffff;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.adopt-choices label.is-selected {
+  border-color: var(--sage);
+  background: var(--sage-pale);
+  color: var(--sage-dark);
+  font-weight: 600;
+}
+
+.adopt-choices input {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  accent-color: var(--sage);
+}
+
+.adopt-fieldset[aria-invalid='true'] .adopt-choices label {
+  border-color: rgba(160, 60, 40, 0.55);
+}
+
+/* ---------- Revisão e confirmações ---------- */
+.adopt-review {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding: 16px;
+  border-radius: 16px;
+  background: var(--bg-primary);
+}
+
+.adopt-review dt {
+  color: var(--text-muted);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.adopt-review dd {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 12px;
+  margin: 2px 0 0;
+  font-size: 15px;
+  overflow-wrap: anywhere;
+}
+
+.adopt-review button {
+  min-height: 32px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--sage);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.adopt-checks {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.adopt-checks label {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1.5px solid rgba(31, 42, 36, 0.15);
+  border-radius: 14px;
+  background: #ffffff;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.adopt-checks label.has-error {
+  border-color: rgba(160, 60, 40, 0.55);
+}
+
+.adopt-checks input {
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  margin: 1px 0 0;
+  accent-color: var(--sage);
+}
+
+.adopt-alert {
   padding: 12px 14px;
   border-radius: var(--radius-md);
   background: rgba(178, 97, 76, 0.1);
@@ -23,167 +351,175 @@
   line-height: 1.5;
 }
 
-.adoption-form-error p {
+.adopt-alert p {
   margin: 0;
   font-weight: 600;
 }
 
-.adoption-form-error ul {
+.adopt-alert ul {
   margin: 6px 0 0;
   padding-left: 18px;
 }
 
-.catalog-adoption-form .catalog-primary-button:disabled {
-  opacity: 0.65;
-  cursor: progress;
-}
-
-.adoption-protocol {
-  color: var(--sage-dark);
-  letter-spacing: 0.04em;
-}
-
-/* O quê: texto de apoio de um campo opcional.
-  Como: fonte menor e cor secundária, logo abaixo do campo.
-  Para quê: explicar que a data é uma sugestão, sem chamar mais atenção que os campos obrigatórios. */
-.adoption-form-hint {
-  color: var(--text-muted);
-  font-size: 0.82rem;
-  font-weight: 400;
-}
-
-/* O quê: fundo escurecido, cartão, campos e mensagem de sucesso do formulário de adoção.
-  Como: camada fixa com rolagem própria; grade de 2 colunas que vira 1 no celular.
-  Para quê: o formulário abre por cima da ficha do animal. (Vinham de AdoptionCatalog.css.) */
-.pet-detail-backdrop {
-  position: fixed;
-  z-index: 70;
-  inset: 0;
-  overflow: auto;
-  padding: 40px 20px;
-  background: var(--sage-dark);
-  backdrop-filter: blur(8px);
-}
-
-.detail-back {
+/* ---------- Navegação entre passos ---------- */
+.adopt-nav {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 22px 28px 12px;
-  border: 0;
-  background: transparent;
-  color: var(--sage-dark);
-  font: inherit;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.adoption-form-modal {
-  padding: 0; /* o cartão é um <section>: anula o espaçamento global de seções */
-  max-width: 760px;
-  margin: auto;
-  border-radius: 22px;
-  background: var(--paper);
-  box-shadow: var(--shadow-main);
-  overflow: hidden;
-}
-
-.adoption-form-body {
-  padding: 0 32px 36px;
-}
-
-.adoption-form-summary {
-  padding: 8px 0 18px;
-}
-
-.adoption-form-summary h2 {
-  margin: 10px 0 8px;
-  font-size: clamp(2rem, 4vw, 3rem);
-}
-
-.adoption-form-summary p {
-  color: var(--ink-soft);
-}
-
-.catalog-adoption-form {
-  display: grid;
-  gap: 18px;
-}
-
-.catalog-form-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
-}
-
-.catalog-adoption-form label {
-  display: grid;
-  gap: 8px;
-  color: var(--ink-soft);
-  font-size: 14px;
-}
-
-.catalog-adoption-form input,
-.catalog-adoption-form textarea {
-  width: 100%;
-  padding: 12px 14px;
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  background: var(--bg-card);
-  color: var(--ink);
-  font: inherit;
-}
-
-.catalog-adoption-form textarea {
-  min-height: 110px;
-  resize: vertical;
-}
-
-.catalog-form-checks {
-  display: grid;
+  justify-content: space-between;
   gap: 12px;
+  padding-top: 4px;
 }
 
-.catalog-form-checks label {
-  display: flex;
+/* ---------- Confirmação ---------- */
+.adopt-success {
   align-items: center;
-  gap: 10px;
-}
-
-.catalog-form-checks input {
-  width: 16px;
-  height: 16px;
-  accent-color: var(--sage);
-}
-
-.adoption-success {
-  display: grid;
-  justify-items: center;
-  gap: 12px;
-  padding: 16px 0 8px;
   text-align: center;
 }
 
-.adoption-success svg {
+.adopt-success-icon {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--sage-pale);
   color: var(--sage);
 }
 
-.adoption-success h3 {
+.adopt-success h3 {
+  margin: 0;
   font-size: 30px;
 }
 
-.adoption-success p {
-  max-width: 550px;
-  color: var(--ink-soft);
-  line-height: 1.7;
+.adopt-success h4 {
+  align-self: stretch;
+  margin: 6px 0 0;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-align: left;
+  text-transform: uppercase;
+  color: var(--sage);
 }
 
-@media (max-width: 700px) {
-  .catalog-form-grid {
-    grid-template-columns: 1fr;
+.adopt-success p {
+  max-width: 34em;
+  margin: 0;
+  color: var(--text-muted);
+}
+
+.adopt-protocol {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 12px 18px;
+  border-radius: 16px;
+  background: var(--bg-primary);
+}
+
+.adopt-protocol strong {
+  color: var(--sage-dark);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 20px;
+  letter-spacing: 0.04em;
+}
+
+.adopt-next {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-self: stretch;
+  margin: 0;
+  padding: 0;
+  counter-reset: passo;
+  list-style: none;
+  text-align: left;
+}
+
+.adopt-next li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  counter-increment: passo;
+  font-size: 15px;
+}
+
+.adopt-next li::before {
+  content: counter(passo);
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--sage);
+  color: var(--bg-card);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.adopt-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+/* ---------- Celular ---------- */
+@media (max-width: 640px) {
+  .adopt-backdrop {
+    padding: 0;
+    background: var(--paper);
   }
 
-  .adoption-form-body {
-    padding: 0 22px 28px;
+  .adopt-modal {
+    min-height: 100%;
+    border-radius: 0;
+    box-shadow: none;
+    overflow: visible; /* com overflow hidden a navegação "sticky" não grudaria no pé da tela */
+  }
+
+  .adopt-header {
+    padding: 16px;
+  }
+
+  .adopt-thumb {
+    width: 52px;
+    height: 52px;
+  }
+
+  .adopt-body {
+    padding: 18px 16px 24px;
+  }
+
+  .adopt-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .adopt-progress li span {
+    font-size: 12px;
+  }
+
+  /* Navegação presa ao pé da tela, sempre ao alcance do polegar. */
+  .adopt-nav {
+    position: sticky;
+    bottom: 0;
+    margin: 0 -16px -24px;
+    padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+    border-top: 1px solid var(--line);
+    background: var(--paper);
+  }
+
+  .adopt-nav .catalog-primary-button {
+    flex: 1;
+  }
+
+  .adopt-actions,
+  .adopt-actions > * {
+    width: 100%;
   }
 }

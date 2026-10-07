@@ -66,8 +66,9 @@ test('the animal profile shows the gallery, temperament and health, and opens th
   expect(screen.getByText('Pendente')).toBeInTheDocument();
 
   fireEvent.click(screen.getByRole('button', { name: 'Quero adotar o Nino' }));
-  const form = await screen.findByRole('dialog');
-  expect(within(form).getByLabelText(/melhor dia e horário para a visita/i)).toHaveAttribute('type', 'datetime-local');
+  const form = await screen.findByRole('dialog', { name: 'Quero adotar Nino' });
+  expect(within(form).getByText('Passo 1 de 3')).toBeInTheDocument();
+  expect(within(form).getByLabelText('Nome completo')).toBeInTheDocument();
 });
 
 test('an adopted animal shows the API message and a link to the catalog', async () => {
