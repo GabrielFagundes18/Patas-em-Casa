@@ -2,6 +2,8 @@
 
 Frontend React para divulgação institucional de uma ONG de proteção animal e encaminhamento de interessados ao processo de adoção responsável.
 
+**Demo:** https://patas-em-casa-ruby.vercel.app
+
 > **Estado atual:** este repositório contém o frontend (site público e painel administrativo). A API fica no repositório `Patas-em-Casa-BackEnd` (Node.js + Express + PostgreSQL); o endereço dela vem de `REACT_APP_API_URL`.
 
 ## Sumário
@@ -42,16 +44,18 @@ O projeto centraliza a apresentação da ONG Patas em Casa e oferece uma jornada
 - ordenação por nome ou prioridade de urgência;
 - carregamento incremental com `IntersectionObserver`;
 - cards, ficha detalhada e animações com Framer Motion;
-- formulário local de pré-adoção;
+- formulário de pré-adoção enviado à API, com número de protocolo;
+- painel administrativo com login, recuperação de senha e gestão de animais (com fotos), solicitações de adoção, adotantes, doações, voluntários, histórias e equipe;
+- doação online integrada ao Mercado Pago (via API);
 - compartilhamento via Web Share API ou cópia da URL;
 - seção de doação com cópia da chave PIX;
 - menu responsivo, navegação por âncoras e suporte a foco visível.
 
 ### Escopo
 
-**Incluído:** apresentação de conteúdo, consulta de animais por API externa, filtros no cliente, ficha de pet e simulação visual de envio de candidatura.
+**Incluído:** site público (conteúdo, catálogo com filtros, ficha de pet, pré-adoção, doação e voluntariado) e painel administrativo autenticado consumindo a API.
 
-**Não incluído:** autenticação, autorização, cadastro de usuários, persistência de formulário, envio de e-mail, aprovação de adoção, administração de animais, banco de dados e infraestrutura de produção.
+**Fora deste repositório:** regras de negócio, banco de dados, envio de e-mail e integração de pagamentos ficam na [API](https://github.com/GabrielFagundes18/Patas-em-casa-backend).
 
 ---
 
@@ -73,7 +77,7 @@ Os requisitos abaixo foram inferidos exclusivamente do código existente.
 | RF-08 | Carregar mais resultados | Sistema | Ao aproximar-se do sentinel, o catálogo aumenta a quantidade visível em `PAGE_SIZE` itens. |
 | RF-09 | Consultar ficha de animal | Usuário | “Ver ficha” abre detalhes com foto, status, metadados, tags e informações derivadas. |
 | RF-10 | Iniciar pré-adoção | Usuário | O botão de adoção fecha a ficha e abre o formulário associado ao animal selecionado. |
-| RF-11 | Exibir confirmação local | Sistema | O envio impede o submit padrão e troca a tela para “Solicitação enviada”. |
+| RF-11 | Registrar pré-adoção | Sistema | O envio faz `POST /api/v1/public/adoption-requests` e exibe a confirmação com o protocolo retornado. |
 | RF-12 | Compartilhar perfil | Usuário | O sistema usa `navigator.share` quando disponível ou tenta copiar a URL atual. |
 | RF-13 | Copiar chave PIX | Usuário | O botão usa `navigator.clipboard` e exibe confirmação temporária quando a cópia funciona. |
 | RF-14 | Adaptar navegação para mobile | Usuário | O menu mobile abre, fecha e atualiza `aria-expanded` conforme a interação. |
@@ -84,7 +88,7 @@ Os requisitos abaixo foram inferidos exclusivamente do código existente.
 | --- | --- | --- |
 | RNF-01 | Performance | A busca textual aguarda 300 ms antes de recalcular resultados; metas de latência da API: **[A definir]**. |
 | RNF-02 | Performance | O catálogo inicia com oito cards e usa carregamento incremental; limite máximo de registros: **[A definir]**. |
-| RNF-03 | Segurança | Não há autenticação, autorização ou dados sensíveis persistidos no frontend; CSP e proteção da API: **[A definir]**. |
+| RNF-03 | Segurança | O painel exige sessão autenticada (`RequireAdminSession`); permissões por cargo são aplicadas pela API. CSP: **[A definir]**. |
 | RNF-04 | Segurança | Há uso de `dangerouslySetInnerHTML` para o carimbo da raça; sanitização e origem confiável do conteúdo: **[A definir]**. |
 | RNF-05 | Escalabilidade | O filtro ocorre no cliente e a API retorna a coleção completa; cache e paginação server-side: **[A definir]**. |
 | RNF-06 | Disponibilidade | Existem estados de erro e lista vazia, mas não retry ou failover; SLA e redundância: **[A definir]**. |
@@ -462,7 +466,7 @@ O `.env` não vai para o Git (ver `.gitignore`).
 | Método | Rota | Resultado |
 | --- | --- | --- |
 | GET | `/` | Landing page institucional; o curinga do Router também cai nesta tela. |
-| GET | `/adotar` | Catálogo de adoção com busca, filtros, ficha e formulário local. |
+| GET | `/adotar` | Catálogo de adoção com busca, filtros, ficha e formulário de pré-adoção. |
 
 ### Endpoint consumido
 
