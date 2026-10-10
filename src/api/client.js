@@ -13,7 +13,7 @@ export const SESSION_EXPIRED_EVENT = 'patas:sessao-expirada';
 //       X-Requested-With é exigido pelo backend como proteção contra CSRF nessas rotas.
 // Para quê: evita repetir configurações de transporte nos módulos consumidores.
 const api = axios.create({
-  baseURL: process.env.API,
+  baseURL: process.env.REACT_APP_API|| 'http://localhost:4000',
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
