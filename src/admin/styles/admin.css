@@ -54,12 +54,7 @@
   color: var(--admin-text);
 }
 
-.admin-layout :focus-visible,
-.admin-login-page :focus-visible,
-.admin-dialog :focus-visible {
-  outline: 2px solid var(--admin-focus);
-  outline-offset: 2px;
-}
+
 
 .admin-eyebrow {
   color: var(--admin-text-accent);
@@ -375,11 +370,7 @@
   color: var(--admin-text-muted);
 }
 
-.admin-search:focus-within {
-  border-color: transparent;
-  outline: 2px solid var(--admin-focus);
-  outline-offset: 2px;
-}
+
 
 .admin-search input {
   width: 100%;
