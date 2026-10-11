@@ -24,7 +24,6 @@
   --admin-action-strong: var(--amber-dark);
   --admin-action-glow: var(--accent-glow);
   --admin-danger: var(--brick);
-  --admin-focus: var(--amber-dark);
   --admin-radius: var(--radius-md);
   --admin-radius-lg: var(--radius-lg);
   --admin-shadow: var(--shadow-main);
@@ -377,7 +376,7 @@
 }
 
 .admin-search:focus-within {
-  border-color: var(--admin-brand);
+  border-color: transparent;
   outline: 2px solid var(--admin-focus);
   outline-offset: 2px;
 }
