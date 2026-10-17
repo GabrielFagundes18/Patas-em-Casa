@@ -1,19 +1,43 @@
+/*
+ * ============================================================================
+ * ARQUIVO: HowAdoptionWorksPage.css
+ * ============================================================================
+ *
+ * PARA QUE SERVE:
+ *   Estilos da página "Como funciona a adoção" (componente HowAdoptionWorksPage):
+ *   título, passo a passo em cartões, colunas de requisitos e documentos,
+ *   perguntas frequentes e a chamada final em fundo verde-escuro.
+ *
+ * PRINCIPAIS REGRAS:
+ *   - .how-page h1, .how-steps, .how-step-number
+ *   - .how-columns, .how-card, .how-faq (details/summary), .how-cta
+ *   - @media (max-width: 760px)
+ *
+ * CONEXÕES COM OUTROS ARQUIVOS:
+ *   - Importado por: features/adoption/HowAdoptionWorksPage.jsx.
+ *   - Ajusta .btn / .btn-secondary de styles/globals.css dentro da chamada final.
+ * ============================================================================
+ */
+
 /* O quê: passo a passo, requisitos, documentos, dúvidas e chamada final da página "Como funciona".
   Como: listas em grade que viram uma coluna no celular; cores dos tokens globais.
   Para quê: leitura rápida do processo, com o próximo passo sempre à vista. */
+/* Título principal da página (fluido). */
 .how-page h1 {
   font-size: clamp(2.4rem, 5vw, 3.4rem);
   line-height: 1.05;
 }
 
+/* Passo a passo: quantas colunas couberem, cada uma com no mínimo 220px. */
 .how-steps {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 16px;
   margin: 12px 0 44px;
-  list-style: none;
+  list-style: none; /* sem a numeração padrão (usamos o círculo numerado) */
 }
 
+/* Cada etapa: cartão com o número à esquerda e o texto à direita. */
 .how-steps li {
   display: flex;
   gap: 14px;
@@ -23,22 +47,25 @@
   background: var(--bg-card);
 }
 
+/* Círculo verde com o número da etapa. */
 .how-step-number {
   display: grid;
-  flex: 0 0 auto;
+  flex: 0 0 auto; /* tamanho fixo */
   width: 36px;
   height: 36px;
-  place-items: center;
+  place-items: center; /* número centralizado */
   border-radius: 50%;
   background: var(--sage);
   color: var(--bg-card);
   font-weight: 700;
 }
 
+/* Título de cada etapa. */
 .how-steps h2 {
   font-size: 1.15rem;
 }
 
+/* Textos secundários de vários blocos da página, com o mesmo estilo. */
 .how-steps p,
 .how-card li,
 .how-faq p,
@@ -47,18 +74,21 @@
   line-height: 1.65;
 }
 
+/* Requisitos e documentos lado a lado. */
 .how-columns {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 18px;
 }
 
+/* Cartão verde claro de requisitos/documentos. */
 .how-card {
   padding: 22px;
   border-radius: var(--radius-lg);
   background: var(--sage-pale);
 }
 
+/* Títulos dos cartões e do FAQ (ícone + texto alinhados). */
 .how-card h2,
 .how-faq h2 {
   display: flex;
@@ -68,36 +98,43 @@
   font-size: 1.3rem;
 }
 
+/* Lista dentro do cartão (com marcadores, recuo de 20px). */
 .how-card ul {
   display: grid;
   gap: 8px;
   padding-left: 20px;
 }
 
+/* Bloco de perguntas frequentes. */
 .how-faq {
   margin-top: 40px;
 }
 
+/* Cada pergunta (details) separada por uma linha. */
 .how-faq details {
   padding: 14px 0;
   border-bottom: 1px solid var(--border-color);
 }
 
+/* A pergunta clicável (summary). */
 .how-faq summary {
   font-weight: 600;
   cursor: pointer;
 }
 
+/* Foco do teclado nas perguntas e nos botões da página. */
 .how-faq summary:focus-visible,
 .how-page .btn:focus-visible {
   outline: 2px solid var(--amber-dark);
   outline-offset: 3px;
 }
 
+/* Resposta aberta. */
 .how-faq p {
   margin-top: 8px;
 }
 
+/* Chamada final: faixa verde-escura com texto e botões. */
 .how-cta {
   display: flex;
   flex-wrap: wrap;
@@ -110,32 +147,58 @@
   background: var(--sage-dark);
 }
 
+/* Título claro sobre o fundo escuro. */
 .how-cta h2 {
   color: var(--bg-card);
   font-size: 1.5rem;
 }
 
+/* Texto verde claro sobre o fundo escuro (regra mais específica que a de .how-cta p acima). */
 .how-cta p {
   color: var(--sage-pale);
 }
 
+/* Botões da chamada final. */
 .how-cta-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
 }
 
+/* Botão secundário adaptado ao fundo escuro (borda e texto claros). */
 .how-cta .btn-secondary {
   border-color: var(--sage-pale);
   color: var(--bg-card);
 }
 
+/* Secundário no hover: fundo verde. */
 .how-cta .btn-secondary:hover {
   background: var(--sage);
 }
 
+/* Até 760px: requisitos e documentos em uma coluna. */
 @media (max-width: 760px) {
   .how-columns {
     grid-template-columns: 1fr;
   }
 }
+
+/*
+ * ============================================================================
+ * RESUMO DO ARQUIVO
+ * ============================================================================
+ *
+ * COMO FUNCIONA:
+ *   O passo a passo usa uma grade automática (auto-fit), os requisitos e documentos
+ *   ficam em duas colunas (uma no celular), as perguntas frequentes usam o
+ *   <details> nativo com linhas separadoras e a chamada final é uma faixa escura
+ *   com botões adaptados.
+ *
+ * CONCEITOS IMPORTANTES PARA ESTUDAR:
+ *   - Grid com repeat(auto-fit, minmax()).
+ *   - Estilizar <details>/<summary>.
+ *   - Agrupar seletores para reaproveitar estilos.
+ *   - Especificidade: .how-cta p vence o grupo anterior porque vem depois com o mesmo peso.
+ *   - Adaptar componentes globais (.btn-secondary) a um contexto escuro.
+ * ============================================================================
+ */

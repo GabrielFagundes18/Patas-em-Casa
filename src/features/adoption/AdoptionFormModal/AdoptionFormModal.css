@@ -1,48 +1,78 @@
+/*
+ * ============================================================================
+ * ARQUIVO: AdoptionFormModal.css
+ * ============================================================================
+ *
+ * PARA QUE SERVE:
+ *   Estilos do formulário de pedido de adoção em janela (componente
+ *   AdoptionFormModal): fundo escurecido, cartão, cabeçalho com o animal, barra
+ *   de progresso dos 3 passos, campos, perguntas de clique, revisão,
+ *   confirmações, alertas, navegação e a tela de sucesso. No celular, ocupa a
+ *   tela inteira e a navegação fica presa no rodapé.
+ *
+ * PRINCIPAIS REGRAS:
+ *   - .adopt-backdrop, .adopt-modal, .adopt-header, .adopt-thumb, .adopt-close
+ *   - .adopt-body, .adopt-progress, .adopt-step-title
+ *   - .adopt-grid, .adopt-stack, .adopt-field, .adopt-error, .adopt-hint, .adopt-note, .adopt-trap
+ *   - .adopt-fieldset, .adopt-choices, .adopt-review, .adopt-checks, .adopt-alert, .adopt-nav
+ *   - .adopt-success, .adopt-protocol, .adopt-next (contador CSS), .adopt-actions
+ *   - @media (max-width: 640px)
+ *
+ * CONEXÕES COM OUTROS ARQUIVOS:
+ *   - Importado por: features/adoption/AdoptionFormModal/AdoptionFormModal.jsx.
+ *   - Botões .catalog-* de styles/globals.css; variáveis de cor do mesmo arquivo.
+ * ============================================================================
+ */
+
 /* O quê: janela do pedido de adoção: cabeçalho com o animal, progresso, passos, navegação e confirmação.
   Como: camada fixa com rolagem própria; cartão de até 720 px que ocupa a tela inteira no celular.
   Para quê: preencher o pedido com calma, um passo de cada vez, no mesmo visual do site. */
+/* Fundo escurecido que cobre a tela e tem a sua própria rolagem. */
 .adopt-backdrop {
-  position: fixed;
-  z-index: 70;
-  inset: 0;
-  overflow: auto;
-  padding: 40px 20px;
-  background: rgba(34, 61, 52, 0.92);
-  backdrop-filter: blur(6px);
+  position: fixed; /* fixo na janela */
+  z-index: 70; /* acima do conteúdo e da gaveta de filtros */
+  inset: 0; /* cobre tudo */
+  overflow: auto; /* se o formulário for alto, rola dentro do fundo */
+  padding: 40px 20px; /* espaço em volta do cartão */
+  background: rgba(34, 61, 52, 0.92); /* verde-escuro quase opaco */
+  backdrop-filter: blur(6px); /* desfoca a página por trás */
 }
 
+/* O cartão do formulário. */
 .adopt-modal {
-  isolation: isolate;
-  max-width: 720px;
-  margin: 0 auto;
+  isolation: isolate; /* cria um novo "contexto de empilhamento" (z-index de dentro não vaza) */
+  max-width: 720px; /* largura máxima */
+  margin: 0 auto; /* centralizado */
   padding: 0; /* o cartão é um <section>: anula o espaçamento global de seções */
   border-radius: 24px;
   background: var(--paper);
   box-shadow: var(--shadow-main);
-  overflow: hidden;
+  overflow: hidden; /* respeita os cantos arredondados */
 }
 
 /* ---------- Cabeçalho com o animal ---------- */
 .adopt-header {
-  display: flex;
+  display: flex; /* miniatura, textos e botão lado a lado */
   align-items: center;
   gap: 16px;
   padding: 24px 28px 20px;
   border-bottom: 1px solid var(--line);
 }
 
+/* Miniatura (foto ou pata). */
 .adopt-thumb {
   display: grid;
-  flex: 0 0 auto;
+  flex: 0 0 auto; /* tamanho fixo */
   place-items: center;
   width: 64px;
   height: 64px;
   border-radius: 16px;
   background: var(--sage-pale);
   color: var(--sage);
-  object-fit: cover;
+  object-fit: cover; /* quando é foto */
 }
 
+/* Textos do cabeçalho (ocupam o espaço do meio). */
 .adopt-header-text {
   display: flex;
   flex: 1;
@@ -51,18 +81,21 @@
   min-width: 0;
 }
 
+/* "Quero adotar Nome". */
 .adopt-header h2 {
   margin: 0;
   font-size: clamp(1.6rem, 3.6vw, 2.2rem);
   line-height: 1.1;
 }
 
+/* Linha de informações do animal. */
 .adopt-header p {
   margin: 0;
   color: var(--text-muted);
   font-size: 14px;
 }
 
+/* Botão X alinhado ao topo. */
 .adopt-close {
   align-self: flex-start;
 }
@@ -75,12 +108,14 @@
   padding: 22px 28px 28px;
 }
 
+/* Bloco do progresso. */
 .adopt-progress {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
+/* "PASSO 1 DE 3". */
 .adopt-progress p {
   margin: 0;
   color: var(--text-muted);
@@ -90,6 +125,7 @@
   text-transform: uppercase;
 }
 
+/* As 3 etapas lado a lado. */
 .adopt-progress ol {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -99,6 +135,7 @@
   list-style: none;
 }
 
+/* Cada etapa: barrinha (::before) em cima e o nome embaixo. */
 .adopt-progress li {
   display: flex;
   flex-direction: column;
@@ -107,6 +144,7 @@
   font-size: 13px;
 }
 
+/* A barrinha de cada etapa (cinza por padrão). */
 .adopt-progress li::before {
   content: '';
   height: 4px;
@@ -114,51 +152,60 @@
   background: var(--border-color);
 }
 
+/* Etapas concluídas e a atual: barrinha verde. */
 .adopt-progress li.is-done::before,
 .adopt-progress li.is-current::before {
   background: var(--sage);
 }
 
+/* Nome da etapa atual em destaque. */
 .adopt-progress li.is-current {
   color: var(--sage-dark);
   font-weight: 600;
 }
 
+/* Título do passo. */
 .adopt-step-title {
   margin: 0;
   font-size: 24px;
 }
 
+/* O título recebe foco por código (para leitores de tela); sem contorno visual. */
 .adopt-step-title:focus {
   outline: none;
 }
 
 /* ---------- Campos ---------- */
+/* Grade de 2 colunas para os campos do passo 1. */
 .adopt-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px;
 }
 
+/* Campos "largos" ocupam a linha inteira. */
 .adopt-grid .is-wide {
   grid-column: 1 / -1;
 }
 
+/* Pilha vertical (passos 2 e 3). */
 .adopt-stack {
   display: flex;
   flex-direction: column;
   gap: 22px;
 }
 
+/* Rótulo + campo + erro empilhados. */
 .adopt-field {
   display: flex;
   flex-direction: column;
   gap: 6px;
   color: var(--text-main);
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 600; /* o rótulo fica em seminegrito */
 }
 
+/* Campos de texto e área de texto. */
 .adopt-field input,
 .adopt-field textarea {
   width: 100%;
@@ -169,15 +216,17 @@
   background: #ffffff;
   color: var(--text-main);
   font: inherit;
-  font-size: 16px;
-  font-weight: 400;
+  font-size: 16px; /* evita zoom automático no iPhone */
+  font-weight: 400; /* texto digitado em peso normal */
 }
 
+/* Área de texto: mais alta e redimensionável só na vertical. */
 .adopt-field textarea {
   min-height: 110px;
   resize: vertical;
 }
 
+/* Foco pelo teclado: contorno e borda verdes. */
 .adopt-field input:focus-visible,
 .adopt-field textarea:focus-visible {
   outline: 2px solid var(--sage);
@@ -185,28 +234,33 @@
   border-color: var(--sage);
 }
 
+/* Campo inválido (aria-invalid="true" colocado pelo JSX): borda avermelhada. */
 .adopt-field [aria-invalid='true'] {
   border-color: #a03c28;
 }
 
+/* Mensagem de erro de um campo. */
 .adopt-error {
   color: #8f3322;
   font-size: 13px;
   font-weight: 500;
 }
 
+/* Dica abaixo de um campo. */
 .adopt-hint {
   color: var(--text-muted);
   font-size: 13px;
   font-weight: 400;
 }
 
+/* Nota informativa. */
 .adopt-note {
   margin: 0;
   color: var(--text-muted);
   font-size: 13px;
 }
 
+/* Campo-isca anti-robô: fora da tela. */
 .adopt-trap {
   position: absolute;
   left: -10000px;
@@ -216,6 +270,7 @@
 }
 
 /* ---------- Perguntas de clique ---------- */
+/* <fieldset> sem a caixa padrão do navegador. */
 .adopt-fieldset {
   min-width: 0;
   margin: 0;
@@ -223,6 +278,7 @@
   border: 0;
 }
 
+/* Pergunta do grupo (<legend>). */
 .adopt-fieldset legend {
   margin-bottom: 10px;
   padding: 0;
@@ -231,6 +287,7 @@
   font-weight: 600;
 }
 
+/* Opções em pílulas, quebrando linha. */
 .adopt-choices {
   display: flex;
   flex-wrap: wrap;
@@ -238,11 +295,12 @@
   margin-bottom: 4px;
 }
 
+/* Cada opção (rótulo com o input dentro). */
 .adopt-choices label {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  min-height: 44px;
+  min-height: 44px; /* área de toque */
   padding: 0 14px;
   border: 1.5px solid rgba(31, 42, 36, 0.2);
   border-radius: 999px;
@@ -251,6 +309,7 @@
   cursor: pointer;
 }
 
+/* Opção marcada. */
 .adopt-choices label.is-selected {
   border-color: var(--sage);
   background: var(--sage-pale);
@@ -258,6 +317,7 @@
   font-weight: 600;
 }
 
+/* O rádio/caixa visível dentro da pílula, na cor da marca. */
 .adopt-choices input {
   width: 16px;
   height: 16px;
@@ -265,11 +325,13 @@
   accent-color: var(--sage);
 }
 
+/* Grupo inválido: as pílulas ganham borda avermelhada. */
 .adopt-fieldset[aria-invalid='true'] .adopt-choices label {
   border-color: rgba(160, 60, 40, 0.55);
 }
 
 /* ---------- Revisão e confirmações ---------- */
+/* Caixa de revisão dos dados. */
 .adopt-review {
   display: flex;
   flex-direction: column;
@@ -280,6 +342,7 @@
   background: var(--bg-primary);
 }
 
+/* Rótulo de cada bloco da revisão. */
 .adopt-review dt {
   color: var(--text-muted);
   font-family: 'IBM Plex Mono', monospace;
@@ -288,17 +351,19 @@
   text-transform: uppercase;
 }
 
+/* Conteúdo + botão "Editar" lado a lado. */
 .adopt-review dd {
   display: flex;
   flex-wrap: wrap;
-  align-items: baseline;
+  align-items: baseline; /* alinha pela linha de base do texto */
   justify-content: space-between;
   gap: 4px 12px;
   margin: 2px 0 0;
   font-size: 15px;
-  overflow-wrap: anywhere;
+  overflow-wrap: anywhere; /* quebra e-mails longos */
 }
 
+/* Botão "Editar" com aparência de link. */
 .adopt-review button {
   min-height: 32px;
   padding: 0;
@@ -313,12 +378,14 @@
   cursor: pointer;
 }
 
+/* Lista das confirmações. */
 .adopt-checks {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
+/* Cada confirmação: caixa com checkbox e texto. */
 .adopt-checks label {
   display: flex;
   align-items: flex-start;
@@ -331,10 +398,12 @@
   cursor: pointer;
 }
 
+/* Confirmação com erro (não marcada no envio). */
 .adopt-checks label.has-error {
   border-color: rgba(160, 60, 40, 0.55);
 }
 
+/* O checkbox da confirmação. */
 .adopt-checks input {
   flex: 0 0 auto;
   width: 20px;
@@ -343,25 +412,29 @@
   accent-color: var(--sage);
 }
 
+/* Alerta de erro geral do envio. */
 .adopt-alert {
   padding: 12px 14px;
   border-radius: var(--radius-md);
-  background: rgba(178, 97, 76, 0.1);
+  background: rgba(178, 97, 76, 0.1); /* vermelho-tijolo bem claro */
   color: #8f4433;
   line-height: 1.5;
 }
 
+/* Mensagem principal do alerta. */
 .adopt-alert p {
   margin: 0;
   font-weight: 600;
 }
 
+/* Lista de detalhes do alerta. */
 .adopt-alert ul {
   margin: 6px 0 0;
   padding-left: 18px;
 }
 
 /* ---------- Navegação entre passos ---------- */
+/* "Voltar" à esquerda e "Continuar/Enviar" à direita. */
 .adopt-nav {
   display: flex;
   align-items: center;
@@ -371,11 +444,13 @@
 }
 
 /* ---------- Confirmação ---------- */
+/* Tela de sucesso centralizada. */
 .adopt-success {
   align-items: center;
   text-align: center;
 }
 
+/* Círculo com o ✓. */
 .adopt-success-icon {
   display: grid;
   place-items: center;
@@ -386,11 +461,13 @@
   color: var(--sage);
 }
 
+/* "Pedido enviado!" */
 .adopt-success h3 {
   margin: 0;
   font-size: 30px;
 }
 
+/* "PRÓXIMOS PASSOS" alinhado à esquerda, ocupando a largura toda. */
 .adopt-success h4 {
   align-self: stretch;
   margin: 6px 0 0;
@@ -403,12 +480,14 @@
   color: var(--sage);
 }
 
+/* Textos da tela de sucesso. */
 .adopt-success p {
   max-width: 34em;
   margin: 0;
   color: var(--text-muted);
 }
 
+/* Caixa do protocolo + botão copiar. */
 .adopt-protocol {
   display: flex;
   flex-wrap: wrap;
@@ -420,6 +499,7 @@
   background: var(--bg-primary);
 }
 
+/* Número do protocolo em fonte monoespaçada. */
 .adopt-protocol strong {
   color: var(--sage-dark);
   font-family: 'IBM Plex Mono', monospace;
@@ -427,6 +507,7 @@
   letter-spacing: 0.04em;
 }
 
+/* Lista dos próximos passos com numeração feita por CONTADOR CSS. */
 .adopt-next {
   display: flex;
   flex-direction: column;
@@ -434,11 +515,12 @@
   align-self: stretch;
   margin: 0;
   padding: 0;
-  counter-reset: passo;
-  list-style: none;
+  counter-reset: passo; /* cria (zera) um contador chamado "passo" */
+  list-style: none; /* sem a numeração padrão */
   text-align: left;
 }
 
+/* Cada item soma 1 no contador. */
 .adopt-next li {
   display: flex;
   align-items: flex-start;
@@ -447,6 +529,7 @@
   font-size: 15px;
 }
 
+/* O número de cada item (counter(passo)) desenhado num círculo verde. */
 .adopt-next li::before {
   content: counter(passo);
   display: grid;
@@ -461,6 +544,7 @@
   font-weight: 700;
 }
 
+/* Botões finais. */
 .adopt-actions {
   display: flex;
   flex-wrap: wrap;
@@ -471,11 +555,13 @@
 
 /* ---------- Celular ---------- */
 @media (max-width: 640px) {
+  /* Fundo vira a própria página (sem margens). */
   .adopt-backdrop {
     padding: 0;
     background: var(--paper);
   }
 
+  /* Cartão ocupa a tela inteira. */
   .adopt-modal {
     min-height: 100%;
     border-radius: 0;
@@ -496,6 +582,7 @@
     padding: 18px 16px 24px;
   }
 
+  /* Campos em uma coluna. */
   .adopt-grid {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -506,20 +593,47 @@
 
   /* Navegação presa ao pé da tela, sempre ao alcance do polegar. */
   .adopt-nav {
-    position: sticky;
+    position: sticky; /* gruda no fim da área rolável */
     bottom: 0;
-    margin: 0 -16px -24px;
+    margin: 0 -16px -24px; /* estica até as bordas (anula o padding do corpo) */
+    /* calc(12px + área segura do iPhone) evita que a barra fique sob a "barrinha" do sistema. */
     padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
     border-top: 1px solid var(--line);
     background: var(--paper);
   }
 
+  /* Botão principal ocupa o espaço restante. */
   .adopt-nav .catalog-primary-button {
     flex: 1;
   }
 
+  /* Botões finais com largura total ("> *" = todos os filhos diretos). */
   .adopt-actions,
   .adopt-actions > * {
     width: 100%;
   }
 }
+
+/*
+ * ============================================================================
+ * RESUMO DO ARQUIVO
+ * ============================================================================
+ *
+ * COMO FUNCIONA:
+ *   - Um fundo fixo cobre a página e o cartão fica centralizado, com rolagem própria.
+ *   - O progresso usa barrinhas (::before) que ficam verdes conforme o passo.
+ *   - Campos e grupos inválidos são destacados por seletores de atributo
+ *     ([aria-invalid='true']), ligados à acessibilidade do JSX.
+ *   - A lista de próximos passos é numerada por contador CSS.
+ *   - No celular, o formulário ocupa a tela toda e os botões ficam fixos embaixo (sticky).
+ *
+ * CONCEITOS IMPORTANTES PARA ESTUDAR:
+ *   - position: fixed x sticky; overflow e seu efeito no sticky.
+ *   - isolation: isolate e contextos de empilhamento.
+ *   - Pseudo-elementos ::before com content '' e com counter().
+ *   - Contadores CSS (counter-reset, counter-increment, counter()).
+ *   - Seletores de atributo ([aria-invalid='true']) e de filho direto (> *).
+ *   - Formulários: resize, accent-color, :focus-visible.
+ *   - env(safe-area-inset-bottom) e calc().
+ * ============================================================================
+ */

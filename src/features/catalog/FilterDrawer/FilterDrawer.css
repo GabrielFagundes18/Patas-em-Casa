@@ -1,93 +1,126 @@
+/*
+ * ============================================================================
+ * ARQUIVO: FilterDrawer.css
+ * ============================================================================
+ *
+ * PARA QUE SERVE:
+ *   Estilos da gaveta de filtros do catálogo (componente FilterDrawer): o fundo
+ *   escurecido (overlay), o painel lateral fixo, o cabeçalho, os grupos de
+ *   opções em formato de pílula, as caixas de seleção e o rodapé com os botões.
+ *
+ * PRINCIPAIS REGRAS:
+ *   - .filter-drawer (e foco dos controles), .drawer-overlay
+ *   - .drawer-header, .drawer-content, .drawer-footer
+ *   - .filter-group, .filter-options, .filter-option, .urgent-toggle, .check-row
+ *
+ * CONEXÕES COM OUTROS ARQUIVOS:
+ *   - Importado por: features/catalog/FilterDrawer/FilterDrawer.jsx.
+ *   - .drawer-overlay é usado em features/catalog/AdoptionCatalog.jsx.
+ *   - Usa variáveis (--paper, --line, --ink-soft, --sage-dark...) de styles/globals.css.
+ * ============================================================================
+ */
+
 /* O quê: evita que a rolagem do drawer atravesse para a página.
   Como: overscroll-behavior contain limita o encadeamento e as regras seguintes padronizam foco.
   Para quê: manter o usuário no contexto de filtros, inclusive com teclado. */
 .filter-drawer {
-  overscroll-behavior: contain;
+  overscroll-behavior: contain; /* ao chegar no fim da rolagem da gaveta, a página de trás não rola */
 }
 
+/* Contorno de foco (teclado) nos controles da gaveta. */
 .filter-drawer button:focus-visible,
 .filter-drawer input:focus-visible,
 .filter-drawer select:focus-visible {
-  outline: 2px solid var(--amber);
-  outline-offset: 2px;
+  outline: 2px solid var(--amber); /* contorno âmbar */
+  outline-offset: 2px; /* afastado 2px */
 }
 
 /* O quê: camada de fundo, painel lateral e grupos de opções da gaveta de filtros.
   Como: position fixed acima da página; opções em pílulas com estado pressionado.
   Para quê: editar filtros sem perder a posição no catálogo. (Vinham do CSS do catálogo.) */
+/* Fundo escurecido atrás da gaveta (é um botão: clicar nele fecha a gaveta). */
 .drawer-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 60;
-  border: 0;
-  background: rgba(31, 42, 36, 0.35);
+  position: fixed; /* fixo na janela */
+  inset: 0; /* cobre a tela inteira */
+  z-index: 60; /* acima da página */
+  border: 0; /* sem borda de botão */
+  background: rgba(31, 42, 36, 0.35); /* escuro com 35% de opacidade */
 }
 
+/* O painel da gaveta (a regra .filter-drawer aparece duas vezes; as propriedades se somam). */
 .filter-drawer {
-  position: fixed;
-  z-index: 61;
-  top: 0;
-  right: 0;
-  display: flex;
+  position: fixed; /* fixo na janela */
+  z-index: 61; /* acima do fundo escurecido */
+  top: 0; /* encostado no topo... */
+  right: 0; /* ...e na direita */
+  display: flex; /* coluna: cabeçalho, conteúdo, rodapé */
   flex-direction: column;
-  width: min(420px, 100%);
-  height: 100vh;
-  height: 100dvh;
-  background: var(--paper);
-  box-shadow: var(--shadow-main);
+  width: min(420px, 100%); /* 420px, mas nunca mais que a tela */
+  height: 100vh; /* altura da janela (valor reserva para navegadores antigos)... */
+  height: 100dvh; /* ...e a "altura dinâmica" (considera barras do celular). A última declaração válida vence. */
+  background: var(--paper); /* fundo de cartão */
+  box-shadow: var(--shadow-main); /* sombra */
 }
 
+/* Cabeçalho: título à esquerda e X à direita. */
 .drawer-header {
   display: flex;
   justify-content: space-between;
   gap: 12px;
   padding: 28px 28px 18px;
-  border-bottom: 1px solid var(--line);
+  border-bottom: 1px solid var(--line); /* linha separadora */
 }
 
+/* Título da gaveta. */
 .drawer-header h2 {
   margin-top: 8px;
   font-size: 26px;
 }
 
+/* Área dos filtros: ocupa o espaço que sobra e tem rolagem própria. */
 .drawer-content {
-  flex: 1;
-  overflow: auto;
+  flex: 1; /* cresce para preencher entre cabeçalho e rodapé */
+  overflow: auto; /* barra de rolagem quando o conteúdo passar da altura */
   padding: 6px 28px;
 }
 
+/* Cada grupo de filtros com linha separadora embaixo. */
 .filter-group {
   padding: 20px 0;
   border-bottom: 1px solid var(--line);
 }
 
+/* O último grupo não tem linha. */
 .filter-group:last-child {
   border-bottom: 0;
 }
 
+/* Título do grupo ("ESPÉCIE", "PORTE"...). */
 .filter-group h3 {
   margin-bottom: 12px;
   color: var(--ink-soft);
-  font: 600 12px 'IBM Plex Mono', monospace;
+  font: 600 12px 'IBM Plex Mono', monospace; /* atalho: peso 600, 12px, fonte monoespaçada */
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
+/* Opções lado a lado, quebrando linha. */
 .filter-options {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
 }
 
+/* Botões de opção e o botão "apenas urgentes": pílulas contornadas. */
 .filter-option,
 .urgent-toggle {
   display: flex;
   align-items: center;
   gap: 7px;
-  min-height: 44px;
+  min-height: 44px; /* área de toque */
   padding: 0 14px;
   border: 1px solid var(--line);
-  border-radius: 999px;
+  border-radius: 999px; /* pílula */
   background: transparent;
   color: var(--sage-dark);
   font: inherit;
@@ -95,11 +128,13 @@
   cursor: pointer;
 }
 
+/* Dica pequena dentro da opção (ex.: "até 1 ano"). */
 .filter-option small {
   color: var(--ink-soft);
   font-size: 12px;
 }
 
+/* Opção marcada: preenchida de verde escuro com texto claro. */
 .filter-option.active,
 .urgent-toggle.active {
   border-color: var(--sage-dark);
@@ -107,14 +142,17 @@
   color: var(--bg-card);
 }
 
+/* Dica dentro de uma opção marcada: clara para contrastar com o fundo escuro. */
 .filter-option.active small {
   color: rgba(255, 250, 243, 0.8);
 }
 
+/* O botão "apenas urgentes" usa o vermelho de alerta quando desmarcado. */
 .urgent-toggle {
   color: var(--brick-dark);
 }
 
+/* Linha com caixa de seleção e texto (Castrado / Vacinado). */
 .check-row {
   display: flex;
   align-items: center;
@@ -124,12 +162,14 @@
   font-size: 15px;
 }
 
+/* A caixa de seleção, maior e na cor da marca. */
 .check-row input {
   width: 18px;
   height: 18px;
   accent-color: var(--sage);
 }
 
+/* Rodapé com os dois botões. */
 .drawer-footer {
   display: flex;
   gap: 10px;
@@ -137,6 +177,28 @@
   border-top: 1px solid var(--line);
 }
 
+/* Cada botão do rodapé ocupa metade do espaço. */
 .drawer-footer button {
   flex: 1;
 }
+
+/*
+ * ============================================================================
+ * RESUMO DO ARQUIVO
+ * ============================================================================
+ *
+ * COMO FUNCIONA:
+ *   Um fundo escuro fixo cobre a página e, por cima, a gaveta fixa à direita
+ *   ocupa a altura da tela. A gaveta é uma coluna: cabeçalho, conteúdo com rolagem
+ *   própria (flex: 1 + overflow: auto) e rodapé. As opções são pílulas que ficam
+ *   preenchidas quando marcadas.
+ *
+ * CONCEITOS IMPORTANTES PARA ESTUDAR:
+ *   - position: fixed, inset e z-index (camadas).
+ *   - Unidades vh x dvh (viewport dinâmica no celular) e "fallback" de declarações.
+ *   - Layout em coluna com uma área rolável no meio (flex: 1 + overflow: auto).
+ *   - overscroll-behavior: contain.
+ *   - Estados visuais (.active) ligados ao aria-pressed do JSX.
+ *   - accent-color e :focus-visible.
+ * ============================================================================
+ */

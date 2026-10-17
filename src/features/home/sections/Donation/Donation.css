@@ -1,55 +1,85 @@
+/*
+ * ============================================================================
+ * ARQUIVO: Donation.css (seção da página inicial)
+ * ============================================================================
+ *
+ * PARA QUE SERVE:
+ *   Estilos da seção de doação da página inicial (componente Donation): faixa
+ *   verde, lista de necessidades, cartão claro "Doar online" com botões de rádio
+ *   com aparência de botões (tipo e valor) e o botão de envio.
+ *
+ * PRINCIPAIS REGRAS:
+ *   - .home-donate, .home-donate-layout, .home-donate-copy, .home-donate-needs
+ *   - .home-donate-card, .home-segmented, .home-amounts, .home-donate-submit, .home-donate-note
+ *   - :has(input:focus-visible) → contorno de foco no rótulo
+ *   - @media 860px e 420px
+ *
+ * CONEXÕES COM OUTROS ARQUIVOS:
+ *   - Importado por: features/home/sections/Donation/Donation.jsx.
+ *   - Ajusta .home-eyebrow, .home-title e .home-lead de features/home/LandingPage.css.
+ * ============================================================================
+ */
+
 /* O quê: seção de doação da Home: texto e necessidades à esquerda, cartão "Doar online" à direita.
   Como: faixa verde com o cartão claro; tipo e valor são rádios com aparência de botões.
   Para quê: mostrar para onde vai o dinheiro e encurtar o caminho até o pagamento. */
 .home-donate {
-  background: var(--sage);
-  color: var(--bg-card);
+  background: var(--sage); /* faixa verde */
+  color: var(--bg-card); /* texto claro */
 }
 
+/* Duas colunas com quebra automática. */
 .home-donate-layout {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
+  flex-wrap: wrap; /* vira uma coluna quando não couber */
+  align-items: center; /* centraliza na vertical */
   gap: 48px 72px;
 }
 
+/* Coluna de texto. */
 .home-donate-copy {
   display: flex;
-  flex: 1 1 400px;
+  flex: 1 1 400px; /* base de 400px, pode crescer e encolher */
   flex-direction: column;
   gap: 20px;
   min-width: 0;
 }
 
+/* Sobre o fundo verde, o rótulo fica âmbar claro... */
 .home-donate .home-eyebrow {
   color: var(--amber-light);
 }
 
+/* ...o título fica claro... */
 .home-donate .home-title {
   color: var(--bg-card);
 }
 
+/* ...e o texto fica claro com leve transparência. */
 .home-donate .home-lead {
   color: rgba(255, 250, 243, 0.85);
 }
 
+/* Lista de necessidades em 2 colunas. */
 .home-donate-needs {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px 24px;
   margin: 0 0 8px;
   padding: 0;
-  list-style: none;
+  list-style: none; /* sem marcadores (usamos o ícone ✓) */
   font-size: 15px;
   font-weight: 500;
 }
 
+/* Cada necessidade: ícone + texto lado a lado. */
 .home-donate-needs li {
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
+/* Ícone ✓ em âmbar claro, com tamanho fixo. */
 .home-donate-needs svg {
   flex: 0 0 auto;
   color: var(--amber-light);
@@ -58,71 +88,79 @@
 /* ---------- Cartão "Doar online" ---------- */
 .home-donate-card {
   display: flex;
-  flex: 1 1 380px;
-  flex-direction: column;
+  flex: 1 1 380px; /* base de 380px */
+  flex-direction: column; /* itens empilhados */
   gap: 20px;
-  max-width: 460px;
+  max-width: 460px; /* largura máxima */
   min-width: 0;
-  padding: clamp(22px, 3vw, 36px);
-  border-radius: 28px;
-  background: var(--bg-card);
-  box-shadow: 0 26px 60px rgba(0, 0, 0, 0.2);
-  color: var(--text-main);
+  padding: clamp(22px, 3vw, 36px); /* espaço interno fluido */
+  border-radius: 28px; /* cantos arredondados */
+  background: var(--bg-card); /* fundo claro */
+  box-shadow: 0 26px 60px rgba(0, 0, 0, 0.2); /* sombra forte, destaca do fundo verde */
+  color: var(--text-main); /* texto escuro */
 }
 
+/* Título do cartão. */
 .home-donate-card h3 {
   margin: 0;
   font-size: 26px;
 }
 
+/* "Controle segmentado" (Única | Mensal): uma pílula com duas metades. */
 .home-segmented {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr)); /* duas metades iguais */
   gap: 4px;
-  padding: 4px;
-  border-radius: 999px;
-  background: var(--sage-pale);
+  padding: 4px; /* "trilho" em volta das opções */
+  border-radius: 999px; /* pílula */
+  background: var(--sage-pale); /* fundo verde claro */
 }
 
+/* Cada opção do controle segmentado. */
 .home-segmented label {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 44px;
+  min-height: 44px; /* área de toque */
   border-radius: 999px;
   color: var(--sage);
   font-size: 15px;
   font-weight: 600;
-  cursor: pointer;
+  cursor: pointer; /* o rótulo inteiro é clicável */
 }
 
+/* Opção marcada: fundo verde e texto claro. */
 .home-segmented label.is-selected {
   background: var(--sage);
   color: var(--bg-card);
 }
 
+/* Grade de valores: 3 colunas. */
 .home-amounts {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px;
 }
 
+/* Cada valor parece um botão. */
 .home-amounts label {
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 52px;
-  border: 1.5px solid rgba(31, 42, 36, 0.18);
+  border: 1.5px solid rgba(31, 42, 36, 0.18); /* borda discreta */
   border-radius: 14px;
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
 }
 
+/* "Outro valor" ocupa 2 colunas da grade. */
 .home-amounts label.is-wide {
   grid-column: span 2;
 }
 
+/* Valor marcado: borda e fundo verdes. */
 .home-amounts label.is-selected {
   border-color: var(--sage);
   background: var(--sage-pale);
@@ -130,21 +168,24 @@
   font-weight: 700;
 }
 
+/* ":has()" seleciona o PAI que contém algo: aqui, o <label> cujo rádio (escondido) está com foco
+   pelo teclado. Assim o contorno de foco aparece no "botão" visível. */
 .home-segmented label:has(input:focus-visible),
 .home-amounts label:has(input:focus-visible) {
   outline: 2px solid var(--amber-dark);
   outline-offset: 2px;
 }
 
+/* Botão "Doar R$ ..." */
 .home-donate-submit {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
-  min-height: 56px;
+  min-height: 56px; /* bem alto: é a ação principal */
   border: 0;
   border-radius: 999px;
-  background: var(--sage-dark);
+  background: var(--sage-dark); /* verde escuro */
   color: var(--bg-card);
   font: inherit;
   font-size: 17px;
@@ -152,10 +193,12 @@
   cursor: pointer;
 }
 
+/* Botão no hover: quase preto. */
 .home-donate-submit:hover {
   background: var(--text-main);
 }
 
+/* Observação sobre o pagamento (ícone + texto). */
 .home-donate-note {
   display: flex;
   gap: 8px;
@@ -165,20 +208,44 @@
   line-height: 1.45;
 }
 
+/* Ícone do escudo, tamanho fixo e verde. */
 .home-donate-note svg {
   flex: 0 0 auto;
   color: var(--sage);
 }
 
+/* Até 860px: o cartão pode ocupar toda a largura. */
 @media (max-width: 860px) {
   .home-donate-card {
     max-width: none;
   }
 }
 
+/* Até 420px: lista de necessidades mais compacta. */
 @media (max-width: 420px) {
   .home-donate-needs {
     gap: 10px 12px;
     font-size: 14px;
   }
 }
+
+/*
+ * ============================================================================
+ * RESUMO DO ARQUIVO
+ * ============================================================================
+ *
+ * COMO FUNCIONA:
+ *   A faixa verde tem duas colunas flexíveis: texto (com lista de necessidades e
+ *   Pix) e o cartão do formulário. Os rádios ficam escondidos e os <label> fazem o
+ *   papel visual de botões; a classe "is-selected" (definida no JSX) marca a opção
+ *   escolhida e :has(input:focus-visible) mostra o foco do teclado.
+ *
+ * CONCEITOS IMPORTANTES PARA ESTUDAR:
+ *   - Estilizar rádios como botões (label + input escondido).
+ *   - Pseudo-classe :has() (seletor de "pai").
+ *   - Controle segmentado com CSS Grid.
+ *   - grid-column: span 2.
+ *   - Layout flexível com flex-wrap e flex-basis.
+ *   - Sobrescrever estilos de componentes compartilhados por contexto (.home-donate .home-title).
+ * ============================================================================
+ */

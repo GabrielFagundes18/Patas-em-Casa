@@ -1,42 +1,70 @@
+/*
+ * ============================================================================
+ * ARQUIVO: PetSection.css
+ * ============================================================================
+ *
+ * PARA QUE SERVE:
+ *   Estilos da vitrine de animais da página inicial (componente PetSection):
+ *   organização com áreas nomeadas do CSS Grid, mensagens de estado e a grade
+ *   de cartões, que no celular vira uma fileira deslizável na horizontal.
+ *
+ * PRINCIPAIS REGRAS:
+ *   - .home-pets-layout (grade com áreas "head", "more" e "grid")
+ *   - .home-pets-more, .home-pets-state, .home-pets-grid
+ *   - @media 1024px e 640px
+ *
+ * CONEXÕES COM OUTROS ARQUIVOS:
+ *   - Importado por: features/home/sections/PetSection/PetSection.jsx.
+ *   - Ajusta o .animal-card de shared/components/AnimalCard/AnimalCard.css no celular.
+ * ============================================================================
+ */
+
 /* O quê: vitrine da Home: cabeçalho com o link "Ver todos" e 4 cartões de animais (AnimalCard).
   Como: grade com áreas nomeadas; no celular o link vai para baixo dos cartões, que viram uma fileira deslizável.
   Para quê: mostrar os casos urgentes primeiro e levar ao catálogo completo. */
 .home-pets-layout {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  display: grid; /* CSS Grid */
+  grid-template-columns: minmax(0, 1fr) auto; /* coluna flexível + coluna do tamanho do botão */
+  /* "Desenho" da grade com nomes: 1ª linha = cabeçalho | botão; 2ª linha = cartões ocupando as 2 colunas. */
   grid-template-areas:
     'head more'
     'grid grid';
-  align-items: end;
-  gap: 40px 32px;
+  align-items: end; /* alinha os itens pela base da linha */
+  gap: 40px 32px; /* 40px entre linhas, 32px entre colunas */
 }
 
+/* O cabeçalho (filho direto) vai para a área "head". */
 .home-pets-layout > .home-head {
   grid-area: head;
 }
 
+/* O botão "ver todos" vai para a área "more". */
 .home-pets-more {
   grid-area: more;
 }
 
+/* Cartões e mensagens de estado ocupam a área "grid". */
 .home-pets-grid,
 .home-pets-state {
   grid-area: grid;
 }
 
+/* Caixa das mensagens (carregando, erro, vazio). */
 .home-pets-state {
   margin: 0;
-  padding: 32px;
-  border: 1px dashed var(--border-color);
-  border-radius: 22px;
-  color: var(--text-muted);
-  text-align: center;
+  padding: 32px; /* espaço interno */
+  border: 1px dashed var(--border-color); /* borda tracejada */
+  border-radius: 22px; /* cantos arredondados */
+  color: var(--text-muted); /* texto discreto */
+  text-align: center; /* centralizado */
 }
 
+/* Mensagem de erro em tom avermelhado. */
 .home-pets-state.is-error {
   color: #7a2f1f;
 }
 
+/* Grade de cartões: 4 colunas iguais. */
 .home-pets-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -44,13 +72,16 @@
 }
 
 /* ---------- Responsivo ---------- */
+/* Até 1024px: 2 colunas de cartões. */
 @media (max-width: 1024px) {
   .home-pets-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
+/* Até 640px (celulares). */
 @media (max-width: 640px) {
+  /* Uma coluna; o botão "ver todos" desce para depois dos cartões. */
   .home-pets-layout {
     grid-template-columns: minmax(0, 1fr);
     grid-template-areas:
@@ -60,28 +91,51 @@
     gap: 24px;
   }
 
+  /* Botão ocupa a largura toda. */
   .home-pets-more {
     width: 100%;
   }
 
   /* Fileira deslizável que encosta nas bordas da tela. */
   .home-pets-grid {
-    display: flex;
-    gap: 14px;
-    margin: 0 -24px;
-    padding: 0 24px 8px;
-    overflow-x: auto;
-    scroll-padding-left: 24px;
-    scroll-snap-type: x mandatory;
+    display: flex; /* troca a grade por uma fileira flex */
+    gap: 14px; /* espaço entre cartões */
+    margin: 0 -24px; /* margem negativa: estica até as bordas da tela (anula o padding do .wrap) */
+    padding: 0 24px 8px; /* devolve o espaço interno nas laterais */
+    overflow-x: auto; /* permite rolar na horizontal */
+    scroll-padding-left: 24px; /* ao "encaixar", deixa 24px de folga à esquerda */
+    scroll-snap-type: x mandatory; /* ao soltar o dedo, a rolagem "encaixa" num cartão */
   }
 
+  /* Cada cartão tem largura fixa (264px ou 78% da tela, o que for menor) e é ponto de encaixe. */
   .home-pets-grid > .animal-card {
-    flex: 0 0 min(264px, 78%);
-    scroll-snap-align: start;
+    flex: 0 0 min(264px, 78%); /* não cresce, não encolhe */
+    scroll-snap-align: start; /* encaixa pelo início do cartão */
   }
 
+  /* No celular, os cartões não "sobem" no hover/foco (evita cortes na fileira). */
   .home-pets-grid > .animal-card:hover,
   .home-pets-grid > .animal-card:focus-within {
     transform: none;
   }
 }
+
+/*
+ * ============================================================================
+ * RESUMO DO ARQUIVO
+ * ============================================================================
+ *
+ * COMO FUNCIONA:
+ *   - No computador: grade com cabeçalho e botão na primeira linha, e 4 cartões
+ *     (2 em telas médias) na segunda.
+ *   - No celular: tudo em uma coluna, com os cartões numa fileira horizontal
+ *     deslizável que "encaixa" a cada cartão e o botão no final.
+ *
+ * CONCEITOS IMPORTANTES PARA ESTUDAR:
+ *   - grid-template-areas e grid-area (áreas nomeadas).
+ *   - Reorganizar o layout só com CSS em media queries.
+ *   - Rolagem horizontal com overflow-x e Scroll Snap (scroll-snap-type / scroll-snap-align).
+ *   - Margem negativa para "sangrar" até a borda da tela.
+ *   - Seletor de filho direto (>).
+ * ============================================================================
+ */

@@ -1,7 +1,34 @@
+/*
+ * ============================================================================
+ * ARQUIVO: AdoptionsPage.test.js
+ * ============================================================================
+ *
+ * PARA QUE SERVE:
+ *   Testes automatizados da tela de pedidos de adoção e da janela de detalhes:
+ *   lista com filtros, detalhes com histórico, recusa com justificativa,
+ *   agendamento (com e sem e-mail) e remarcação/cancelamento de compromissos.
+ *
+ * PRINCIPAIS ITENS:
+ *   - manager: usuário com todas as permissões de adoção.
+ *   - request, detail: pedido de exemplo (resumo da lista e detalhe completo).
+ *   - openDetail(): desenha a tela e abre a janela de detalhes.
+ *   - 6 testes.
+ *
+ * CONEXÕES COM OUTROS ARQUIVOS:
+ *   - ./AdoptionsPage.jsx (e indiretamente ./AdoptionDetailDialog.jsx) → telas testadas.
+ *   - ./adoptionService → substituído por mocks.
+ * ============================================================================
+ */
+
+// Verificações extras.
 import '@testing-library/jest-dom';
+// Ferramentas da Testing Library.
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+// Roteador de memória (a tela usa filtros na URL).
 import { MemoryRouter } from 'react-router-dom';
+// Tela testada.
 import AdoptionsPage from './AdoptionsPage';
+// Funções de API usadas nas verificações (viram mocks).
 import {
   cancelAppointment,
   getAdoptionRequest,
@@ -11,6 +38,7 @@ import {
   scheduleAdoptionRequest,
 } from './adoptionService';
 
+// Substitui todas as funções do service.
 jest.mock('./adoptionService', () => ({
   approveAdoptionRequest: jest.fn(),
   getAdoptionRequest: jest.fn(),
@@ -23,8 +51,10 @@ jest.mock('./adoptionService', () => ({
   completeAppointment: jest.fn(),
 }));
 
+// Usuário gestor (pode ler, agendar, decidir e revelar contatos).
 const manager = { permissions: ['adoptions:read', 'adoptions:update', 'adoptions:approve', 'adopters:reveal'] };
 
+// Pedido como aparece na lista (e-mail mascarado).
 const request = {
   id: 'p1',
   status: 'visita_agendada',
@@ -36,19 +66,23 @@ const request = {
   responsavel: { id: 'u1', nome: 'Carla' },
 };
 
+// Teste 1: lista com status traduzido e filtro gravado na URL.
 test('lists adoption requests from the API with translated status and filters in the URL', async () => {
   listAdoptionRequests.mockResolvedValue({ items: [request], meta: { page: 1, pageSize: 20, total: 1, totalPages: 1 } });
   render(<MemoryRouter><AdoptionsPage /></MemoryRouter>);
 
   expect(await screen.findByText('Ana Souza')).toBeInTheDocument();
+  // Selos traduzidos (procurados só em elementos com a classe .admin-badge).
   expect(screen.getByText('Visita agendada', { selector: '.admin-badge' })).toBeInTheDocument();
   expect(screen.getByText('Alta', { selector: '.admin-badge' })).toBeInTheDocument();
   expect(screen.getByText('Campinas / SP')).toBeInTheDocument();
 
+  // Muda o filtro de status: nova busca com status=novo e página 1.
   fireEvent.change(screen.getByRole('combobox', { name: /status/i }), { target: { value: 'novo' } });
   await waitFor(() => expect(listAdoptionRequests).toHaveBeenLastCalledWith(expect.objectContaining({ status: 'novo', page: '1' })));
 });
 
+// Detalhe completo do pedido (baseado no "request", com mudanças via spread).
 const detail = {
   ...request,
   status: 'novo',
@@ -59,6 +93,10 @@ const detail = {
   agendamentos: [],
 };
 
+/*
+ * FUNÇÃO AUXILIAR: openDetail
+ * O que faz: prepara os mocks, desenha a tela como gestor e abre os detalhes do pedido.
+ */
 async function openDetail() {
   listAdoptionRequests.mockResolvedValue({ items: [request], meta: { page: 1, pageSize: 20, total: 1, totalPages: 1 } });
   getAdoptionRequest.mockResolvedValue(detail);
@@ -68,6 +106,7 @@ async function openDetail() {
   expect(await screen.findByRole('heading', { name: 'Ana Souza quer adotar Nino' })).toBeInTheDocument();
 }
 
+// Teste 2: detalhes com respostas e histórico, contato mascarado e botão de revelar.
 test('shows the full request with the form answers and history', async () => {
   await openDetail();
 
@@ -77,25 +116,32 @@ test('shows the full request with the form answers and history', async () => {
   expect(screen.getByRole('button', { name: /mostrar contatos completos/i })).toBeInTheDocument();
 });
 
+// Teste 3: recusar exige justificativa, envia a decisão e recarrega a lista.
 test('declining a request requires a justification and refreshes the list', async () => {
   await openDetail();
   rejectAdoptionRequest.mockResolvedValue({ ...detail, status: 'reprovado', email: { enviado: true, para: 'an***@example.org' } });
 
+  // Abre o painel de recusa, preenche e confirma.
   fireEvent.click(screen.getByRole('button', { name: 'Recusar' }));
   fireEvent.change(screen.getByRole('textbox', { name: /justificativa/i }), { target: { value: 'Ambiente sem segurança para o animal.' } });
   fireEvent.change(screen.getByRole('textbox', { name: /mensagem para o adotante/i }), { target: { value: 'Obrigado pelo carinho!' } });
   fireEvent.click(screen.getByRole('button', { name: 'Confirmar recusa' }));
 
+  // Aviso de sucesso com o e-mail enviado.
   expect(await screen.findByText('Pedido recusado. E-mail enviado para an***@example.org.')).toBeInTheDocument();
+  // Corpo enviado à API.
   expect(rejectAdoptionRequest).toHaveBeenCalledWith('p1', {
     justificativa: 'Ambiente sem segurança para o animal.',
     notificar_adotante: true,
     mensagem_adotante: 'Obrigado pelo carinho!',
   });
+  // O pedido agora aparece como decidido.
   expect(screen.getByText(/já foi decidido/)).toBeInTheDocument();
+  // A lista foi recarregada (2ª chamada).
   await waitFor(() => expect(listAdoptionRequests).toHaveBeenCalledTimes(2));
 });
 
+// Teste 4: agendar visita com e-mail, e avisar quando o e-mail não pôde ser enviado.
 test('scheduling a visit sends the email option and reports when the email could not be sent', async () => {
   await openDetail();
   scheduleAdoptionRequest.mockResolvedValue({
@@ -104,10 +150,12 @@ test('scheduling a visit sends the email option and reports when the email could
   });
 
   fireEvent.click(screen.getByRole('button', { name: /agendar visita ou entrevista/i }));
+  // Data no futuro distante (2099) para não ser recusada como passada.
   fireEvent.change(screen.getByLabelText(/data e horário/i), { target: { value: '2099-10-10T14:00' } });
   fireEvent.change(screen.getByRole('textbox', { name: /endereço da visita/i }), { target: { value: 'Rua das Flores, 10' } });
   fireEvent.click(screen.getByRole('button', { name: 'Agendar e enviar e-mail' }));
 
+  // Aviso de atenção: agendou, mas o e-mail falhou.
   expect(await screen.findByText(/Visita agendada, mas o e-mail não foi enviado/)).toBeInTheDocument();
   expect(scheduleAdoptionRequest).toHaveBeenCalledWith('p1', {
     tipo: 'visita',
@@ -119,6 +167,7 @@ test('scheduling a visit sends the email option and reports when the email could
   });
 });
 
+// Teste 5: entrevista sem envio de e-mail.
 test('an interview can be scheduled without sending an email', async () => {
   await openDetail();
   scheduleAdoptionRequest.mockResolvedValue({ pedido: { ...detail, status: 'em_analise' }, email: null });
@@ -126,6 +175,7 @@ test('an interview can be scheduled without sending an email', async () => {
   fireEvent.click(screen.getByRole('button', { name: /agendar visita ou entrevista/i }));
   fireEvent.click(screen.getByRole('radio', { name: 'Entrevista' }));
   fireEvent.change(screen.getByLabelText(/data e horário/i), { target: { value: '2099-10-11T09:30' } });
+  // Desmarca o envio de e-mail (o botão passa a se chamar só "Agendar").
   fireEvent.click(screen.getByRole('checkbox', { name: /enviar e-mail a ana/i }));
   fireEvent.click(screen.getByRole('button', { name: 'Agendar' }));
 
@@ -133,7 +183,9 @@ test('an interview can be scheduled without sending an email', async () => {
   expect(scheduleAdoptionRequest).toHaveBeenCalledWith('p1', expect.objectContaining({ tipo: 'entrevista', enviar_email: false }));
 });
 
+// Teste 6: remarcar e cancelar um compromisso pela janela de detalhes.
 test('appointments can be rescheduled and cancelled from the request detail', async () => {
+  // Um compromisso de visita já marcado.
   const appointment = {
     id: 'ag1', tipo: 'visita', status: 'agendado', previsto_em: '2099-10-10T17:00:00.000Z', data_hora: '2099-10-10T14:00',
     duracao_minutos: 60, local: 'Rua A, 1', mensagem: null, responsavel: { id: 'u1', nome: 'Carla' },
@@ -144,10 +196,12 @@ test('appointments can be rescheduled and cancelled from the request detail', as
   cancelAppointment.mockResolvedValue({ pedido: { ...detail, status: 'em_analise', agendamentos: [{ ...appointment, status: 'cancelado' }] }, email: null });
   render(<MemoryRouter><AdoptionsPage user={manager} /></MemoryRouter>);
 
+  // Abre os detalhes e confere a agenda.
   fireEvent.click(await screen.findByRole('button', { name: /ver detalhes do pedido de ana souza/i }));
   expect(await screen.findByText(/Sugestão do adotante para a visita/)).toBeInTheDocument();
   expect(screen.getByText(/Rua A, 1 · com Carla/)).toBeInTheDocument();
 
+  // Remarcar: o campo começa com o horário atual; muda, desmarca o e-mail e salva.
   fireEvent.click(screen.getByRole('button', { name: 'Remarcar' }));
   expect(screen.getByLabelText(/^novo horário/i)).toHaveValue('2099-10-10T14:00');
   fireEvent.change(screen.getByLabelText(/^novo horário/i), { target: { value: '2099-10-11T09:00' } });
@@ -156,6 +210,7 @@ test('appointments can be rescheduled and cancelled from the request detail', as
   expect(await screen.findByText('Visita remarcada.')).toBeInTheDocument();
   expect(rescheduleAppointment).toHaveBeenCalledWith('p1', 'ag1', expect.objectContaining({ data_hora: '2099-10-11T09:00', enviar_email: false }));
 
+  // Cancelar (com motivo e e-mail).
   getAdoptionRequest.mockResolvedValue({ ...detail, status: 'visita_agendada', agendamentos: [appointment] });
   fireEvent.click(screen.getByRole('button', { name: 'Cancelar' }));
   fireEvent.change(screen.getByRole('textbox', { name: /motivo/i }), { target: { value: 'Adotante viajou.' } });
@@ -163,3 +218,22 @@ test('appointments can be rescheduled and cancelled from the request detail', as
   expect(await screen.findByText('Visita cancelada.')).toBeInTheDocument();
   expect(cancelAppointment).toHaveBeenCalledWith('p1', 'ag1', { motivo: 'Adotante viajou.', enviar_email: true });
 });
+
+/*
+ * ============================================================================
+ * RESUMO DO ARQUIVO
+ * ============================================================================
+ *
+ * COMO O FLUXO FUNCIONA:
+ *   Os testes simulam um gestor usando a tela: filtrar a lista, abrir um pedido,
+ *   recusar, agendar e gerenciar a agenda. Cada ação confere o que foi enviado à
+ *   API (mocks) e o aviso exibido na janela.
+ *
+ * CONCEITOS IMPORTANTES PARA ESTUDAR:
+ *   - Funções auxiliares assíncronas de teste (openDetail).
+ *   - Testes de fluxos completos (integração entre lista e janela).
+ *   - Verificar o corpo exato enviado à API (toHaveBeenCalledWith) x parcial (objectContaining).
+ *   - Consultas por papel e nome acessível (textbox, checkbox, radio, combobox, heading).
+ *   - Datas no futuro distante para testes estáveis.
+ * ============================================================================
+ */

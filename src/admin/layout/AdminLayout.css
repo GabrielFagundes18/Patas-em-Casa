@@ -1,30 +1,58 @@
+/*
+ * ============================================================================
+ * ARQUIVO: AdminLayout.css
+ * ============================================================================
+ *
+ * PARA QUE SERVE:
+ *   Estilos da MOLDURA do painel (componente AdminLayout): barra lateral fixa
+ *   (que pode ser recolhida), links do menu com marcador do item ativo, barra
+ *   superior grudada no topo, busca no menu, caixinha de avisos, área de
+ *   conteúdo, trilha, cabeçalho da página e central de ajuda. No tablet/celular,
+ *   a barra lateral vira um menu deslizante.
+ *
+ * PRINCIPAIS REGRAS:
+ *   - .admin-layout, .admin-sidebar (+ .is-collapsed), .admin-sidebar-brand, .admin-brand-*
+ *   - .admin-navigation, .admin-navigation-group, .admin-navigation-link, .admin-sidebar-action
+ *   - .admin-main, .admin-topbar, .admin-avatar, .admin-global-search, .admin-popover
+ *   - .admin-content-area, .admin-breadcrumbs, .admin-page-heading, .admin-help-dialog
+ *   - @media 900px / 600px / prefers-reduced-motion
+ *
+ * CONEXÕES COM OUTROS ARQUIVOS:
+ *   - Importado por: admin/layout/AdminLayout.jsx.
+ *   - Usa as variáveis --admin-* definidas em admin/styles/admin.css.
+ * ============================================================================
+ */
+
 /* Casca do painel: barra lateral, barra superior, área de conteúdo, trilha e cabeçalho de página.
   Papéis de cor definidos em src/admin/styles/admin.css (somente tokens do :root). */
 
+/* O painel ocupa pelo menos a altura da janela. */
 .admin-layout {
   min-height: 100vh;
 }
 
 /* ---------- Barra lateral ---------- */
 .admin-sidebar {
-  position: fixed;
-  inset: 0 auto 0 0;
-  z-index: 70;
-  display: flex;
-  width: 264px;
+  position: fixed; /* fica parada enquanto o conteúdo rola */
+  inset: 0 auto 0 0; /* top 0, right auto, bottom 0, left 0 → coluna inteira à esquerda */
+  z-index: 70; /* acima do conteúdo */
+  display: flex; /* coluna: marca, menu, rodapé */
+  width: 264px; /* largura normal */
   flex-direction: column;
   gap: 24px;
   padding: 22px 16px 18px;
-  background: var(--admin-sidebar-bg);
-  color: var(--admin-sidebar-text);
-  transition: width 200ms ease, transform 200ms ease;
+  background: var(--admin-sidebar-bg); /* fundo escuro */
+  color: var(--admin-sidebar-text); /* texto claro */
+  transition: width 200ms ease, transform 200ms ease; /* anima recolher e deslizar */
 }
 
+/* Menu recolhido: só ícones (mais estreito). */
 .is-collapsed .admin-sidebar {
   width: 88px;
   padding-inline: 14px;
 }
 
+/* Linha da marca + botão de recolher. */
 .admin-sidebar-brand {
   display: flex;
   align-items: center;
@@ -33,43 +61,49 @@
   min-height: 46px;
 }
 
+/* Recolhido: marca e botão empilhados. */
 .is-collapsed .admin-sidebar-brand {
   flex-direction: column;
 }
 
+/* Link da marca (ícone + textos). */
 .admin-brand-link {
   display: flex;
-  min-width: 0;
+  min-width: 0; /* deixa o texto encolher (e cortar com "...") */
   align-items: center;
   gap: 12px;
   color: var(--admin-sidebar-text);
   text-decoration: none;
 }
 
+/* Textos da marca (nome e "Administração") empilhados. */
 .admin-brand-link > span:last-child {
   display: grid;
   min-width: 0;
   gap: 1px;
 }
 
+/* Nome "Patas em Casa": uma linha, cortado com "..." se não couber. */
 .admin-brand-link strong {
   overflow: hidden;
   font-family: 'Fraunces', serif;
   font-size: 17px;
   font-weight: 600;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  text-overflow: ellipsis; /* mostra "..." no corte */
+  white-space: nowrap; /* não quebra linha */
 }
 
+/* "Administração" pequeno e apagado. */
 .admin-brand-link small {
   color: var(--admin-sidebar-muted);
   font-size: 11px;
   letter-spacing: 0.04em;
 }
 
+/* Quadrado com a pata. */
 .admin-brand-mark {
   display: grid;
-  flex: 0 0 auto;
+  flex: 0 0 auto; /* tamanho fixo */
   width: 42px;
   height: 42px;
   place-items: center;
@@ -78,6 +112,7 @@
   color: var(--admin-text);
 }
 
+/* Botão de recolher/expandir o menu. */
 .admin-collapse-button {
   display: inline-grid;
   flex: 0 0 auto;
@@ -91,25 +126,29 @@
   cursor: pointer;
 }
 
+/* Hover do botão de recolher. */
 .admin-collapse-button:hover {
   background: var(--admin-sidebar-active);
 }
 
+/* Área dos links do menu (com rolagem própria se houver muitos itens). */
 .admin-navigation {
   display: grid;
-  align-content: start;
-  gap: 20px;
+  align-content: start; /* itens no topo */
+  gap: 20px; /* espaço entre grupos */
   /* Ocupa a largura toda da barra para o marcador do item ativo não ser cortado pela rolagem. */
-  margin-inline: -16px;
-  padding-inline: 16px;
-  overflow-y: auto;
+  margin-inline: -16px; /* margem negativa nas laterais... */
+  padding-inline: 16px; /* ...compensada pelo padding */
+  overflow-y: auto; /* rolagem vertical */
 }
 
+/* Um grupo do menu. */
 .admin-navigation-group {
   display: grid;
   gap: 4px;
 }
 
+/* Título do grupo (ex.: "ANIMAIS E ADOÇÕES"). */
 .admin-navigation-group h2 {
   padding: 0 12px 6px;
   color: var(--admin-sidebar-muted);
@@ -121,12 +160,13 @@
   opacity: 0.85;
 }
 
+/* Links do menu e botões do rodapé do menu (mesmo visual). */
 .admin-navigation-link,
 .admin-sidebar-action {
-  position: relative;
-  isolation: isolate;
+  position: relative; /* referência para os pseudo-elementos ::before/::after */
+  isolation: isolate; /* o z-index: -1 do ::after fica "dentro" do item */
   display: flex;
-  min-height: 44px;
+  min-height: 44px; /* área de toque */
   align-items: center;
   gap: 12px;
   padding: 10px 12px;
@@ -142,42 +182,48 @@
 }
 
 /* Fundo do item em camada própria: hover mais suave que o item ativo, sem cor fora do :root. */
+/* ::after é um "fundo" posicionado atrás do conteúdo (z-index: -1), invisível por padrão. */
 .admin-navigation-link::after,
 .admin-sidebar-action::after {
   position: absolute;
   z-index: -1;
   inset: 0;
-  border-radius: inherit;
+  border-radius: inherit; /* mesmo arredondamento do item */
   background: var(--admin-sidebar-active);
   content: '';
   opacity: 0;
   transition: opacity 150ms ease;
 }
 
+/* Hover: fundo com metade da opacidade. */
 .admin-navigation-link:hover::after,
 .admin-sidebar-action:hover::after {
   opacity: 0.5;
 }
 
+/* Item ativo em seminegrito... */
 .admin-navigation-link.is-active {
   font-weight: 600;
 }
 
+/* ...com o fundo totalmente visível... */
 .admin-navigation-link.is-active::after {
   opacity: 1;
 }
 
+/* ...e um marcador (barrinha colorida) na borda esquerda da barra lateral. */
 .admin-navigation-link.is-active::before {
   position: absolute;
   top: 10px;
   bottom: 10px;
-  left: -16px;
+  left: -16px; /* encosta na borda da barra (compensa o padding) */
   width: 4px;
   border-radius: 0 4px 4px 0;
   background: var(--admin-action);
   content: '';
 }
 
+/* Textos dos itens: uma linha, com "..." se não couber. */
 .admin-navigation-link span,
 .admin-sidebar-action span {
   overflow: hidden;
@@ -185,49 +231,58 @@
   white-space: nowrap;
 }
 
+/* Recolhido: ícones centralizados. */
 .is-collapsed .admin-navigation-link,
 .is-collapsed .admin-sidebar-action {
   justify-content: center;
   padding-inline: 0;
 }
 
+/* Recolhido: ajuste da posição do marcador. */
 .is-collapsed .admin-navigation-link.is-active::before {
   left: -14px;
 }
 
+/* Aviso "Nenhuma área disponível". */
 .admin-navigation-empty {
   padding: 8px 12px;
   color: var(--admin-sidebar-muted);
   font-size: 13px;
 }
 
+/* Rodapé do menu (ajuda e sair), empurrado para baixo. */
 .admin-sidebar-footer {
   display: grid;
   gap: 4px;
-  margin-top: auto;
+  margin-top: auto; /* ocupa o espaço que sobra acima e fica no fim */
   padding-top: 14px;
   border-top: 1px solid var(--admin-sidebar-active);
 }
 
+/* "Sair" com cor mais discreta. */
 .admin-sidebar-action.is-logout {
   color: var(--admin-sidebar-muted);
 }
 
+/* Contorno de foco na barra lateral com a cor de ação (visível no fundo escuro). */
 .admin-sidebar :focus-visible {
   outline-color: var(--admin-action);
 }
 
 /* ---------- Área principal e barra superior ---------- */
+/* Área principal começa depois da barra lateral (margem igual à largura dela). */
 .admin-main {
   min-height: 100vh;
   margin-left: 264px;
   transition: margin-left 200ms ease;
 }
 
+/* Recolhido: margem menor. */
 .is-collapsed .admin-main {
   margin-left: 88px;
 }
 
+/* Barra superior grudada no topo. */
 .admin-topbar {
   position: sticky;
   top: 0;
@@ -242,10 +297,12 @@
   background: var(--admin-surface);
 }
 
+/* Botão do menu do celular: escondido no computador. */
 .admin-mobile-menu-button {
   display: none;
 }
 
+/* Bloco do usuário (avatar + nome + cargo). */
 .admin-topbar-user {
   display: flex;
   min-width: 200px;
@@ -253,6 +310,7 @@
   gap: 12px;
 }
 
+/* Avatar redondo com a inicial. */
 .admin-avatar {
   display: grid;
   flex: 0 0 auto;
@@ -266,12 +324,14 @@
   font-weight: 700;
 }
 
+/* Nome e cargo empilhados. */
 .admin-user-copy {
   display: grid;
   gap: 1px;
   min-width: 0;
 }
 
+/* Nome numa linha só. */
 .admin-user-copy strong {
   overflow: hidden;
   font-size: 14px;
@@ -279,14 +339,16 @@
   white-space: nowrap;
 }
 
+/* Cargo. */
 .admin-user-copy small {
   color: var(--admin-text-muted);
   font-size: 12px;
 }
 
+/* Caixa da busca no menu (pílula). */
 .admin-global-search {
   display: flex;
-  width: min(440px, 40vw);
+  width: min(440px, 40vw); /* até 440px ou 40% da largura da janela */
   min-height: 44px;
   align-items: center;
   gap: 10px;
@@ -297,12 +359,14 @@
   color: var(--admin-text-muted);
 }
 
+/* Foco no campo: destaca a caixa inteira. */
 .admin-global-search:focus-within {
   border-color: var(--admin-brand);
   outline: 2px solid var(--admin-focus);
   outline-offset: 2px;
 }
 
+/* O campo em si, sem borda própria. */
 .admin-global-search input {
   width: 100%;
   min-width: 0;
@@ -314,10 +378,12 @@
   font-size: 14px;
 }
 
+/* Cor do texto de exemplo (placeholder). */
 .admin-global-search input::placeholder {
   color: var(--admin-text-muted);
 }
 
+/* Etiqueta "Ctrl K" desenhada como uma tecla. */
 .admin-global-search kbd {
   flex: 0 0 auto;
   padding: 2px 7px;
@@ -329,19 +395,22 @@
   font-size: 10px;
 }
 
+/* Ações do topo (avisos, configurações). */
 .admin-topbar-actions {
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
+/* Referência de posição para a caixinha de avisos. */
 .admin-notification-wrap {
   position: relative;
 }
 
+/* Caixinha flutuante de avisos, abaixo do sino, alinhada à direita. */
 .admin-popover {
   position: absolute;
-  top: calc(100% + 12px);
+  top: calc(100% + 12px); /* 12px abaixo do botão */
   right: 0;
   z-index: 60;
   width: min(300px, calc(100vw - 32px));
@@ -352,6 +421,7 @@
   box-shadow: var(--admin-shadow);
 }
 
+/* Texto da caixinha. */
 .admin-popover p {
   margin-top: 6px;
   color: var(--admin-text-muted);
@@ -359,12 +429,14 @@
 }
 
 /* ---------- Conteúdo ---------- */
+/* Área do conteúdo centralizada, com largura máxima de 1440px. */
 .admin-content-area {
   width: min(1440px, 100%);
   margin: 0 auto;
   padding: 26px 32px 48px;
 }
 
+/* Trilha "Administração > Seção". */
 .admin-breadcrumbs {
   display: flex;
   align-items: center;
@@ -373,11 +445,13 @@
   font-size: 12px;
 }
 
+/* Item atual da trilha em destaque (seletor de atributo). */
 .admin-breadcrumbs [aria-current='page'] {
   color: var(--admin-text);
   font-weight: 600;
 }
 
+/* Cabeçalho da página (rótulo, título, descrição). */
 .admin-page-heading {
   display: flex;
   flex-wrap: wrap;
@@ -387,16 +461,19 @@
   padding: 14px 0 24px;
 }
 
+/* Textos do cabeçalho empilhados. */
 .admin-page-heading > div {
   display: grid;
   gap: 4px;
 }
 
+/* Título da seção. */
 .admin-page-heading h1 {
   font-size: 28px;
   line-height: 1.2;
 }
 
+/* Descrição da seção. */
 .admin-page-heading p:last-child {
   max-width: 640px;
   color: var(--admin-text-muted);
@@ -416,42 +493,50 @@
   box-shadow: var(--admin-shadow);
 }
 
+/* [open]: o <dialog> recebe esse atributo quando está aberto; só então vira flex. */
 .admin-help-dialog[open] {
   display: flex;
 }
 
+/* ::backdrop é o fundo que o navegador desenha atrás de um <dialog> modal. */
 .admin-help-dialog::backdrop {
   background: var(--admin-sidebar-bg);
   opacity: 0.7;
 }
 
+/* Título da central de ajuda. */
 .admin-help-dialog h2 {
   font-size: 18px;
 }
 
+/* Texto da central de ajuda. */
 .admin-help-dialog p {
   margin-top: 6px;
   color: var(--admin-text-muted);
 }
 
+/* Fundo escuro do menu do celular: escondido no computador. */
 .admin-mobile-backdrop {
   display: none;
 }
 
 /* ---------- Tablet e celular: barra lateral vira menu deslizante ---------- */
 @media (max-width: 900px) {
+  /* A barra fica fora da tela (à esquerda) até ser aberta. */
   .admin-sidebar,
   .is-collapsed .admin-sidebar {
     width: min(300px, calc(100vw - 52px));
     padding-inline: 16px;
     box-shadow: var(--admin-shadow);
-    transform: translateX(-105%);
+    transform: translateX(-105%); /* 105% para a esquerda = totalmente escondida */
   }
 
+  /* Aberta: desliza para a posição normal. */
   .admin-sidebar.is-mobile-open {
     transform: translateX(0);
   }
 
+  /* No celular, o "recolhido" não se aplica: volta ao visual normal. */
   .is-collapsed .admin-sidebar-brand {
     flex-direction: row;
   }
@@ -462,29 +547,34 @@
     padding-inline: 12px;
   }
 
+  /* Conteúdo ocupa a largura toda. */
   .admin-main,
   .is-collapsed .admin-main {
     margin-left: 0;
   }
 
+  /* Sem botão de recolher no celular. */
   .admin-collapse-button {
     display: none;
   }
 
+  /* Mostra o botão do menu. */
   .admin-mobile-menu-button {
     display: inline-grid;
   }
 
+  /* Fundo escuro atrás da gaveta aberta. */
   .admin-mobile-backdrop {
     position: fixed;
     inset: 0;
-    z-index: 60;
+    z-index: 60; /* abaixo da gaveta (70) */
     display: block;
     border: 0;
     background: var(--admin-sidebar-bg);
     opacity: 0.6;
   }
 
+  /* Topo mais compacto. */
   .admin-topbar {
     justify-content: flex-start;
     gap: 12px;
@@ -505,22 +595,23 @@
   }
 }
 
+/* Celulares pequenos: a busca desce para uma linha própria. */
 @media (max-width: 600px) {
   .admin-topbar {
     flex-wrap: wrap;
   }
 
   .admin-topbar-actions {
-    margin-left: auto;
+    margin-left: auto; /* empurra as ações para a direita */
   }
 
   .admin-global-search {
-    order: 3;
+    order: 3; /* "order" muda a posição do item no flex: vai para o fim */
     width: 100%;
   }
 
   .admin-global-search kbd {
-    display: none;
+    display: none; /* sem atalho de teclado no celular */
   }
 
   .admin-content-area {
@@ -532,6 +623,7 @@
   }
 }
 
+/* Menos movimento: sem animações de deslizar e de fundo. */
 @media (prefers-reduced-motion: reduce) {
   .admin-sidebar,
   .admin-main,
@@ -540,3 +632,27 @@
     transition: none;
   }
 }
+
+/*
+ * ============================================================================
+ * RESUMO DO ARQUIVO
+ * ============================================================================
+ *
+ * COMO FUNCIONA:
+ *   - Computador: barra lateral fixa à esquerda (264px ou 88px recolhida) e área
+ *     principal com margem igual à largura da barra; topo grudado (sticky).
+ *   - O item ativo do menu tem fundo (::after) e marcador (::before).
+ *   - Até 900px: a barra sai da tela (translateX) e entra deslizando quando aberta,
+ *     com um fundo escuro atrás; até 600px, a busca vai para uma linha própria.
+ *
+ * CONCEITOS IMPORTANTES PARA ESTUDAR:
+ *   - position: fixed x sticky; inset; z-index e isolation.
+ *   - Pseudo-elementos ::before/::after como camadas decorativas.
+ *   - text-overflow: ellipsis (cortar texto com "...").
+ *   - transform: translateX para menus deslizantes.
+ *   - <dialog>: atributo [open] e pseudo-elemento ::backdrop.
+ *   - Flexbox: order, margin-left: auto.
+ *   - Funções min() e calc(), unidade vw.
+ *   - prefers-reduced-motion.
+ * ============================================================================
+ */

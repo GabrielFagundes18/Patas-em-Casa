@@ -1,11 +1,37 @@
+/*
+ * ============================================================================
+ * ARQUIVO: DonationPage.css
+ * ============================================================================
+ *
+ * PARA QUE SERVE:
+ *   Estilos das páginas de doação: o formulário de doação online (/doar), a
+ *   coluna com a chave Pix e também as páginas de retorno do pagamento e de
+ *   cancelamento da doação mensal (que reaproveitam estas classes).
+ *
+ * PRINCIPAIS REGRAS:
+ *   - .donation-page h1, .donation-layout, .donation-form, .donation-inline-form
+ *   - .donation-type / .donation-values (pílulas de escolha), .donation-fields, .donation-field
+ *   - .donation-honeypot, .donation-submit, .donation-secure, .donation-error
+ *   - .donation-aside, .donation-aside-note
+ *   - @media 900px e 560px
+ *
+ * CONEXÕES COM OUTROS ARQUIVOS:
+ *   - Importado por: features/donation/DonationPage.jsx (e usado também por
+ *     DonationReturnPage.jsx e CancelSubscriptionPage.jsx).
+ *   - Ajusta o .pix-tag de shared/components/PixKey/PixKey.css.
+ * ============================================================================
+ */
+
 /* O quê: formulário de doação online, alternativa Pix e páginas de retorno/cancelamento.
   Como: escolhas como "pílulas" (radio estilizado), duas colunas no desktop e uma no celular.
   Para quê: doar em poucos toques, deixando claro valor, tipo e que o pagamento é no Mercado Pago. */
+/* Título da página (fluido). */
 .donation-page h1 {
   font-size: clamp(2.2rem, 4.5vw, 3.2rem);
   line-height: 1.06;
 }
 
+/* Duas colunas: formulário (maior) e Pix. */
 .donation-layout {
   display: grid;
   grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
@@ -13,17 +39,20 @@
   align-items: start;
 }
 
+/* Formulário em grade de uma coluna (empilha os blocos). */
 .donation-form {
   display: grid;
   gap: 18px;
   max-width: 620px;
 }
 
+/* Variação estreita do formulário (usada na página de cancelamento). */
 .donation-inline-form {
   width: 100%;
   max-width: 420px;
 }
 
+/* Grupos de escolha (tipo e valor): pílulas lado a lado, sem a caixa do fieldset. */
 .donation-type,
 .donation-values {
   display: flex;
@@ -34,12 +63,14 @@
   border: 0;
 }
 
+/* Título de cada grupo. */
 .donation-type legend,
 .donation-values legend {
   margin-bottom: 8px;
   font-weight: 600;
 }
 
+/* Cada opção: pílula clicável. */
 .donation-type label,
 .donation-values label {
   display: inline-flex;
@@ -53,6 +84,7 @@
   cursor: pointer;
 }
 
+/* Opção selecionada (classe adicionada pelo JSX). */
 .donation-type label.is-selected,
 .donation-values label.is-selected {
   border-color: var(--sage);
@@ -63,11 +95,12 @@
 /* O rádio fica invisível, mas continua acessível pelo teclado; o foco aparece na pílula. */
 .donation-type input,
 .donation-values input {
-  position: absolute;
-  opacity: 0;
-  pointer-events: none;
+  position: absolute; /* fora do fluxo */
+  opacity: 0; /* invisível */
+  pointer-events: none; /* não recebe cliques (o rótulo recebe) */
 }
 
+/* Contorno de foco: na pílula (quando o rádio de dentro tem foco), nos campos e nos botões. */
 .donation-type label:focus-within,
 .donation-values label:focus-within,
 .donation-field input:focus-visible,
@@ -76,18 +109,21 @@
   outline-offset: 2px;
 }
 
+/* Nome e e-mail lado a lado. */
 .donation-fields {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 14px;
 }
 
+/* Rótulo + campo. */
 .donation-field {
   display: grid;
   gap: 6px;
   font-weight: 600;
 }
 
+/* Campo de texto. */
 .donation-field input {
   width: 100%;
   min-height: 46px;
@@ -100,6 +136,7 @@
   font-weight: 400;
 }
 
+/* Campo-isca anti-robô fora da tela. */
 .donation-honeypot {
   position: absolute;
   left: -9999px;
@@ -107,15 +144,18 @@
   height: 1px;
 }
 
+/* Botão "Doar" alinhado à esquerda (não estica na grade). */
 .donation-submit {
   justify-self: start;
 }
 
+/* Botão desabilitado durante o envio. */
 .donation-submit:disabled {
   opacity: 0.7;
   cursor: progress;
 }
 
+/* Nota de segurança (cadeado + texto). */
 .donation-secure {
   display: flex;
   align-items: flex-start;
@@ -125,11 +165,13 @@
   line-height: 1.5;
 }
 
+/* Ícone do cadeado com tamanho fixo, levemente abaixado. */
 .donation-secure svg {
   flex: 0 0 auto;
   margin-top: 3px;
 }
 
+/* Caixa de erro. */
 .donation-error {
   padding: 12px 14px;
   border-radius: var(--radius-md);
@@ -138,15 +180,18 @@
   line-height: 1.5;
 }
 
+/* Mensagem principal do erro. */
 .donation-error p {
   font-weight: 600;
 }
 
+/* Lista de detalhes do erro. */
 .donation-error ul {
   margin-top: 6px;
   padding-left: 18px;
 }
 
+/* Coluna lateral (Pix). */
 .donation-aside {
   display: grid;
   gap: 12px;
@@ -155,30 +200,36 @@
   background: var(--sage-pale);
 }
 
+/* Título da coluna lateral. */
 .donation-aside h2 {
   font-size: 1.4rem;
 }
 
+/* Textos da coluna lateral. */
 .donation-aside p {
   color: var(--text-muted);
   line-height: 1.6;
 }
 
+/* O cartão Pix sem margem extra aqui. */
 .donation-aside .pix-tag {
   margin: 0;
 }
 
+/* Link "Cancelar doação mensal". */
 .donation-aside-note a {
   color: var(--sage-dark);
   font-weight: 600;
 }
 
+/* Até 900px: uma coluna. */
 @media (max-width: 900px) {
   .donation-layout {
     grid-template-columns: 1fr;
   }
 }
 
+/* Até 560px: nome e e-mail empilhados e botão com largura total. */
 @media (max-width: 560px) {
   .donation-fields {
     grid-template-columns: 1fr;
@@ -189,3 +240,23 @@
     justify-content: center;
   }
 }
+
+/*
+ * ============================================================================
+ * RESUMO DO ARQUIVO
+ * ============================================================================
+ *
+ * COMO FUNCIONA:
+ *   O formulário e a coluna Pix ficam lado a lado (uma coluna em telas menores).
+ *   As escolhas de tipo e valor são rádios invisíveis dentro de rótulos em forma
+ *   de pílula; :focus-within mostra o foco do teclado na pílula. O campo-isca fica
+ *   fora da tela.
+ *
+ * CONCEITOS IMPORTANTES PARA ESTUDAR:
+ *   - Esconder inputs nativos mantendo acessibilidade (opacity: 0 + position: absolute).
+ *   - :focus-within para mostrar o foco no elemento pai.
+ *   - justify-self (start/stretch) em itens de grid.
+ *   - Reaproveitar uma folha de estilos em várias páginas.
+ *   - Estados :disabled e cursor: progress.
+ * ============================================================================
+ */

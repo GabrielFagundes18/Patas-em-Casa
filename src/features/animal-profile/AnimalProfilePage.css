@@ -1,91 +1,128 @@
+/*
+ * ============================================================================
+ * ARQUIVO: AnimalProfilePage.css
+ * ============================================================================
+ *
+ * PARA QUE SERVE:
+ *   Estilos da página de perfil do animal (componente AnimalProfilePage):
+ *   trilha de navegação, grade com galeria e informações, miniaturas, ficha
+ *   técnica, temperamento, ações, descrição e a lista de saúde.
+ *
+ * PRINCIPAIS REGRAS:
+ *   - .profile-breadcrumb, .profile-grid
+ *   - .profile-gallery, .profile-photo(-empty), .profile-thumbs, .profile-thumb
+ *   - .profile-info, .profile-status, .profile-meta, .profile-specs
+ *   - .profile-block, .profile-traits, .profile-actions, .profile-share-message
+ *   - .profile-details, .profile-facts, .profile-note
+ *   - @media 860px e 480px
+ *
+ * CONEXÕES COM OUTROS ARQUIVOS:
+ *   - Importado por: features/animal-profile/AnimalProfilePage.jsx.
+ *   - Usa as classes .btn (globals.css) e as variáveis de styles/globals.css.
+ * ============================================================================
+ */
+
 /* O quê: layout do perfil do animal (galeria + informações, depois descrição e saúde).
   Como: duas colunas no desktop e uma no celular; cores só com os tokens de globals.css.
   Para quê: página própria para divulgar cada animal, legível em qualquer largura. */
+/* Trilha de navegação ("Animais para adoção / Nino"). */
 .profile-breadcrumb {
   margin-bottom: 20px;
   color: var(--text-muted);
   font-size: 0.9rem;
 }
 
+/* Link da trilha. */
 .profile-breadcrumb a {
   color: var(--sage-dark);
   font-weight: 600;
 }
 
+/* Grade principal: galeria (um pouco maior) e informações. */
 .profile-grid {
   display: grid;
   grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
   gap: 36px;
-  align-items: start;
+  align-items: start; /* cada coluna com sua própria altura, alinhadas pelo topo */
 }
 
+/* Galeria: foto grande + miniaturas empilhadas. */
 .profile-gallery {
   display: grid;
   gap: 12px;
   min-width: 0;
 }
 
+/* Foto grande (e também o quadro sem foto). */
 .profile-photo {
   width: 100%;
-  aspect-ratio: 4 / 3;
-  object-fit: cover;
+  aspect-ratio: 4 / 3; /* proporção 4:3 */
+  object-fit: cover; /* preenche sem distorcer */
   border-radius: var(--radius-lg);
   background: var(--bg-secondary);
   box-shadow: var(--shadow-main);
 }
 
+/* Quadro "Foto em breve": ícone e texto centralizados. */
 .profile-photo-empty {
   display: grid;
-  place-content: center;
+  place-content: center; /* centraliza o conteúdo do grid no espaço */
   justify-items: center;
   gap: 8px;
   color: var(--sage-dark);
   font-weight: 600;
 }
 
+/* Fileira de miniaturas com rolagem horizontal. */
 .profile-thumbs {
   display: flex;
   gap: 10px;
   overflow-x: auto;
-  padding: 2px;
+  padding: 2px; /* espaço para a borda/contorno não ser cortado */
 }
 
+/* Cada miniatura (é um botão). */
 .profile-thumb {
-  flex: 0 0 auto;
+  flex: 0 0 auto; /* tamanho fixo */
   width: 76px;
   height: 76px;
   padding: 0;
-  border: 2px solid transparent;
+  border: 2px solid transparent; /* borda invisível (fica âmbar na selecionada) */
   border-radius: var(--radius-md);
   background: none;
   cursor: pointer;
-  overflow: hidden;
+  overflow: hidden; /* a imagem respeita os cantos */
 }
 
+/* Miniatura da foto exibida (seletor de atributo [aria-current='true']). */
 .profile-thumb[aria-current='true'] {
   border-color: var(--amber);
 }
 
+/* Imagem dentro da miniatura. */
 .profile-thumb img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
+/* Contorno de foco (teclado) nas miniaturas e nos botões da página. */
 .profile-thumb:focus-visible,
 .animal-profile .btn:focus-visible {
   outline: 2px solid var(--amber-dark);
   outline-offset: 2px;
 }
 
+/* Coluna de informações. */
 .profile-info {
   display: grid;
   gap: 14px;
   min-width: 0;
 }
 
+/* Selo de status ("Disponível para adoção" / "Urgente"). */
 .profile-status {
-  justify-self: start;
+  justify-self: start; /* não estica na largura do grid */
   padding: 5px 12px;
   border-radius: 999px;
   background: var(--sage-pale);
@@ -94,20 +131,25 @@
   font-weight: 600;
 }
 
+/* Selo urgente com fundo âmbar suave. */
 .profile-status.is-urgent {
   background: var(--accent-glow);
   color: var(--text-main);
 }
 
+/* Nome do animal (título grande e fluido). */
 .profile-info h1 {
   font-size: clamp(2.4rem, 5vw, 3.6rem);
   line-height: 1;
 }
 
+/* Linha de resumo. */
 .profile-meta {
   color: var(--text-muted);
 }
 
+/* Ficha técnica em grade automática:
+   repeat(auto-fit, minmax(110px, 1fr)) cria quantas colunas couberem, cada uma com pelo menos 110px. */
 .profile-specs {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
@@ -115,6 +157,7 @@
   margin: 4px 0;
 }
 
+/* Cada item da ficha vira um "cartãozinho". */
 .profile-specs div {
   padding: 12px 14px;
   border: 1px solid var(--border-color);
@@ -122,27 +165,32 @@
   background: var(--bg-card);
 }
 
+/* Rótulo do item (ex.: "Porte"). */
 .profile-specs dt {
   color: var(--text-muted);
   font-size: 0.78rem;
 }
 
+/* Valor do item (ex.: "Médio"). */
 .profile-specs dd {
   margin: 2px 0 0;
   font-weight: 600;
 }
 
+/* Títulos dos blocos (Temperamento, Sobre, Saúde). */
 .profile-block h2 {
   margin-bottom: 10px;
   font-size: 1.4rem;
 }
 
+/* Parágrafos dos blocos. */
 .profile-block p {
   margin-bottom: 12px;
   color: var(--text-muted);
   line-height: 1.75;
 }
 
+/* Traços de temperamento em pílulas. */
 .profile-traits {
   display: flex;
   flex-wrap: wrap;
@@ -150,6 +198,7 @@
   list-style: none;
 }
 
+/* Cada traço: pílula contornada de verde. */
 .profile-traits li {
   padding: 6px 12px;
   border: 1px solid var(--sage);
@@ -158,6 +207,7 @@
   font-size: 0.88rem;
 }
 
+/* Botões "Quero adotar" e "Compartilhar". */
 .profile-actions {
   display: flex;
   flex-wrap: wrap;
@@ -165,12 +215,14 @@
   margin-top: 6px;
 }
 
+/* Mensagem de compartilhamento: altura mínima reservada para a página não "pular" quando ela aparece. */
 .profile-share-message {
   min-height: 1.4em;
   color: var(--sage-dark);
   font-size: 0.88rem;
 }
 
+/* Grade dos detalhes: descrição (maior) e saúde. */
 .profile-details {
   display: grid;
   grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
@@ -178,12 +230,14 @@
   margin-top: 44px;
 }
 
+/* Lista de saúde e chegada. */
 .profile-facts {
   display: grid;
   gap: 12px;
   list-style: none;
 }
 
+/* Cada item: grade com o ícone (34px) à esquerda e duas linhas de texto à direita. */
 .profile-facts li {
   display: grid;
   grid-template-columns: 34px 1fr;
@@ -192,6 +246,7 @@
   align-items: center;
 }
 
+/* Círculo do ícone, ocupando as duas linhas (grid-row: span 2). */
 .profile-facts li span {
   display: grid;
   grid-row: span 2;
@@ -203,19 +258,23 @@
   color: var(--sage-dark);
 }
 
+/* Detalhe (ex.: "Em dia"). */
 .profile-facts small {
   color: var(--text-muted);
 }
 
+/* Nota final com link para "Como funciona". */
 .profile-note {
   margin-top: 16px;
 }
 
+/* Link da nota. */
 .profile-note a {
   color: var(--sage-dark);
   font-weight: 600;
 }
 
+/* Até 860px: tudo em uma coluna. */
 @media (max-width: 860px) {
   .profile-grid,
   .profile-details {
@@ -227,9 +286,31 @@
   }
 }
 
+/* Até 480px: botões de ação com largura total. */
 @media (max-width: 480px) {
   .profile-actions .btn {
     flex: 1 1 100%;
     justify-content: center;
   }
 }
+
+/*
+ * ============================================================================
+ * RESUMO DO ARQUIVO
+ * ============================================================================
+ *
+ * COMO FUNCIONA:
+ *   No computador, a página tem duas grades de duas colunas (galeria | informações
+ *   e descrição | saúde); no celular, tudo vira uma coluna. A ficha técnica usa
+ *   auto-fit para criar quantas colunas couberem. A miniatura ativa é destacada
+ *   pelo atributo aria-current.
+ *
+ * CONCEITOS IMPORTANTES PARA ESTUDAR:
+ *   - CSS Grid: auto-fit + minmax, grid-row: span, place-content x place-items, justify-self.
+ *   - Seletores de atributo ligados à acessibilidade ([aria-current='true']).
+ *   - aspect-ratio e object-fit.
+ *   - Reservar espaço (min-height) para evitar "saltos" de layout.
+ *   - Listas de definição (<dl>) estilizadas como cartões.
+ *   - Media queries.
+ * ============================================================================
+ */

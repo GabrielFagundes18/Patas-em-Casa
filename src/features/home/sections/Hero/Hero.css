@@ -1,81 +1,115 @@
+/*
+ * ============================================================================
+ * ARQUIVO: Hero.css
+ * ============================================================================
+ *
+ * PARA QUE SERVE:
+ *   Estilos do topo da página inicial (componente Hero): grade de duas colunas
+ *   (texto e imagem), título grande, botões, imagem em moldura com círculos
+ *   decorativos, etiqueta com o número de animais e o cartão do animal em destaque.
+ *
+ * PRINCIPAIS REGRAS:
+ *   - .home-hero, .home-hero-grid, .home-hero-copy, .home-hero-title, .home-hero-lead, .home-hero-actions
+ *   - .home-hero-visual, .home-hero-frame, .home-hero-orb(--amber/--sage), .home-hero-img, .home-hero-chip
+ *   - .home-hero-highlight, .home-hero-thumb, .home-hero-highlight-text, .home-hero-highlight-cta
+ *   - @media 900px / 560px / prefers-reduced-motion
+ *
+ * CONEXÕES COM OUTROS ARQUIVOS:
+ *   - Importado por: features/home/sections/Hero/Hero.jsx.
+ *   - Complementa .home-btn e .home-badge-urgent de features/home/LandingPage.css.
+ *   - Usa variáveis de styles/globals.css.
+ * ============================================================================
+ */
+
 /* O quê: topo da Home: texto à esquerda, imagem em moldura à direita com o animal em destaque.
   Como: grade de duas colunas que vira uma coluna no tablet; no celular o destaque desce para baixo da imagem.
   Para quê: a primeira tela mostrar a proposta, os dois caminhos (adotar e doar) e um caso real. */
 .home-hero {
-  padding: clamp(40px, 6vw, 72px) 0 clamp(56px, 7vw, 96px);
-  overflow: hidden;
+  padding: clamp(40px, 6vw, 72px) 0 clamp(56px, 7vw, 96px); /* espaço em cima e embaixo, fluido */
+  overflow: hidden; /* esconde partes decorativas que passem da seção */
 }
 
+/* Grade de duas colunas. */
 .home-hero-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
-  align-items: center;
-  gap: 56px;
+  display: grid; /* CSS Grid */
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); /* texto um pouco maior que a imagem */
+  align-items: center; /* centraliza as colunas na vertical */
+  gap: 56px; /* espaço entre colunas */
 }
 
+/* Coluna de texto: itens empilhados. */
 .home-hero-copy {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: 24px;
+  align-items: flex-start; /* alinhados à esquerda */
+  gap: 24px; /* espaço entre os itens */
 }
 
+/* Título principal (h1). */
 .home-hero-title {
   margin: 0;
-  font-size: clamp(2.75rem, 5.6vw, 4.75rem);
-  line-height: 1.02;
-  letter-spacing: -0.025em;
+  font-size: clamp(2.75rem, 5.6vw, 4.75rem); /* grande e fluido */
+  line-height: 1.02; /* linhas bem próximas */
+  letter-spacing: -0.025em; /* letras mais juntas */
 }
 
+/* A palavra em destaque ("história.") dentro do título. */
 .home-hero-title em {
-  font-style: italic;
-  font-weight: 500;
-  color: var(--amber-dark);
+  font-style: italic; /* itálico */
+  font-weight: 500; /* um pouco mais leve que o resto do título */
+  color: var(--amber-dark); /* âmbar escuro */
 }
 
+/* Texto de apresentação. */
 .home-hero-lead {
   margin: 0;
-  max-width: 31em;
-  font-size: clamp(1.05rem, 1.5vw, 1.2rem);
-  color: var(--text-muted);
+  max-width: 31em; /* largura confortável de leitura */
+  font-size: clamp(1.05rem, 1.5vw, 1.2rem); /* tamanho fluido */
+  color: var(--text-muted); /* cor secundária */
 }
 
+/* Linha de botões. */
 .home-hero-actions {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: wrap; /* quebram se faltar espaço */
   gap: 12px;
 }
 
 /* ---------- Imagem em moldura ---------- */
+/* Coluna visual: referência para posicionar etiqueta e destaque por cima. */
 .home-hero-visual {
   position: relative;
 }
 
+/* Moldura arredondada da imagem. */
 .home-hero-frame {
-  position: relative;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  aspect-ratio: 5 / 4;
-  border-radius: 36px;
-  background: var(--bg-secondary);
-  overflow: hidden;
+  position: relative; /* referência para os círculos decorativos */
+  display: flex; /* flex para posicionar a imagem... */
+  align-items: flex-end; /* ...encostada embaixo */
+  justify-content: center; /* ...e centralizada na horizontal */
+  aspect-ratio: 5 / 4; /* proporção 5:4 */
+  border-radius: 36px; /* cantos bem arredondados */
+  background: var(--bg-secondary); /* fundo bege */
+  overflow: hidden; /* corta a imagem e os círculos nos cantos */
 }
 
+/* Círculos decorativos ("orbs"). */
 .home-hero-orb {
-  position: absolute;
-  aspect-ratio: 1;
-  border-radius: 50%;
+  position: absolute; /* posicionados dentro da moldura */
+  aspect-ratio: 1; /* sempre quadrados... */
+  border-radius: 50%; /* ...e arredondados = círculos */
 }
 
+/* Círculo âmbar no canto superior direito (parcialmente para fora). */
 .home-hero-orb--amber {
   top: -14%;
   right: -12%;
   width: 68%;
   background: var(--amber);
-  opacity: 0.2;
+  opacity: 0.2; /* bem transparente */
 }
 
+/* Círculo verde no canto inferior esquerdo. */
 .home-hero-orb--sage {
   bottom: -22%;
   left: -10%;
@@ -86,89 +120,98 @@
 
 /* Mais larga que a moldura: o recorte esconde as sobras laterais da imagem. */
 .home-hero-img {
-  position: relative;
-  flex: 0 0 auto;
-  width: 118%;
-  max-width: none;
-  height: auto;
-  margin-bottom: -3%;
+  position: relative; /* fica acima dos círculos (que são absolute e vêm antes) */
+  flex: 0 0 auto; /* não estica nem encolhe no flex */
+  width: 118%; /* 18% mais larga que a moldura */
+  max-width: none; /* anula o max-width: 100% global das imagens */
+  height: auto; /* mantém a proporção */
+  margin-bottom: -3%; /* desce um pouco, para "encostar" na borda de baixo */
 }
 
+/* Etiqueta "N aguardando um lar" no canto superior direito. */
 .home-hero-chip {
   position: absolute;
   top: 18px;
   right: 18px;
-  display: inline-flex;
+  display: inline-flex; /* bolinha e texto lado a lado */
   align-items: center;
   gap: 8px;
   margin: 0;
   padding: 8px 14px;
-  border-radius: 999px;
-  background: var(--bg-card);
-  box-shadow: 0 10px 24px rgba(31, 42, 36, 0.12);
+  border-radius: 999px; /* pílula */
+  background: var(--bg-card); /* fundo claro */
+  box-shadow: 0 10px 24px rgba(31, 42, 36, 0.12); /* sombra */
   font-size: 13px;
   font-weight: 600;
 }
 
+/* Bolinha verde da etiqueta. */
 .home-hero-chip span {
   width: 8px;
   height: 8px;
-  border-radius: 50%;
+  border-radius: 50%; /* círculo */
   background: var(--sage);
 }
 
 /* ---------- Animal em destaque ---------- */
+/* Cartão do destaque, no canto inferior esquerdo da imagem. */
 .home-hero-highlight {
   position: absolute;
   left: 18px;
   bottom: 18px;
-  display: flex;
+  display: flex; /* miniatura e textos lado a lado */
   align-items: center;
   gap: 12px;
-  max-width: min(330px, calc(100% - 36px));
-  padding: 10px 18px 10px 10px;
+  max-width: min(330px, calc(100% - 36px)); /* no máximo 330px e nunca maior que a moldura menos as margens */
+  padding: 10px 18px 10px 10px; /* espaço interno (maior à direita) */
   border-radius: 20px;
-  background: var(--bg-card);
-  box-shadow: 0 18px 40px rgba(31, 42, 36, 0.18);
+  background: var(--bg-card); /* fundo claro */
+  box-shadow: 0 18px 40px rgba(31, 42, 36, 0.18); /* sombra marcante */
   color: var(--text-main);
-  text-decoration: none;
-  transition: transform 0.2s ease;
+  text-decoration: none; /* é um link, mas sem sublinhado */
+  transition: transform 0.2s ease; /* anima o hover */
 }
 
+/* Destaque no hover: sobe 2px. */
 .home-hero-highlight:hover {
   transform: translateY(-2px);
 }
 
+/* Miniatura (foto ou pata). */
 .home-hero-thumb {
-  display: grid;
-  flex: 0 0 auto;
+  display: grid; /* para centralizar o ícone de pata */
+  flex: 0 0 auto; /* tamanho fixo no flex */
   place-items: center;
   width: 54px;
   height: 54px;
   border-radius: 14px;
-  background: var(--sage-pale);
-  color: var(--sage);
-  object-fit: cover;
+  background: var(--sage-pale); /* fundo quando é a pata */
+  color: var(--sage); /* cor da pata */
+  object-fit: cover; /* quando é foto: preenche sem distorcer */
 }
 
+/* Bloco de textos do destaque. */
 .home-hero-highlight-text {
   display: flex;
-  flex-direction: column;
+  flex-direction: column; /* selo, nome e link empilhados */
   align-items: flex-start;
   gap: 2px;
-  min-width: 0;
+  min-width: 0; /* permite encolher (textos longos quebram) */
 }
 
+/* Selo "Urgente" menor dentro do destaque. */
 .home-hero-highlight-text .home-badge-urgent {
   padding: 2px 8px;
   font-size: 11px;
 }
 
+/* Frase principal do destaque. */
 .home-hero-highlight-text strong {
   font-size: 15px;
   line-height: 1.3;
 }
 
+/* "Ver perfil do/da ..." */
 .home-hero-highlight-cta {
   color: var(--sage);
   font-size: 13px;
@@ -176,6 +219,7 @@
 }
 
 /* ---------- Responsivo ---------- */
+/* Até 900px: uma coluna só (texto em cima, imagem embaixo). */
 @media (max-width: 900px) {
   .home-hero-grid {
     grid-template-columns: minmax(0, 1fr);
@@ -183,11 +227,13 @@
   }
 }
 
+/* Até 560px (celulares). */
 @media (max-width: 560px) {
   .home-hero-copy {
     gap: 20px;
   }
 
+  /* Os dois botões lado a lado, cada um com metade da largura. */
   .home-hero-actions {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -195,17 +241,20 @@
     gap: 10px;
   }
 
+  /* Botões mais compactos. */
   .home-hero-actions .home-btn {
     gap: 8px;
     padding: 0 10px;
     font-size: 15px;
   }
 
+  /* Moldura com proporção 4:3 e cantos menores. */
   .home-hero-frame {
     aspect-ratio: 4 / 3;
     border-radius: 28px;
   }
 
+  /* Etiqueta mais próxima do canto. */
   .home-hero-chip {
     top: 12px;
     right: 12px;
@@ -213,14 +262,15 @@
 
   /* O destaque sai de cima da imagem e fica logo abaixo, sobrepondo só a borda. */
   .home-hero-highlight {
-    position: relative;
+    position: relative; /* volta ao fluxo normal */
     left: auto;
     bottom: auto;
     max-width: none;
-    margin: -36px 12px 0;
+    margin: -36px 12px 0; /* margem negativa em cima: sobe 36px por cima da moldura */
   }
 }
 
+/* Menos movimento: o destaque não "sobe" no hover. */
 @media (prefers-reduced-motion: reduce) {
   .home-hero-highlight,
   .home-hero-highlight:hover {
@@ -228,3 +278,26 @@
     transform: none;
   }
 }
+
+/*
+ * ============================================================================
+ * RESUMO DO ARQUIVO
+ * ============================================================================
+ *
+ * COMO FUNCIONA:
+ *   - No computador: duas colunas (texto | imagem). A imagem fica numa moldura
+ *     arredondada com círculos decorativos; etiqueta e cartão de destaque ficam
+ *     posicionados por cima dela (position: absolute).
+ *   - No tablet: uma coluna.
+ *   - No celular: botões dividem a largura e o destaque desce para baixo da
+ *     imagem, sobrepondo só a borda (margem negativa).
+ *
+ * CONCEITOS IMPORTANTES PARA ESTUDAR:
+ *   - CSS Grid com colunas fr e mudança para uma coluna em media queries.
+ *   - Tipografia fluida com clamp().
+ *   - aspect-ratio, overflow: hidden e elementos decorativos com position: absolute.
+ *   - Funções min() e calc().
+ *   - Margens negativas para sobreposição.
+ *   - object-fit: cover em miniaturas.
+ * ============================================================================
+ */
