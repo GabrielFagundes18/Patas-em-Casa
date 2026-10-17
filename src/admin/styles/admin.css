@@ -1,33 +1,72 @@
+/*
+ * ============================================================================
+ * ARQUIVO: admin.css
+ * ============================================================================
+ *
+ * PARA QUE SERVE:
+ *   É a BASE VISUAL de todo o painel administrativo. Define as variáveis de cor
+ *   por "papel" (fundo da barra lateral, superfície, texto, ação, perigo...),
+ *   as cores dos gráficos e as classes reutilizadas por todas as telas do painel:
+ *   botões, cartões, indicadores, campos e filtros, selos de status, tabela
+ *   (que vira cartões no celular), paginação, estados, alertas, diálogos,
+ *   formulários, detalhes de registro, agenda e galeria de fotos.
+ *
+ * PRINCIPAIS REGRAS:
+ *   - .admin-layout / .admin-login-page → variáveis --admin-* (papéis de cor).
+ *   - .admin-eyebrow, .admin-visually-hidden.
+ *   - Botões: .admin-button (+ is-primary, is-ghost, is-danger, is-small), .admin-icon-button.
+ *   - Página e cartões: .admin-page, .admin-toolbar, .admin-card, .admin-kpis/.admin-kpi.
+ *   - Campos: .admin-field, .admin-form-grid, .admin-filters, .admin-search.
+ *   - Selos: .admin-badge (+ is-available, is-success, is-pending, is-urgent, is-muted).
+ *   - Tabela: .admin-table-wrap, .admin-table, .admin-cell-title, .admin-row-actions, .admin-status-control.
+ *   - Estados: .admin-pagination, .admin-state, .admin-alert, .admin-skeleton.
+ *   - Diálogo e formulários: .admin-dialog, .admin-checks, .admin-choice, .admin-fieldset...
+ *   - Detalhes: .admin-detail*, .admin-history, .admin-action-panel.
+ *   - Agenda e fotos: .admin-appointments, .admin-photo-*.
+ *   - @media 900px / 640px / prefers-reduced-motion.
+ *
+ * CONEXÕES COM OUTROS ARQUIVOS:
+ *   - Importado por: admin/layout/AdminLayout.jsx e admin/security/AdminAuthShell.jsx.
+ *   - As variáveis --admin-* apontam para os "tokens" do :root em styles/globals.css.
+ *   - Usado por praticamente todos os componentes de src/admin/** (classes admin-*).
+ * ============================================================================
+ */
+
 /* Base visual do painel administrativo.
   Cores: SOMENTE tokens do :root (globals.css), mapeados aqui por papel. Nenhum valor de cor solto.
   Os componentes das telas usam estas classes (admin-*); arquivos de tela trazem só o que é específico. */
 
+/* As variáveis são declaradas no contêiner do painel e da tela de login: assim valem
+   para tudo que estiver dentro desses elementos (variáveis CSS são herdadas). */
 .admin-layout,
 .admin-login-page {
   /* Papéis → tokens do :root */
-  --admin-sidebar-bg: var(--sage-dark);
-  --admin-sidebar-active: var(--sage);
-  --admin-sidebar-text: var(--bg-card);
-  --admin-sidebar-muted: var(--sage-pale);
-  --admin-app-bg: var(--bg-primary);
-  --admin-surface: var(--bg-card);
-  --admin-surface-sunken: var(--bg-primary);
-  --admin-surface-strong: var(--bg-secondary);
-  --admin-border: var(--border-color);
-  --admin-text: var(--text-main);
-  --admin-text-muted: var(--text-muted);
-  --admin-text-accent: var(--text-accent);
-  --admin-brand: var(--sage);
-  --admin-brand-strong: var(--sage-dark);
-  --admin-brand-soft: var(--sage-pale);
-  --admin-action: var(--amber);
-  --admin-action-strong: var(--amber-dark);
-  --admin-action-glow: var(--accent-glow);
-  --admin-danger: var(--brick);
-  --admin-radius: var(--radius-md);
-  --admin-radius-lg: var(--radius-lg);
-  --admin-shadow: var(--shadow-main);
-  --admin-shadow-soft: 0 1px 2px var(--border-color), 0 10px 28px var(--border-color);
+  --admin-sidebar-bg: var(--sage-dark); /* fundo da barra lateral */
+  --admin-sidebar-active: var(--sage); /* item ativo/hover da barra lateral */
+  --admin-sidebar-text: var(--bg-card); /* texto claro da barra lateral */
+  --admin-sidebar-muted: var(--sage-pale); /* texto secundário da barra lateral */
+  --admin-app-bg: var(--bg-primary); /* fundo geral do painel */
+  --admin-surface: var(--bg-card); /* superfície de cartões, tabelas e campos */
+  --admin-surface-sunken: var(--bg-primary); /* superfície "afundada" (campos, hover) */
+  --admin-surface-strong: var(--bg-secondary); /* superfície mais forte */
+  --admin-border: var(--border-color); /* bordas */
+  --admin-text: var(--text-main); /* texto principal */
+  --admin-text-muted: var(--text-muted); /* texto secundário */
+  --admin-text-accent: var(--text-accent); /* texto de destaque */
+  --admin-brand: var(--sage); /* cor da marca */
+  --admin-brand-strong: var(--sage-dark); /* marca escura */
+  --admin-brand-soft: var(--sage-pale); /* marca clara (fundos) */
+  --admin-action: var(--amber); /* cor de ação principal (botões) */
+  --admin-action-strong: var(--amber-dark); /* ação no hover */
+  --admin-action-glow: var(--accent-glow); /* brilho suave de ação (avisos) */
+  --admin-danger: var(--brick); /* perigo (excluir, erro) */
+  --admin-radius: var(--radius-md); /* arredondamento padrão */
+  --admin-radius-lg: var(--radius-lg); /* arredondamento grande */
+  --admin-shadow: var(--shadow-main); /* sombra forte */
+  --admin-shadow-soft: 0 1px 2px var(--border-color), 0 10px 28px var(--border-color); /* sombra suave (duas camadas) */
+  /* ATENÇÃO (para estudo): a variável --admin-focus é usada mais abaixo (.admin-photo-upload)
+     e em AdminLayout.css, mas não é definida aqui nem em outro arquivo. Com var() de uma variável
+     inexistente, a declaração inteira fica inválida e o contorno de foco não aparece nesses lugares. */
 
   /* Séries dos gráficos, em ordem fixa em todo o painel */
   --admin-series-1: var(--sage);
@@ -36,13 +75,14 @@
   --admin-series-4: var(--brick);
   --admin-series-5: var(--bg-secondary);
 
-  background: var(--admin-app-bg);
-  color: var(--admin-text);
-  font-family: 'Inter', sans-serif;
-  font-size: 14px;
-  line-height: 1.5;
+  background: var(--admin-app-bg); /* fundo da página do painel */
+  color: var(--admin-text); /* cor padrão do texto */
+  font-family: 'Inter', sans-serif; /* fonte do painel */
+  font-size: 14px; /* tamanho base */
+  line-height: 1.5; /* altura de linha */
 }
 
+/* Títulos do painel com a fonte Inter (o site público usa Fraunces nos títulos). */
 .admin-layout h1,
 .admin-layout h2,
 .admin-layout h3,
@@ -56,6 +96,7 @@
 
 
 
+/* Rótulo pequeno em maiúsculas (ex.: "PAINEL ADMINISTRATIVO"). */
 .admin-eyebrow {
   color: var(--admin-text-accent);
   font-family: 'IBM Plex Mono', monospace;
@@ -65,19 +106,21 @@
   text-transform: uppercase;
 }
 
+/* Esconde visualmente, mas mantém para leitores de tela (rótulos de colunas, inputs de arquivo...). */
 .admin-visually-hidden {
   position: absolute;
   width: 1px;
   height: 1px;
   overflow: hidden;
-  clip: rect(0, 0, 0, 0);
+  clip: rect(0, 0, 0, 0); /* recorta a área visível para zero */
   white-space: nowrap;
 }
 
 /* ---------- Botões ---------- */
+/* Botão padrão do painel. */
 .admin-button {
-  display: inline-flex;
-  min-height: 40px;
+  display: inline-flex; /* ícone + texto alinhados */
+  min-height: 40px; /* altura mínima */
   align-items: center;
   justify-content: center;
   gap: 8px;
@@ -86,15 +129,16 @@
   border-radius: var(--admin-radius);
   background: var(--admin-surface);
   color: var(--admin-text);
-  font: inherit;
+  font: inherit; /* herda a fonte */
   font-size: 13px;
   font-weight: 600;
-  text-decoration: none;
-  white-space: nowrap;
+  text-decoration: none; /* quando é um link com aparência de botão */
+  white-space: nowrap; /* não quebra o texto */
   cursor: pointer;
-  transition: background 150ms ease, border-color 150ms ease;
+  transition: background 150ms ease, border-color 150ms ease; /* anima o hover */
 }
 
+/* Hover: borda e fundo na cor da marca. */
 .admin-button:hover {
   border-color: var(--admin-brand);
   background: var(--admin-brand-soft);
@@ -107,47 +151,54 @@
   color: var(--admin-text);
 }
 
+/* Principal no hover: âmbar escuro. */
 .admin-button.is-primary:hover {
   border-color: var(--admin-action-strong);
   background: var(--admin-action-strong);
 }
 
+/* Botão "fantasma": sem borda nem fundo. */
 .admin-button.is-ghost {
   border-style: none;
-  padding: 9px 15px;
+  padding: 9px 15px; /* 1px a mais para compensar a falta de borda */
   background: none;
   color: var(--admin-text-accent);
 }
 
+/* Fantasma no hover. */
 .admin-button.is-ghost:hover {
   background: var(--admin-brand-soft);
 }
 
+/* Botão de perigo (excluir, recusar): borda vermelha. */
 .admin-button.is-danger {
   border-color: var(--admin-danger);
   color: var(--admin-text);
 }
 
+/* Botão pequeno (em tabelas). */
 .admin-button.is-small {
   min-height: 34px;
   padding: 6px 10px;
   font-size: 12px;
 }
 
+/* Botões desabilitados: cursor "proibido" e mais apagados. */
 .admin-button:disabled,
 .admin-icon-button:disabled {
   cursor: not-allowed;
   opacity: 0.55;
 }
 
+/* Botão redondo só com ícone. */
 .admin-icon-button {
   display: inline-grid;
-  flex: 0 0 auto;
+  flex: 0 0 auto; /* tamanho fixo em flex */
   width: 40px;
   height: 40px;
-  place-items: center;
+  place-items: center; /* ícone centralizado */
   border: 1px solid var(--admin-border);
-  border-radius: 50%;
+  border-radius: 50%; /* círculo */
   background: var(--admin-surface);
   color: var(--admin-text);
   text-decoration: none;
@@ -155,29 +206,35 @@
   transition: background 150ms ease;
 }
 
+/* Ícone no hover. */
 .admin-icon-button:hover {
   background: var(--admin-brand-soft);
 }
 
+/* Ícone pequeno. */
 .admin-icon-button.is-small {
   width: 34px;
   height: 34px;
 }
 
+/* Ícone de perigo (ex.: lixeira). */
 .admin-icon-button.is-danger {
   color: var(--admin-danger);
 }
 
+/* Perigo no hover: borda vermelha. */
 .admin-icon-button.is-danger:hover {
   border-color: var(--admin-danger);
 }
 
 /* ---------- Página, cabeçalho de seção e cartões ---------- */
+/* Cada tela do painel: blocos empilhados com espaço. */
 .admin-page {
   display: grid;
   gap: 18px;
 }
 
+/* Barra do topo de cada tela (título + ações). */
 .admin-toolbar {
   display: flex;
   flex-wrap: wrap;
@@ -186,16 +243,19 @@
   gap: 12px;
 }
 
+/* Título da barra. */
 .admin-toolbar h2 {
   font-size: 18px;
 }
 
+/* Descrição da barra. */
 .admin-toolbar p {
   margin-top: 2px;
   color: var(--admin-text-muted);
   font-size: 13px;
 }
 
+/* Grupo de botões da barra. */
 .admin-toolbar-actions {
   display: flex;
   flex-wrap: wrap;
@@ -203,6 +263,7 @@
   gap: 8px;
 }
 
+/* Cartão genérico. */
 .admin-card {
   padding: 22px;
   border: 1px solid var(--admin-border);
@@ -211,6 +272,7 @@
   box-shadow: var(--admin-shadow-soft);
 }
 
+/* Cabeçalho de cartão (título + link/ação). */
 .admin-card-header {
   display: flex;
   flex-wrap: wrap;
@@ -230,12 +292,14 @@
 }
 
 /* ---------- Indicadores (cartões de número) ---------- */
+/* Grade automática: quantas colunas couberem, com no mínimo 200px cada. */
 .admin-kpis {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 14px;
 }
 
+/* Cartão de indicador: rótulo, número e legenda. */
 .admin-kpi {
   display: grid;
   gap: 4px;
@@ -246,17 +310,20 @@
   box-shadow: var(--admin-shadow-soft);
 }
 
+/* Rótulo e legenda discretos. */
 .admin-kpi span,
 .admin-kpi small {
   color: var(--admin-text-muted);
   font-size: 12px;
 }
 
+/* O número. */
 .admin-kpi strong {
   font-size: 26px;
   line-height: 1.2;
 }
 
+/* Indicador em destaque: fundo escuro. */
 .admin-kpi.is-highlight {
   border-color: var(--admin-sidebar-bg);
   background: var(--admin-sidebar-bg);
@@ -271,16 +338,19 @@
   color: var(--admin-sidebar-text);
 }
 
+/* Esqueletos de carregamento das listas (ListState). */
 .admin-list-loading {
   display: grid;
   gap: 10px;
 }
 
+/* Cada esqueleto tem a altura de uma linha. */
 .admin-list-loading .admin-skeleton {
   height: 52px;
 }
 
 /* ---------- Campos e filtros ---------- */
+/* Rótulo + campo (empilhados). ">" = só os <label> filhos diretos da grade do formulário. */
 .admin-field,
 .admin-form-grid > label {
   display: grid;
@@ -290,6 +360,7 @@
   font-weight: 600;
 }
 
+/* Visual comum de inputs, selects e textareas do painel. */
 .admin-field input,
 .admin-field select,
 .admin-field textarea,
@@ -306,14 +377,16 @@
   color: var(--admin-text);
   font: inherit;
   font-size: 13px;
-  font-weight: 400;
+  font-weight: 400; /* o rótulo é seminegrito; o valor digitado, normal */
 }
 
+/* Textareas só redimensionam na vertical. */
 .admin-field textarea,
 .admin-form-grid > label textarea {
   resize: vertical;
 }
 
+/* Foco: borda na cor da marca. */
 .admin-field input:focus,
 .admin-field select:focus,
 .admin-field textarea:focus,
@@ -321,17 +394,19 @@
   border-color: var(--admin-brand);
 }
 
+/* Caixa de filtros: a busca (coluna maior) + quantas colunas de 140px couberem. */
 .admin-filters {
   display: grid;
   grid-template-columns: minmax(220px, 2fr) repeat(auto-fit, minmax(140px, 1fr));
-  align-items: end;
+  align-items: end; /* alinha os campos pela base */
   gap: 12px;
   padding: 16px;
   border: 1px solid var(--admin-border);
   border-radius: var(--admin-radius-lg);
-  
+
 }
 
+/* Rótulos dos filtros. */
 .admin-filters > label {
   display: flex;
   gap: 6px;
@@ -340,6 +415,7 @@
   font-weight: 600;
 }
 
+/* Selects e inputs dos filtros (exceto o de busca, que tem visual próprio). */
 .admin-filters select,
 .admin-filters input:not([type='search']) {
   width: 100%;
@@ -353,11 +429,13 @@
   font-size: 13px;
 }
 
+/* Botões do formulário de filtros. */
 .admin-filters-actions {
   display: flex;
   gap: 8px;
 }
 
+/* Caixa de busca (pílula com lupa). */
 .admin-search {
   display: flex;
   min-height: 40px;
@@ -372,6 +450,7 @@
 
 
 
+/* Campo da busca sem borda (a caixa faz esse papel). */
 .admin-search input {
   width: 100%;
   min-width: 0;
@@ -384,6 +463,7 @@
 }
 
 /* ---------- Selos de status (texto + marcador; nunca só a cor) ---------- */
+/* Selo base: pílula com um marcador (bolinha) antes do texto. */
 .admin-badge {
   display: inline-flex;
   min-height: 24px;
@@ -399,6 +479,7 @@
   white-space: nowrap;
 }
 
+/* O marcador (bolinha) desenhado com ::before. */
 .admin-badge::before {
   width: 7px;
   height: 7px;
@@ -408,6 +489,7 @@
   content: '';
 }
 
+/* Disponível / sucesso: verde. */
 .admin-badge.is-available,
 .admin-badge.is-success {
   border-color: var(--admin-brand);
@@ -420,6 +502,7 @@
   background: var(--admin-brand);
 }
 
+/* Pendente: âmbar. */
 .admin-badge.is-pending {
   border-color: var(--admin-action);
   background: var(--admin-action-glow);
@@ -429,22 +512,25 @@
   background: var(--admin-action-strong);
 }
 
+/* Urgente: borda vermelha e marcador em forma de losango (forma diferente → não depende só da cor). */
 .admin-badge.is-urgent {
   border-color: var(--admin-danger);
   background: var(--admin-surface);
 }
 
 .admin-badge.is-urgent::before {
-  border-radius: 2px;
+  border-radius: 2px; /* quadrado... */
   background: var(--admin-danger);
-  transform: rotate(45deg);
+  transform: rotate(45deg); /* ...girado 45° = losango */
 }
 
+/* Neutro / apagado. */
 .admin-badge.is-muted {
   color: var(--admin-text-muted);
 }
 
 /* ---------- Tabela (vira lista de cartões no celular) ---------- */
+/* Contêiner da tabela com rolagem (horizontal, se precisar). */
 .admin-table-wrap {
   overflow: auto;
   border: 1px solid var(--admin-border);
@@ -453,12 +539,14 @@
   box-shadow: var(--admin-shadow-soft);
 }
 
+/* Tabela ocupando a largura toda, com bordas "coladas". */
 .admin-table {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: collapse; /* bordas das células se fundem numa só */
   text-align: left;
 }
 
+/* Células. */
 .admin-table th,
 .admin-table td {
   padding: 13px 16px;
@@ -466,6 +554,7 @@
   vertical-align: middle;
 }
 
+/* Cabeçalho grudado no topo ao rolar a tabela. */
 .admin-table thead th {
   position: sticky;
   top: 0;
@@ -478,6 +567,7 @@
   text-transform: uppercase;
 }
 
+/* Botões dentro do cabeçalho (ordenação) com o mesmo visual do texto do cabeçalho. */
 .admin-table thead th button {
   display: inline-flex;
   align-items: center;
@@ -492,23 +582,28 @@
   cursor: pointer;
 }
 
+/* Última linha sem borda inferior. */
 .admin-table tbody tr:last-child td {
   border-bottom: 0;
 }
 
+/* Linha no hover: fundo levemente diferente. */
 .admin-table tbody tr:hover td {
   background: var(--admin-surface-sunken);
 }
 
+/* Texto das células. */
 .admin-table td {
   font-size: 13px;
 }
 
+/* Título principal de uma célula (ex.: nome). */
 .admin-cell-title {
   display: block;
   font-weight: 600;
 }
 
+/* Texto secundário logo após o título ("+" = irmão imediatamente seguinte). */
 .admin-cell-title + small {
   display: block;
   margin-top: 2px;
@@ -516,18 +611,21 @@
   font-size: 12px;
 }
 
+/* Botões de ação de uma linha. */
 .admin-row-actions {
   display: flex;
   align-items: center;
   gap: 6px;
 }
 
+/* Selo + select de status (tabela de animais). */
 .admin-status-control {
   display: grid;
   justify-items: start;
   gap: 6px;
 }
 
+/* O select de status, pequeno. */
 .admin-status-control select {
   max-width: 150px;
   padding: 4px 6px;
@@ -540,6 +638,7 @@
 }
 
 /* ---------- Paginação, estados e alertas ---------- */
+/* Barra de paginação. */
 .admin-pagination {
   display: flex;
   flex-wrap: wrap;
@@ -550,17 +649,19 @@
   font-size: 12px;
 }
 
+/* Botões da paginação. */
 .admin-pagination > div {
   display: flex;
   gap: 8px;
 }
 
+/* Caixa de estado (vazio/erro/carregando). */
 .admin-state {
   display: grid;
   justify-items: start;
   gap: 6px;
   padding: 24px;
-  border: 1px dashed var(--admin-border);
+  border: 1px dashed var(--admin-border); /* tracejada */
   border-radius: var(--admin-radius-lg);
   background: var(--admin-surface);
 }
@@ -573,12 +674,14 @@
   margin-top: 8px;
 }
 
+/* Estado de erro: borda sólida vermelha, mais grossa à esquerda. */
 .admin-state.is-error {
   border-style: solid;
   border-color: var(--admin-danger);
   border-left-width: 4px;
 }
 
+/* Alerta: faixa com borda colorida à esquerda (cor muda com is-*). */
 .admin-alert {
   padding: 10px 14px;
   border: 1px solid var(--admin-border);
@@ -589,10 +692,12 @@
   font-size: 13px;
 }
 
+/* Alerta de erro: bordas vermelhas. */
 .admin-alert.is-error {
   border-color: var(--admin-danger);
 }
 
+/* Esqueleto: barra com brilho que se move (degradê animado). */
 .admin-skeleton {
   border-radius: var(--admin-radius);
   background: linear-gradient(90deg, var(--admin-surface-sunken), var(--admin-surface), var(--admin-surface-sunken));
@@ -600,6 +705,7 @@
   animation: admin-skeleton 1.2s linear infinite;
 }
 
+/* Passo final da animação: desloca o fundo para a esquerda (em loop). */
 @keyframes admin-skeleton {
   to {
     background-position: -200% 0;
@@ -607,12 +713,13 @@
 }
 
 /* ---------- Diálogo modal ---------- */
+/* Janela <dialog> do painel (AdminDialog.jsx). */
 .admin-dialog {
-  width: min(720px, calc(100% - 28px));
-  max-height: min(90vh, 860px);
-  margin: auto;
+  width: min(720px, calc(100% - 28px)); /* até 720px, com margem no celular */
+  max-height: min(90vh, 860px); /* até 90% da altura da tela */
+  margin: auto; /* centralizada */
   padding: 26px;
-  overflow: auto;
+  overflow: auto; /* rolagem interna se o conteúdo for alto */
   border: 1px solid var(--admin-border);
   border-radius: var(--admin-radius-lg);
   background: var(--admin-surface);
@@ -621,17 +728,20 @@
   font-family: 'Inter', sans-serif;
 }
 
+/* Fundo escuro atrás do diálogo modal (pseudo-elemento ::backdrop). */
 .admin-dialog::backdrop {
   background: var(--admin-sidebar-bg);
   opacity: 0.7;
 }
 
+/* Título do diálogo. */
 .admin-dialog h2 {
   margin-top: 4px;
   font-family: 'Inter', sans-serif;
   font-size: 22px;
 }
 
+/* Cabeçalho: título à esquerda, X à direita. */
 .admin-dialog-header {
   display: flex;
   align-items: flex-start;
@@ -640,6 +750,7 @@
   margin-bottom: 20px;
 }
 
+/* Botões no rodapé, alinhados à direita. */
 .admin-dialog-actions {
   display: flex;
   flex-wrap: wrap;
@@ -648,20 +759,24 @@
   margin-top: 20px;
 }
 
+/* Grade de 2 colunas para formulários. */
 .admin-form-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 14px;
 }
 
+/* Campo que ocupa a linha toda. */
 .admin-form-grid .is-wide {
   grid-column: 1 / -1;
 }
 
+/* Asterisco de campo obrigatório em vermelho. */
 .admin-required {
   color: var(--admin-danger);
 }
 
+/* Linha de caixas de seleção, entre linhas divisórias. */
 .admin-checks {
   display: flex;
   flex-wrap: wrap;
@@ -672,6 +787,7 @@
   border-bottom: 1px solid var(--admin-border);
 }
 
+/* Cada caixa de seleção com o texto. */
 .admin-checks label {
   display: inline-flex;
   min-height: 36px;
@@ -680,17 +796,20 @@
   font-size: 13px;
 }
 
+/* A caixa de seleção maior e na cor da marca. */
 .admin-checks input {
   width: 18px;
   height: 18px;
   accent-color: var(--admin-brand);
 }
 
+/* Diálogo largo (detalhes de pedido/adotante). */
 .admin-dialog.is-wide {
   width: min(900px, calc(100% - 28px));
 }
 
 /* ---------- Formulários: dicas, grupos e escolhas ---------- */
+/* Texto de dica abaixo de campos. */
 .admin-field-hint {
   display: block;
   color: var(--admin-text-muted);
@@ -698,17 +817,20 @@
   font-weight: 400;
 }
 
+/* Campo + botão na mesma linha (senha + "Gerar senha"). */
 .admin-input-row {
   display: flex;
   gap: 8px;
 }
 
+/* O campo cresce; fonte monoespaçada (bom para ler senhas). */
 .admin-input-row input {
   flex: 1;
   min-width: 0;
   font-family: 'IBM Plex Mono', monospace;
 }
 
+/* <fieldset> sem a caixa padrão. */
 .admin-fieldset {
   min-width: 0;
   margin: 16px 0 0;
@@ -716,6 +838,7 @@
   border: 0;
 }
 
+/* Título do grupo. */
 .admin-fieldset legend {
   margin-bottom: 8px;
   padding: 0;
@@ -723,10 +846,12 @@
   font-weight: 600;
 }
 
+/* Caixas de seleção dentro de um fieldset sem margem extra. */
 .admin-fieldset .admin-checks {
   margin-top: 0;
 }
 
+/* Grupo de opções em pílulas (rádios). */
 .admin-choice-group {
   display: flex;
   flex-wrap: wrap;
@@ -734,6 +859,7 @@
   margin-bottom: 6px;
 }
 
+/* Cada opção em pílula. */
 .admin-choice {
   display: inline-flex;
   min-height: 40px;
@@ -748,36 +874,43 @@
   cursor: pointer;
 }
 
+/* Pílula cujo rádio está marcado (seletor :has, sem precisar de classe no JSX). */
 .admin-choice:has(input:checked) {
   border-color: var(--admin-brand);
   background: var(--admin-brand-soft);
   color: var(--admin-brand-strong);
 }
 
+/* O rádio na cor da marca. */
 .admin-choice input {
   accent-color: var(--admin-brand);
 }
 
+/* Lista de detalhes dentro de alertas. */
 .admin-alert ul {
   margin: 6px 0 0;
   padding-left: 18px;
 }
 
+/* Alerta de sucesso: borda esquerda verde. */
 .admin-alert.is-success {
   border-left-color: var(--admin-brand);
 }
 
+/* Alerta de atenção: âmbar. */
 .admin-alert.is-warning {
   border-color: var(--admin-action);
   background: var(--admin-action-glow);
 }
 
 /* ---------- Detalhe de registro (ex.: pedido de adoção) ---------- */
+/* Conteúdo dos diálogos de detalhe, empilhado. */
 .admin-detail {
   display: grid;
   gap: 16px;
 }
 
+/* Linha de resumo (selos, datas, responsável). */
 .admin-detail-meta {
   display: flex;
   flex-wrap: wrap;
@@ -787,16 +920,18 @@
   font-size: 12px;
 }
 
+/* Duas seções lado a lado (ex.: adotante | animal). */
 .admin-detail-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 14px;
 }
 
+/* Seção de detalhe (caixa). */
 .admin-detail-section {
   display: grid;
   align-content: start;
-  justify-items: start;
+  justify-items: start; /* itens não esticam (botões ficam do tamanho do texto) */
   gap: 12px;
   padding: 16px;
   border: 1px solid var(--admin-border);
@@ -804,10 +939,12 @@
   background: var(--admin-surface);
 }
 
+/* Nenhum filho passa da largura da seção. */
 .admin-detail-section > * {
   max-width: 100%;
 }
 
+/* Título da seção, pequeno e em maiúsculas. */
 .admin-detail-section h3 {
   color: var(--admin-text-muted);
   font-size: 11px;
@@ -815,12 +952,14 @@
   text-transform: uppercase;
 }
 
+/* Lista de definições (rótulo: valor). */
 .admin-detail-list {
   display: grid;
   gap: 8px;
   margin: 0;
 }
 
+/* Cada par: rótulo com 76px e valor no resto. */
 .admin-detail-list > div {
   display: grid;
   grid-template-columns: 76px minmax(0, 1fr);
@@ -835,15 +974,17 @@
 .admin-detail-list dd {
   margin: 0;
   font-weight: 600;
-  overflow-wrap: anywhere;
+  overflow-wrap: anywhere; /* quebra e-mails longos */
 }
 
+/* Foto + dados do animal lado a lado. */
 .admin-detail-animal {
   display: flex;
   align-items: flex-start;
   gap: 14px;
 }
 
+/* Miniatura do animal. */
 .admin-detail-photo {
   width: 72px;
   height: 72px;
@@ -852,10 +993,12 @@
   object-fit: cover;
 }
 
+/* Seção que contém o histórico: itens esticam na largura (:has seleciona pelo conteúdo). */
 .admin-detail-section:has(.admin-history) {
   justify-items: stretch;
 }
 
+/* Caixa do histórico: altura máxima com rolagem e quebras de linha preservadas. */
 .admin-history {
   max-height: 260px;
   overflow: auto;
@@ -865,14 +1008,16 @@
   font-size: 13px;
   line-height: 1.6;
   overflow-wrap: anywhere;
-  white-space: pre-wrap;
+  white-space: pre-wrap; /* mantém as quebras de linha ("\n") do texto */
 }
 
+/* Mensagem de "decidido"/"nenhum". */
 .admin-detail-closed {
   color: var(--admin-text-muted);
   font-size: 13px;
 }
 
+/* Painel de ação dentro do diálogo (decidir, agendar...). */
 .admin-action-panel {
   display: grid;
   gap: 10px;
@@ -889,6 +1034,7 @@
   font-size: 13px;
 }
 
+/* Dentro do painel, sem margens extras (o gap da grade já espaça). */
 .admin-action-panel .admin-checks,
 .admin-action-panel .admin-dialog-actions,
 .admin-action-panel .admin-fieldset {
@@ -896,6 +1042,7 @@
 }
 
 /* ---------- Responsivo ---------- */
+/* Até 900px: filtros em 2 colunas, busca na linha toda. */
 @media (max-width: 900px) {
   .admin-filters {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -906,12 +1053,15 @@
   }
 }
 
+/* Até 640px (celulares). */
 @media (max-width: 640px) {
+  /* Filtros em uma coluna. */
   .admin-filters {
     grid-template-columns: 1fr;
     padding: 12px;
   }
 
+  /* Formulários e detalhes em uma coluna. */
   .admin-form-grid,
   .admin-detail-grid {
     grid-template-columns: 1fr;
@@ -921,14 +1071,17 @@
     padding: 18px;
   }
 
+  /* Campo e botão empilhados. */
   .admin-input-row {
     flex-direction: column;
   }
 
+  /* Botões do diálogo com largura total. */
   .admin-dialog-actions .admin-button {
     flex: 1 1 100%;
   }
 
+  /* A tabela vira uma lista de cartões: tiramos o visual de tabela do contêiner... */
   .admin-table-wrap {
     overflow: visible;
     border: 0;
@@ -936,6 +1089,7 @@
     box-shadow: none;
   }
 
+  /* ...e transformamos tabela, linhas e células em blocos comuns. */
   .admin-table,
   .admin-table tbody,
   .admin-table tr,
@@ -944,6 +1098,7 @@
     width: 100%;
   }
 
+  /* O cabeçalho some visualmente (mas continua para leitores de tela). */
   .admin-table thead {
     position: absolute;
     width: 1px;
@@ -952,11 +1107,13 @@
     clip: rect(0, 0, 0, 0);
   }
 
+  /* As linhas viram cartões empilhados. */
   .admin-table tbody {
     display: grid;
     gap: 12px;
   }
 
+  /* Cada linha = um cartão. */
   .admin-table tr {
     padding: 6px 4px;
     border: 1px solid var(--admin-border);
@@ -965,6 +1122,7 @@
     box-shadow: var(--admin-shadow-soft);
   }
 
+  /* Cada célula = linha "rótulo | valor". */
   .admin-table td {
     display: grid;
     grid-template-columns: minmax(96px, 0.8fr) minmax(0, 1.4fr);
@@ -972,6 +1130,7 @@
     padding: 9px 12px;
   }
 
+  /* O rótulo vem do atributo data-label do JSX: content: attr(data-label) escreve esse texto. */
   .admin-table td::before {
     color: var(--admin-text-muted);
     content: attr(data-label);
@@ -980,10 +1139,12 @@
     text-transform: uppercase;
   }
 
+  /* Sem efeito de hover nos cartões. */
   .admin-table tbody tr:hover td {
     background: none;
   }
 
+  /* Paginação empilhada, botões dividindo a largura. */
   .admin-pagination {
     flex-direction: column;
     align-items: stretch;
@@ -994,6 +1155,7 @@
   }
 }
 
+/* Menos movimento: sem transições e sem animação dos esqueletos. */
 @media (prefers-reduced-motion: reduce) {
   .admin-button,
   .admin-icon-button,
@@ -1004,10 +1166,12 @@
 }
 
 /* ---------- Agenda do pedido ---------- */
+/* Seções largas: itens esticam na largura. */
 .admin-detail-wide {
   justify-items: stretch;
 }
 
+/* Lista de compromissos (também usada no histórico do adotante). */
 .admin-appointments {
   display: grid;
   gap: 10px;
@@ -1016,6 +1180,7 @@
   list-style: none;
 }
 
+/* Cada compromisso: textos à esquerda, selo à direita, ações embaixo. */
 .admin-appointments li {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
@@ -1027,18 +1192,21 @@
   background: var(--admin-surface-sunken);
 }
 
+/* Bloco de textos do compromisso. */
 .admin-appointments li > div:first-child {
   display: grid;
   gap: 2px;
   min-width: 0;
 }
 
+/* Detalhes (duração, local, responsável). */
 .admin-appointments small {
   color: var(--admin-text-muted);
   font-size: 12px;
   overflow-wrap: anywhere;
 }
 
+/* Ações ocupando a linha toda, embaixo. */
 .admin-appointments .admin-row-actions {
   grid-column: 1 / -1;
   flex-wrap: wrap;
@@ -1050,6 +1218,7 @@
   gap: 10px;
 }
 
+/* Grade de miniaturas: auto-fill cria quantas colunas de 110px couberem. */
 .admin-photo-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
@@ -1059,6 +1228,7 @@
   list-style: none;
 }
 
+/* Cada miniatura (referência para os botões posicionados por cima). */
 .admin-photo-grid li {
   position: relative;
   overflow: hidden;
@@ -1067,10 +1237,12 @@
   background: var(--admin-surface-sunken);
 }
 
+/* A foto principal ganha borda verde. */
 .admin-photo-grid li.is-main {
   border-color: var(--admin-brand);
 }
 
+/* Imagem quadrada que preenche a miniatura. */
 .admin-photo-grid img {
   display: block;
   width: 100%;
@@ -1078,6 +1250,7 @@
   object-fit: cover;
 }
 
+/* Botões sobre a foto, no rodapé da miniatura (inset: auto 6px 6px = top auto, laterais e base 6px). */
 .admin-photo-actions {
   position: absolute;
   inset: auto 6px 6px;
@@ -1087,12 +1260,42 @@
   gap: 6px;
 }
 
+/* Botão "Enviar fotos" (um <label> que contém o input de arquivo escondido). */
 .admin-photo-upload {
   justify-self: start;
   position: relative;
 }
 
+/* Foco no input de arquivo escondido: contorno no rótulo visível.
+   (Usa --admin-focus, que não está definida — veja a observação no topo do arquivo.) */
 .admin-photo-upload:focus-within {
   outline: 2px solid var(--admin-focus);
   outline-offset: 2px;
 }
+
+/*
+ * ============================================================================
+ * RESUMO DO ARQUIVO
+ * ============================================================================
+ *
+ * COMO FUNCIONA:
+ *   1. No contêiner do painel, as variáveis --admin-* dão "papéis" às cores do
+ *      site (ex.: --admin-action = âmbar). Mudar um token muda o painel inteiro.
+ *   2. As classes admin-* formam um mini "design system": botões, cartões,
+ *      campos, selos (com marcador além da cor), tabelas, alertas e diálogos.
+ *   3. No celular, a tabela vira uma lista de cartões, e cada célula mostra o seu
+ *      rótulo lido do atributo data-label do HTML.
+ *
+ * CONCEITOS IMPORTANTES PARA ESTUDAR:
+ *   - Variáveis CSS em camadas (tokens → papéis) e herança de variáveis.
+ *   - Design system com classes modificadoras (.is-primary, .is-small...).
+ *   - Acessibilidade: não depender só da cor (marcadores e formas), contraste AA,
+ *     visually-hidden, foco visível.
+ *   - Tabelas responsivas com display: block e content: attr(data-label).
+ *   - <dialog> e ::backdrop; position: sticky em cabeçalhos de tabela.
+ *   - Seletores modernos: :has(), :not(), irmão adjacente (+), filho direto (>).
+ *   - Grid: auto-fit x auto-fill, minmax(), grid-column: 1 / -1.
+ *   - Animações com @keyframes e prefers-reduced-motion.
+ *   - O que acontece quando se usa var() com uma variável não definida.
+ * ============================================================================
+ */

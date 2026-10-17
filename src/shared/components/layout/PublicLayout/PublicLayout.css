@@ -1,29 +1,74 @@
+/*
+ * ============================================================================
+ * ARQUIVO: PublicLayout.css
+ * ============================================================================
+ *
+ * PARA QUE SERVE:
+ *   Estilos da moldura das páginas internas (PublicLayout) e do bloco de
+ *   "mensagem de estado" (.public-state), usado em páginas como a 404.
+ *
+ * PRINCIPAIS REGRAS:
+ *   - .public-page                         → o <main> das páginas internas.
+ *   - .public-page > section:first-child   → espaço no topo da primeira seção.
+ *   - .public-state, .public-state p, .public-state-actions → mensagens de estado.
+ *
+ * CONEXÕES COM OUTROS ARQUIVOS:
+ *   - Importado por: shared/components/layout/PublicLayout/PublicLayout.jsx.
+ *   - .public-state é usado em app/NotFoundPage.jsx e em outras páginas públicas.
+ *   - Usa a variável --text-muted de styles/globals.css.
+ * ============================================================================
+ */
+
 /* O quê: base das páginas internas do site.
   Como: altura mínima para o rodapé não subir em páginas curtas; seções mais compactas que na Home.
   Para quê: manter o mesmo ritmo visual da Home sem repetir estilos em cada página. */
 .public-page {
-  min-height: 60vh;
+  min-height: 60vh; /* altura mínima de 60% da altura da janela (vh = viewport height) */
 }
 
+/* Seletor ">" = filho DIRETO. ":first-child" = o primeiro filho.
+   Ou seja: a primeira <section> diretamente dentro do <main> ganha espaço no topo. */
 .public-page > section:first-child {
-  padding-top: 48px;
+  padding-top: 48px; /* espaço interno no topo */
 }
 
+/* Bloco de mensagem de estado (ex.: "Página não encontrada"). */
 .public-state {
-  display: grid;
-  justify-items: start;
-  gap: 14px;
-  max-width: 560px;
-  padding: 48px 0 24px;
+  display: grid; /* CSS Grid: organiza os filhos em linhas */
+  justify-items: start; /* alinha os itens à esquerda (não estica os botões) */
+  gap: 14px; /* espaço entre os itens */
+  max-width: 560px; /* largura máxima, para o texto não ficar com linhas longas demais */
+  padding: 48px 0 24px; /* 48px em cima, 0 nas laterais, 24px embaixo */
 }
 
+/* Parágrafos dentro do bloco de estado. */
 .public-state p {
-  color: var(--text-muted);
-  line-height: 1.7;
+  color: var(--text-muted); /* cor de texto secundária */
+  line-height: 1.7; /* espaço confortável entre linhas */
 }
 
+/* Linha de botões do bloco de estado. */
 .public-state .public-state-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+  display: flex; /* botões lado a lado */
+  flex-wrap: wrap; /* quebram para a próxima linha em telas estreitas */
+  gap: 10px; /* espaço entre os botões */
 }
+
+/*
+ * ============================================================================
+ * RESUMO DO ARQUIVO
+ * ============================================================================
+ *
+ * COMO FUNCIONA:
+ *   O <main class="public-page"> garante uma altura mínima (o rodapé não "sobe" em
+ *   páginas curtas) e dá espaço à primeira seção. O .public-state organiza títulos,
+ *   textos e botões de mensagens como a página 404.
+ *
+ * CONCEITOS IMPORTANTES PARA ESTUDAR:
+ *   - Unidade vh (altura da janela).
+ *   - Seletores combinados: filho direto (>), :first-child e descendente (espaço).
+ *   - CSS Grid básico (display: grid, gap, justify-items).
+ *   - Flexbox com flex-wrap.
+ *   - Legibilidade: max-width do texto e line-height.
+ * ============================================================================
+ */

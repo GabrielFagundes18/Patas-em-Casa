@@ -1,33 +1,78 @@
+# ============================================================================
+# ARQUIVO: .gitignore (front-end)
+# ============================================================================
+#
+# PARA QUE SERVE:
+#   Diz ao Git quais arquivos e pastas NÃO devem ser versionados (enviados ao
+#   repositório). Normalmente são coisas geradas automaticamente, pesadas,
+#   pessoais ou secretas.
+#
+# COMO LER AS REGRAS:
+#   - Linhas que começam com "#" são comentários.
+#   - "/pasta" (com barra no início) vale só para a pasta na raiz do projeto.
+#   - "*" é um curinga: "*.log" significa "qualquer arquivo terminado em .log".
+#   - "!" no início cria uma EXCEÇÃO (volta a incluir algo que outra regra ignorou).
+#
+# CONEXÕES:
+#   - Usado pelo Git. Protege, por exemplo, o arquivo .env (com configurações locais).
+# ============================================================================
+
 # Dependências
+# node_modules: bibliotecas baixadas pelo "npm install". São enormes e podem ser
+# reinstaladas a qualquer momento a partir do package.json.
 /node_modules
+# Arquivos do "Plug'n'Play" do Yarn (alternativa ao node_modules); ignorados por precaução.
 /.pnp
 .pnp.js
 
 # Testes
+# Relatório de cobertura de testes (gerado ao rodar os testes com --coverage).
 /coverage
 
 # Build de produção
+# Pasta gerada pelo "npm run build". É recriada a cada build, então não vai para o Git.
 /build
 
 # Variáveis de ambiente: só o exemplo vai para o Git
+# .env e variações (.env.local, .env.production...) podem ter dados privados.
 .env
 .env.*
+# Exceção: o .env.example (modelo sem segredos) DEVE ir para o repositório.
 !.env.example
 
 # Logs e caches
+# Arquivos de log gerados quando o npm/yarn dão erro.
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+# Qualquer outro arquivo de log.
 *.log
+# Cache do ESLint (ferramenta que analisa a qualidade do código).
 .eslintcache
 
 # Sistema operacional e IDE
+# Arquivos criados automaticamente pelo macOS (.DS_Store) e pelo Windows (Thumbs.db).
 .DS_Store
 Thumbs.db
+# Configurações pessoais dos editores VS Code e IntelliJ/WebStorm.
 .vscode/
 .idea/
 
 # Backups e temporários
+# Cópias de segurança e arquivos temporários que não fazem parte do projeto.
 *.bak
 *.tmp
 *.old
+
+# ============================================================================
+# RESUMO DO ARQUIVO
+# ============================================================================
+# COMO FUNCIONA:
+#   Sempre que você roda "git add" ou "git status", o Git confere estas regras e
+#   esconde/ignora os arquivos que combinam com elas.
+#
+# CONCEITOS IMPORTANTES PARA ESTUDAR:
+#   - Git e o arquivo .gitignore (padrões com *, / e !).
+#   - Por que não versionar node_modules e a pasta de build.
+#   - Variáveis de ambiente e por que o .env não deve ir para o repositório.
+# ============================================================================

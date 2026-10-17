@@ -1,35 +1,70 @@
+/*
+ * ============================================================================
+ * ARQUIVO: LandingPage.css
+ * ============================================================================
+ *
+ * PARA QUE SERVE:
+ *   Peças visuais COMPARTILHADAS pelas seções da página inicial, todas com o
+ *   prefixo "home-": espaçamento de seção, cabeçalho (rótulo, título, texto),
+ *   botões, links, selo de urgente, campos de formulário e alertas.
+ *   O prefixo evita conflito com as classes globais (.btn, .eyebrow...) usadas
+ *   nas páginas internas.
+ *
+ * PRINCIPAIS REGRAS:
+ *   - .home-section, .home-head, .home-eyebrow, .home-title, .home-lead
+ *   - .home-btn (+ variações --primary, --outline, --ghost), .home-link, .home-arrow-link
+ *   - .home-badge-urgent
+ *   - .home-field, .home-fieldset, .home-visually-hidden, .home-alert
+ *
+ * CONEXÕES COM OUTROS ARQUIVOS:
+ *   - Importado por: features/home/LandingPage.jsx.
+ *   - As classes são usadas pelas seções em features/home/sections/* e por
+ *     features/volunteers/VolunteerSignup.
+ *   - Usa variáveis de styles/globals.css.
+ *
+ * SOBRE OS NOMES (padrão BEM): "home-btn--primary" = bloco "home-btn" com o
+ *   modificador "primary" (os dois traços indicam uma variação).
+ * ============================================================================
+ */
+
 /* O quê: peças visuais compartilhadas pelas seções da Home (prefixo home-).
   Como: classes próprias, sem mexer em .eyebrow, .btn e .section-head usadas pelas páginas internas.
   Para quê: as seções da Home seguirem o mesmo ritmo (rótulo, título, texto, botões) sem repetir regras. */
 
+/* Espaço vertical de cada seção da home.
+   clamp(mínimo, ideal, máximo): o valor ideal é 8vw (8% da largura da janela),
+   mas nunca menos de 64px nem mais de 104px. Assim o espaço se adapta à tela. */
 .home-section {
   padding: clamp(64px, 8vw, 104px) 0;
 }
 
+/* Cabeçalho de seção (rótulo + título + texto) empilhado. */
 .home-head {
-  display: flex;
+  display: flex; /* coluna flex */
   flex-direction: column;
-  align-items: flex-start;
-  gap: 12px;
-  max-width: 42em;
+  align-items: flex-start; /* alinhado à esquerda */
+  gap: 12px; /* espaço entre os itens */
+  max-width: 42em; /* largura máxima (em = relativo à fonte do próprio elemento) */
 }
 
+/* Rótulo pequeno acima do título. */
 .home-eyebrow {
-  margin: 0;
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--sage);
+  margin: 0; /* sem margem */
+  font-family: 'IBM Plex Mono', monospace; /* monoespaçada */
+  font-size: 12px; /* pequeno */
+  font-weight: 500; /* peso médio */
+  letter-spacing: 0.14em; /* letras espaçadas */
+  text-transform: uppercase; /* maiúsculas */
+  color: var(--sage); /* verde */
 }
 
+/* Título das seções da home. */
 .home-title {
-  margin: 0;
-  font-size: clamp(2rem, 3.6vw, 2.9rem);
-  line-height: 1.08;
-  letter-spacing: -0.02em;
-  text-wrap: balance;
+  margin: 0; /* sem margem */
+  font-size: clamp(2rem, 3.6vw, 2.9rem); /* tamanho fluido entre 2rem e 2.9rem */
+  line-height: 1.08; /* linhas próximas */
+  letter-spacing: -0.02em; /* letras mais juntas */
+  text-wrap: balance; /* equilibra o comprimento das linhas do título (recurso moderno) */
 }
 
 /* Títulos em coluna lateral (Como funciona, Voluntariado) um pouco menores, para não quebrar em 5 linhas. */
@@ -37,83 +72,96 @@
   font-size: clamp(2rem, 3vw, 2.5rem);
 }
 
+/* Texto de introdução da seção. */
 .home-lead {
-  margin: 0;
-  max-width: 34em;
-  font-size: 17px;
-  color: var(--text-muted);
+  margin: 0; /* sem margem */
+  max-width: 34em; /* largura máxima confortável para leitura */
+  font-size: 17px; /* um pouco maior que o texto normal */
+  color: var(--text-muted); /* cor secundária */
 }
 
 /* ---------- Botões e links ---------- */
+/* Botão base da home. */
 .home-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  min-height: 52px;
-  padding: 0 26px;
-  border: 1.5px solid transparent;
-  border-radius: 999px;
-  font-size: 16px;
-  font-weight: 600;
-  text-decoration: none;
-  white-space: nowrap;
-  cursor: pointer;
-  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+  display: inline-flex; /* conteúdo alinhado */
+  align-items: center; /* centralizado na vertical */
+  justify-content: center; /* e na horizontal */
+  gap: 10px; /* espaço entre ícone e texto */
+  min-height: 52px; /* altura mínima generosa */
+  padding: 0 26px; /* espaço lateral */
+  border: 1.5px solid transparent; /* borda invisível (as variações a colorem) */
+  border-radius: 999px; /* pílula */
+  font-size: 16px; /* tamanho */
+  font-weight: 600; /* seminegrito */
+  text-decoration: none; /* sem sublinhado */
+  white-space: nowrap; /* não quebra linha */
+  cursor: pointer; /* mãozinha */
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease; /* animações */
 }
 
+/* Botão com o mouse em cima: sobe 1px. */
 .home-btn:hover {
   transform: translateY(-1px);
 }
 
+/* Variação primária: verde com texto claro. */
 .home-btn--primary {
   background: var(--sage);
   color: var(--bg-card);
 }
 
+/* Primária no hover: verde escuro. */
 .home-btn--primary:hover {
   background: var(--sage-dark);
 }
 
+/* Variação contornada: borda e texto verdes. */
 .home-btn--outline {
   border-color: var(--sage);
   color: var(--sage);
 }
 
+/* Contornada no hover: fundo verde claro. */
 .home-btn--outline:hover {
   background: var(--sage-pale);
 }
 
+/* Variação "fantasma": borda discreta e texto escuro. */
 .home-btn--ghost {
   border-color: rgba(31, 42, 36, 0.2);
   color: var(--text-main);
 }
 
+/* Fantasma no hover: fundo de cartão. */
 .home-btn--ghost:hover {
   background: var(--bg-card);
 }
 
+/* Link de texto simples da home (sublinhado padrão do navegador). */
 .home-link {
-  color: var(--sage);
-  font-size: 15px;
-  font-weight: 600;
-  text-underline-offset: 4px;
+  color: var(--sage); /* verde */
+  font-size: 15px; /* tamanho */
+  font-weight: 600; /* seminegrito */
+  text-underline-offset: 4px; /* afasta o sublinhado do texto */
 }
 
+/* Link no hover: verde escuro. */
 .home-link:hover {
   color: var(--sage-dark);
 }
 
+/* Link com seta (texto + ícone). */
 .home-arrow-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  min-height: 44px;
-  color: var(--sage);
-  font-weight: 600;
-  text-decoration: none;
+  display: inline-flex; /* texto e seta lado a lado */
+  align-items: center; /* centralizados na vertical */
+  gap: 6px; /* espaço entre eles */
+  min-height: 44px; /* área de toque confortável */
+  color: var(--sage); /* verde */
+  font-weight: 600; /* seminegrito */
+  text-decoration: none; /* sem sublinhado */
 }
 
+/* Link com seta no hover: escurece e ganha sublinhado. */
 .home-arrow-link:hover {
   color: var(--sage-dark);
   text-decoration: underline;
@@ -122,90 +170,102 @@
 
 /* ---------- Selo "Urgente" (vitrine e destaque do topo) ---------- */
 .home-badge-urgent {
-  display: inline-block;
-  padding: 5px 11px;
-  border-radius: 999px;
-  background: var(--brick-dark);
-  color: #ffffff;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  line-height: 1.3;
+  display: inline-block; /* em linha, aceitando padding */
+  padding: 5px 11px; /* espaço interno */
+  border-radius: 999px; /* pílula */
+  background: var(--brick-dark); /* vermelho-tijolo escuro */
+  color: #ffffff; /* texto branco */
+  font-size: 12px; /* pequeno */
+  font-weight: 600; /* seminegrito */
+  letter-spacing: 0.02em; /* leve espaçamento */
+  line-height: 1.3; /* altura de linha */
 }
 
 /* ---------- Campos dos formulários da Home (doação e voluntariado) ---------- */
+/* Rótulo + campo empilhados. */
 .home-field {
-  display: flex;
+  display: flex; /* coluna flex */
   flex-direction: column;
-  gap: 6px;
-  font-size: 14px;
-  font-weight: 600;
+  gap: 6px; /* espaço entre rótulo e campo */
+  font-size: 14px; /* tamanho do rótulo */
+  font-weight: 600; /* rótulo em seminegrito */
 }
 
+/* O campo de texto em si. */
 .home-field input {
-  min-height: 48px;
-  padding: 0 14px;
-  border: 1px solid rgba(31, 42, 36, 0.25);
-  border-radius: 12px;
-  background: #ffffff;
-  color: var(--text-main);
-  font: inherit;
-  font-size: 16px;
-  font-weight: 400;
+  min-height: 48px; /* altura confortável */
+  padding: 0 14px; /* espaço lateral interno */
+  border: 1px solid rgba(31, 42, 36, 0.25); /* borda */
+  border-radius: 12px; /* cantos arredondados */
+  background: #ffffff; /* fundo branco */
+  color: var(--text-main); /* cor do texto digitado */
+  font: inherit; /* herda a fonte */
+  font-size: 16px; /* 16px evita o zoom automático do iPhone ao focar o campo */
+  font-weight: 400; /* peso normal (o rótulo é seminegrito) */
 }
 
+/* Campo focado pelo teclado: contorno e borda verdes. */
 .home-field input:focus-visible {
   outline: 2px solid var(--sage);
   outline-offset: 1px;
   border-color: var(--sage);
 }
 
+/* <fieldset> (grupo de campos) sem o visual padrão de caixa. */
 .home-fieldset {
-  min-width: 0;
+  min-width: 0; /* corrige um comportamento padrão de largura do fieldset */
   margin: 0;
   padding: 0;
-  border: 0;
+  border: 0; /* sem a borda padrão */
 }
 
+/* <legend> (título do grupo de campos). */
 .home-fieldset legend {
-  margin-bottom: 10px;
-  padding: 0;
-  font-size: 14px;
-  font-weight: 600;
+  margin-bottom: 10px; /* espaço abaixo */
+  padding: 0; /* sem espaçamento padrão */
+  font-size: 14px; /* tamanho */
+  font-weight: 600; /* seminegrito */
 }
 
 /* Rádio/checkbox escondido visualmente, mas acessível; o rótulo inteiro é o alvo do clique. */
+/* Técnica "visually hidden": o elemento some da tela, mas continua existindo para leitores
+   de tela e teclado (diferente de display: none, que o esconde de todos). */
 .home-visually-hidden {
-  position: absolute;
-  width: 1px;
+  position: absolute; /* fora do fluxo */
+  width: 1px; /* tamanho mínimo */
   height: 1px;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  white-space: nowrap;
+  overflow: hidden; /* esconde o conteúdo */
+  clip: rect(0 0 0 0); /* recorta a área visível para zero */
+  white-space: nowrap; /* evita quebra de linha que poderia vazar */
 }
 
+/* Caixa de mensagem (erro ou sucesso) dos formulários. */
 .home-alert {
   margin: 0;
-  padding: 12px 14px;
-  border-radius: 12px;
-  font-size: 14px;
+  padding: 12px 14px; /* espaço interno */
+  border-radius: 12px; /* cantos arredondados */
+  font-size: 14px; /* tamanho */
 }
 
+/* Alerta de erro: tons avermelhados. */
 .home-alert.is-error {
   background: #fbeae6;
   color: #7a2f1f;
 }
 
+/* Alerta de sucesso: tons verdes. */
 .home-alert.is-success {
   background: var(--sage-pale);
   color: var(--sage-dark);
 }
 
+/* Lista dentro do alerta (ex.: lista de erros de validação). */
 .home-alert ul {
-  margin: 6px 0 0;
-  padding-left: 18px;
+  margin: 6px 0 0; /* 6px acima */
+  padding-left: 18px; /* recuo para os marcadores */
 }
 
+/* Menos movimento: botões sem animação de "subir". */
 @media (prefers-reduced-motion: reduce) {
   .home-btn,
   .home-btn:hover {
@@ -213,3 +273,24 @@
     transform: none;
   }
 }
+
+/*
+ * ============================================================================
+ * RESUMO DO ARQUIVO
+ * ============================================================================
+ *
+ * COMO FUNCIONA:
+ *   As seções da home combinam estas classes: .home-section dá o espaço vertical;
+ *   .home-head organiza rótulo (.home-eyebrow), título (.home-title) e texto
+ *   (.home-lead); os botões usam .home-btn + uma variação; formulários usam
+ *   .home-field, .home-fieldset e .home-alert.
+ *
+ * CONCEITOS IMPORTANTES PARA ESTUDAR:
+ *   - Tipografia e espaçamentos fluidos com clamp() e vw.
+ *   - Convenção de nomes BEM (bloco--modificador) e prefixos para evitar conflitos.
+ *   - Estilização de formulários: input, fieldset, legend, :focus-visible.
+ *   - Técnica "visually hidden" (acessível) x display: none.
+ *   - text-wrap: balance.
+ *   - Acessibilidade: área de toque, foco visível, prefers-reduced-motion.
+ * ============================================================================
+ */

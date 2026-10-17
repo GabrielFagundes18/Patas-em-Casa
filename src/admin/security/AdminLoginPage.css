@@ -1,58 +1,88 @@
+/*
+ * ============================================================================
+ * ARQUIVO: AdminLoginPage.css
+ * ============================================================================
+ *
+ * PARA QUE SERVE:
+ *   Estilos das telas de ACESSO ao painel (login, esqueci a senha, criar/
+ *   redefinir senha), montadas pelo componente AdminAuthShell: página
+ *   centralizada, cartão com painel lateral escuro e formulário.
+ *
+ * PRINCIPAIS REGRAS:
+ *   - .admin-login-page, .admin-login-shell, .admin-login-aside, .admin-login-mark
+ *   - .admin-login-card, .admin-login-brand, .admin-login-heading, .admin-login-eyebrow
+ *   - .admin-login-notice, .admin-login-form, .admin-login-field, .admin-login-submit, .admin-login-link
+ *   - @media (max-width: 760px)
+ *
+ * CONEXÕES COM OUTROS ARQUIVOS:
+ *   - Importado por: admin/security/AdminAuthShell.jsx.
+ *   - Usa as variáveis do painel (--admin-*) definidas em admin/styles/admin.css.
+ * ============================================================================
+ */
+
 /* Tela de login do painel. Cores por papel em src/admin/styles/admin.css (tokens do :root). */
+/* Página inteira: centraliza o cartão na tela. */
 .admin-login-page {
   display: grid;
-  min-height: 100vh;
-  place-items: center;
+  min-height: 100vh; /* pelo menos a altura da janela */
+  place-items: center; /* centraliza na horizontal e na vertical */
   padding: 24px 16px;
 }
 
+/* Cartão com duas colunas: lateral (marca) e formulário. */
 .admin-login-shell {
   display: grid;
   grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
-  width: min(920px, 100%);
-  overflow: hidden;
+  width: min(920px, 100%); /* no máximo 920px */
+  overflow: hidden; /* respeita os cantos arredondados */
   border: 1px solid var(--admin-border);
   border-radius: var(--admin-radius-lg);
   background: var(--admin-surface);
   box-shadow: var(--admin-shadow);
 }
 
+/* Painel lateral escuro com a marca. */
 .admin-login-aside {
   display: grid;
-  align-content: end;
+  align-content: end; /* conteúdo empurrado para baixo */
   gap: 12px;
   padding: 40px 36px;
   background: var(--admin-sidebar-bg);
   color: var(--admin-sidebar-text);
 }
 
+/* Quadrado com a pata. */
 .admin-login-mark {
   display: grid;
   width: 52px;
   height: 52px;
   place-items: center;
-  margin-bottom: auto;
+  margin-bottom: auto; /* empurra o restante para baixo */
   border-radius: 16px;
   background: var(--admin-action);
   color: var(--admin-text);
 }
 
+/* Título "Painel Patas em Casa" na lateral. */
 .admin-login-aside-title {
-  margin-top: 120px;
+  margin-top: 120px; /* espaço grande acima */
   font-family: 'Fraunces', serif;
   font-size: 28px;
   font-weight: 600;
   line-height: 1.2;
 }
 
+/* Último parágrafo da lateral com cor mais apagada. */
 .admin-login-aside p:last-child {
   color: var(--admin-sidebar-muted);
 }
 
+/* Área do formulário. */
 .admin-login-card {
   padding: 40px 40px 36px;
 }
 
+/* Link da marca para o site público. */
 .admin-login-brand {
   display: inline-flex;
   align-items: center;
@@ -64,12 +94,14 @@
   text-decoration: none;
 }
 
+/* Cabeçalho (rótulo, título, descrição). */
 .admin-login-heading {
   display: grid;
   gap: 6px;
   margin: 28px 0 22px;
 }
 
+/* Rótulo pequeno em maiúsculas. */
 .admin-login-eyebrow {
   color: var(--admin-text-accent);
   font-family: 'IBM Plex Mono', monospace;
@@ -78,6 +110,7 @@
   text-transform: uppercase;
 }
 
+/* Título da tela. */
 .admin-login-heading h1 {
   font-family: 'Inter', sans-serif;
   font-size: 28px;
@@ -85,19 +118,23 @@
   line-height: 1.2;
 }
 
+/* Descrição (último parágrafo filho direto do cabeçalho). */
 .admin-login-heading > p:last-child {
   color: var(--admin-text-muted);
 }
 
+/* Avisos (sessão expirada, senha definida). */
 .admin-login-notice {
   margin-bottom: 16px;
 }
 
+/* Formulário: campos empilhados. */
 .admin-login-form {
   display: grid;
   gap: 16px;
 }
 
+/* Rótulo + campo. */
 .admin-login-field {
   display: grid;
   gap: 6px;
@@ -105,28 +142,32 @@
   font-weight: 600;
 }
 
+/* Campo de texto/senha. */
 .admin-login-field input {
   width: 100%;
   min-height: 46px;
   padding: 10px 14px;
   border: 1px solid var(--admin-border);
   border-radius: var(--admin-radius);
-  background: var(--admin-surface-sunken);
+  background: var(--admin-surface-sunken); /* fundo levemente "afundado" */
   color: var(--admin-text);
   font: inherit;
   font-weight: 400;
 }
 
+/* Campo com foco: borda na cor da marca. */
 .admin-login-field input:focus {
   border-color: var(--admin-brand);
 }
 
+/* Botão principal. */
 .admin-login-submit {
   min-height: 46px;
   margin-top: 4px;
   font-size: 14px;
 }
 
+/* Telas até 760px: só o formulário (a lateral some). */
 @media (max-width: 760px) {
   .admin-login-shell {
     grid-template-columns: 1fr;
@@ -144,9 +185,28 @@
 
 /* Link secundário das telas de acesso (esqueci a senha, voltar ao login). */
 .admin-login-link {
-  justify-self: center;
+  justify-self: center; /* centralizado na grade */
   margin-top: 4px;
   color: var(--admin-brand-strong);
   font-size: 13px;
   font-weight: 600;
 }
+
+/*
+ * ============================================================================
+ * RESUMO DO ARQUIVO
+ * ============================================================================
+ *
+ * COMO FUNCIONA:
+ *   A página centraliza um cartão de duas colunas: à esquerda, um painel escuro
+ *   com a marca; à direita, título e formulário. Em telas estreitas, o painel
+ *   lateral some e o cartão fica com uma coluna.
+ *
+ * CONCEITOS IMPORTANTES PARA ESTUDAR:
+ *   - Centralização com display: grid + place-items: center.
+ *   - Variáveis CSS do "tema" do painel (--admin-*).
+ *   - margin auto em grid/flex para empurrar elementos.
+ *   - Seletores :last-child e filho direto (>).
+ *   - Esconder blocos em media queries.
+ * ============================================================================
+ */

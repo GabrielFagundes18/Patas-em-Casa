@@ -1,1 +1,60 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#2f5a4b"/><g fill="#fffaf3"><ellipse cx="32" cy="41" rx="12" ry="10"/><ellipse cx="18" cy="27" rx="5" ry="6.5"/><ellipse cx="46" cy="27" rx="5" ry="6.5"/><ellipse cx="26" cy="17" rx="4.5" ry="6"/><ellipse cx="38" cy="17" rx="4.5" ry="6"/></g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!--
+    ============================================================================
+    ARQUIVO: favicon.svg
+    ============================================================================
+
+    PARA QUE SERVE:
+      É o ÍCONE do site mostrado na aba do navegador (o "favicon"): uma pata
+      clara sobre um quadrado verde de cantos arredondados. Está em SVG (gráfico
+      vetorial), um formato de texto/XML que descreve formas geométricas, então
+      fica nítido em qualquer tamanho.
+
+    PRINCIPAIS ELEMENTOS:
+      - <svg>: a "tela" do desenho. viewBox="0 0 64 64" define um sistema de
+        coordenadas de 64 x 64 unidades (x cresce para a direita, y para baixo).
+      - <rect>: o fundo verde.
+      - <g>: um grupo; tudo dentro dele herda a cor de preenchimento.
+      - <ellipse>: as partes da pata (a almofada grande e os quatro dedos).
+
+    CONEXÕES COM OUTROS ARQUIVOS:
+      - Usado em public/index.html: <link rel="icon" href="%PUBLIC_URL%/favicon.svg">.
+      - As cores são as mesmas da identidade do site (#2f5a4b verde escuro, #fffaf3 creme),
+        definidas como tokens em src/styles/globals.css.
+    ============================================================================
+  -->
+
+  <!-- Fundo: quadrado do tamanho todo (64 x 64), cantos arredondados (rx="14") em verde escuro. -->
+  <rect width="64" height="64" rx="14" fill="#2f5a4b"/>
+
+  <!-- Grupo da pata: fill="#fffaf3" pinta todas as elipses de creme. -->
+  <!-- Em cada <ellipse>: cx/cy = centro; rx/ry = raio horizontal/vertical. -->
+  <g fill="#fffaf3">
+    <!-- Almofada principal, embaixo e no centro. -->
+    <ellipse cx="32" cy="41" rx="12" ry="10"/>
+    <!-- Dedos laterais (esquerdo e direito), um pouco mais baixos. -->
+    <ellipse cx="18" cy="27" rx="5" ry="6.5"/>
+    <ellipse cx="46" cy="27" rx="5" ry="6.5"/>
+    <!-- Dedos do meio, mais acima. -->
+    <ellipse cx="26" cy="17" rx="4.5" ry="6"/>
+    <ellipse cx="38" cy="17" rx="4.5" ry="6"/>
+  </g>
+
+  <!--
+    ============================================================================
+    RESUMO DO ARQUIVO
+    ============================================================================
+
+    COMO O FLUXO FUNCIONA:
+      O navegador lê o index.html, encontra o <link rel="icon"> e desenha este
+      SVG na aba: primeiro o fundo, depois as cinco elipses da pata por cima
+      (no SVG, o que vem depois fica na frente).
+
+    CONCEITOS IMPORTANTES PARA ESTUDAR:
+      - SVG: viewBox, sistema de coordenadas e formas básicas (rect, ellipse).
+      - Agrupamento com <g> e herança de atributos (fill).
+      - Ordem de pintura (elementos posteriores ficam por cima).
+      - Favicons e por que SVG é bom para ícones (vetorial, leve).
+    ============================================================================
+  -->
+</svg>

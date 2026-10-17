@@ -1,54 +1,80 @@
+/*
+ * ============================================================================
+ * ARQUIVO: StatsStrip.css
+ * ============================================================================
+ *
+ * PARA QUE SERVE:
+ *   Estilos da faixa de números da página inicial (componente StatsStrip):
+ *   fundo verde-escuro, grade de 4 colunas (2 no celular), traço âmbar, número
+ *   grande e legenda em maiúsculas.
+ *
+ * PRINCIPAIS REGRAS:
+ *   - .home-stats, .home-stats-grid, .home-stat, .home-stat-bar, .home-stat-value, .home-stat-label
+ *   - @media (max-width: 700px)
+ *
+ * CONEXÕES COM OUTROS ARQUIVOS:
+ *   - Importado por: features/home/sections/StatsStrip/StatsStrip.jsx.
+ *   - Usa variáveis de styles/globals.css.
+ * ============================================================================
+ */
+
 /* O quê: faixa verde-escura com os números da ONG.
   Como: grade de 4 colunas (2 no celular); cada número tem um traço âmbar acima.
   Para quê: separar o topo da vitrine com dados reais em destaque. */
 .home-stats {
-  padding: 40px 0;
-  background: var(--sage-dark);
-  color: var(--bg-primary);
+  padding: 40px 0; /* espaço vertical (substitui o padding padrão de <section>) */
+  background: var(--sage-dark); /* fundo verde-escuro */
+  color: var(--bg-primary); /* texto claro */
 }
 
+/* Grade com 4 colunas iguais. */
 .home-stats-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 28px 32px;
+  grid-template-columns: repeat(4, minmax(0, 1fr)); /* 4 colunas de mesma largura */
+  gap: 28px 32px; /* 28px entre linhas, 32px entre colunas */
 }
 
+/* Cada indicador: traço, número e legenda empilhados. */
 .home-stat {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
+/* Traço âmbar acima do número. */
 .home-stat-bar {
-  width: 28px;
-  height: 3px;
-  border-radius: 2px;
-  background: var(--amber);
+  width: 28px; /* comprimento */
+  height: 3px; /* espessura */
+  border-radius: 2px; /* pontas levemente arredondadas */
+  background: var(--amber); /* âmbar */
 }
 
+/* O número grande. */
 .home-stat-value {
-  font-family: 'Fraunces', serif;
-  font-size: clamp(36px, 4vw, 46px);
-  font-weight: 600;
-  line-height: 1;
-  font-variant-numeric: tabular-nums;
+  font-family: 'Fraunces', serif; /* fonte serifada */
+  font-size: clamp(36px, 4vw, 46px); /* tamanho fluido */
+  font-weight: 600; /* seminegrito */
+  line-height: 1; /* sem espaço extra de linha */
+  font-variant-numeric: tabular-nums; /* algarismos com a mesma largura: o número não "treme" ao contar */
 }
 
+/* Legenda do indicador. */
 .home-stat-label {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 12px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: rgba(243, 239, 230, 0.78);
+  font-family: 'IBM Plex Mono', monospace; /* monoespaçada */
+  font-size: 12px; /* pequena */
+  letter-spacing: 0.12em; /* letras espaçadas */
+  text-transform: uppercase; /* maiúsculas */
+  color: rgba(243, 239, 230, 0.78); /* clara, um pouco transparente */
 }
 
+/* Telas até 700px: menos espaço e grade de 2 colunas. */
 @media (max-width: 700px) {
   .home-stats {
     padding: 28px 0;
   }
 
   .home-stats-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr)); /* 2 colunas */
     gap: 24px 16px;
   }
 
@@ -57,3 +83,21 @@
     letter-spacing: 0.1em;
   }
 }
+
+/*
+ * ============================================================================
+ * RESUMO DO ARQUIVO
+ * ============================================================================
+ *
+ * COMO FUNCIONA:
+ *   A faixa verde-escura tem uma grade com os 4 indicadores. Cada um mostra um
+ *   traço âmbar, o número (com algarismos de largura fixa, ideal para a animação
+ *   de contagem) e a legenda. No celular, a grade vira 2 colunas.
+ *
+ * CONCEITOS IMPORTANTES PARA ESTUDAR:
+ *   - CSS Grid com repeat() e minmax().
+ *   - font-variant-numeric: tabular-nums (números alinhados).
+ *   - Tipografia fluida com clamp().
+ *   - Media queries.
+ * ============================================================================
+ */

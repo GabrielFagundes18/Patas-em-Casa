@@ -1,23 +1,51 @@
+/*
+ * ============================================================================
+ * ARQUIVO: AdoptionCatalog.css
+ * ============================================================================
+ *
+ * PARA QUE SERVE:
+ *   Estilos da página do catálogo de adoção (componente AdoptionCatalog):
+ *   cabeçalho, barra de busca/filtros/ordenação, filtros rápidos, chips de
+ *   filtros ativos, grade de cartões, esqueletos de carregamento, estados vazios
+ *   e de erro, convite no fim da lista e o aviso flutuante.
+ *
+ * PRINCIPAIS REGRAS:
+ *   - .catalog-section, .catalog-header
+ *   - .catalog-toolbar, .catalog-search, .filter-trigger, .sort-select
+ *   - .catalog-quick, .active-filters
+ *   - .catalog-grid, .catalog-skeleton (+ @keyframes skeleton), .catalog-load-more
+ *   - .catalog-empty, .catalog-error, .catalog-invite, .catalog-notice
+ *   - @media 1100px / 860px / 560px / prefers-reduced-motion
+ *
+ * CONEXÕES COM OUTROS ARQUIVOS:
+ *   - Importado por: features/catalog/AdoptionCatalog.jsx.
+ *   - Botões .catalog-* ficam em styles/globals.css; a gaveta em FilterDrawer.css;
+ *     os cartões em shared/components/AnimalCard/AnimalCard.css.
+ * ============================================================================
+ */
+
 /* O quê: página do catálogo de adoção (cabeçalho, busca, filtros rápidos, grade, estados e convite final).
   Como: os cartões vêm de AnimalCard; botões compartilhados (.catalog-primary-button etc.) ficam em globals.css,
   a gaveta em FilterDrawer.css e o formulário de adoção em AdoptionFormModal.css.
   Para quê: achar o animal certo com poucos cliques, no mesmo visual da Home. */
 .catalog-section {
-  padding: 40px 0 88px;
+  padding: 40px 0 88px; /* 40px em cima, 88px embaixo */
 }
 
 /* ---------- Cabeçalho ---------- */
 .catalog-header {
-  display: flex;
+  display: flex; /* coluna: rótulo, título, texto */
   flex-direction: column;
   gap: 10px;
   margin-bottom: 28px;
 }
 
+/* Rótulo sem margem extra. */
 .catalog-header .catalog-eyebrow {
   margin: 0;
 }
 
+/* Título grande da página (fluido). */
 .catalog-header h1 {
   margin: 0;
   font-size: clamp(2.3rem, 5vw, 3.6rem);
@@ -25,17 +53,20 @@
   letter-spacing: -0.02em;
 }
 
+/* Texto com a contagem de resultados. */
 .catalog-header p {
   margin: 0;
   color: var(--text-muted);
   font-size: 16px;
 }
 
+/* O número de resultados em destaque. */
 .catalog-header p strong {
   color: var(--sage-dark);
 }
 
 /* ---------- Busca, filtros e ordenação ---------- */
+/* Grade: campo de busca (flexível, mínimo 240px) + botão de filtros + ordenação (tamanho do conteúdo). */
 .catalog-toolbar {
   display: grid;
   grid-template-columns: minmax(240px, 1fr) auto auto;
@@ -44,6 +75,7 @@
   margin-bottom: 14px;
 }
 
+/* Caixa da busca (lupa + campo). */
 .catalog-search {
   display: flex;
   align-items: center;
@@ -53,25 +85,28 @@
   border: 1px solid var(--line);
   border-radius: 14px;
   background: var(--paper);
-  color: var(--sage);
+  color: var(--sage); /* cor da lupa */
 }
 
+/* Quando o campo de dentro recebe foco, a CAIXA inteira ganha destaque (:focus-within). */
 .catalog-search:focus-within {
   border-color: var(--sage);
-  box-shadow: 0 0 0 3px rgba(47, 90, 75, 0.15);
+  box-shadow: 0 0 0 3px rgba(47, 90, 75, 0.15); /* "anel" verde suave */
 }
 
+/* O campo de texto, sem borda própria (a caixa faz esse papel). */
 .catalog-search input {
   width: 100%;
   border: 0;
-  outline: 0;
+  outline: 0; /* o destaque de foco está na caixa (:focus-within) */
   background: transparent;
   color: var(--ink);
   font: inherit;
-  font-size: 16px;
-  appearance: none;
+  font-size: 16px; /* 16px evita zoom automático no iPhone */
+  appearance: none; /* remove o visual padrão do navegador para type="search" */
 }
 
+/* Botão "Filtros" e caixa de "Ordenar" com o mesmo visual. */
 .filter-trigger,
 .sort-select {
   display: flex;
@@ -88,28 +123,32 @@
   cursor: pointer;
 }
 
+/* Bolinha com o número de filtros ativos. */
 .filter-trigger b {
   display: grid;
   place-items: center;
   width: 22px;
   height: 22px;
-  border-radius: 50%;
+  border-radius: 50%; /* círculo */
   background: var(--sage);
   color: var(--bg-card);
   font-size: 12px;
 }
 
+/* A caixa de ordenação é referência para a setinha. */
 .sort-select {
   position: relative;
   font-weight: 400;
 }
 
+/* Texto "Ordenar". */
 .sort-select span {
   color: var(--ink-soft);
   font-size: 13px;
   white-space: nowrap;
 }
 
+/* O <select>, sem o visual padrão (a setinha é o ícone ChevronDown). */
 .sort-select select {
   padding-right: 4px;
   border: 0;
@@ -118,20 +157,23 @@
   color: var(--sage-dark);
   font: inherit;
   font-weight: 600;
-  appearance: none;
+  appearance: none; /* remove a seta padrão do select */
   cursor: pointer;
 }
 
+/* Foco do select: contorno na caixa inteira. */
 .sort-select:focus-within {
   outline: 2px solid var(--amber-dark);
   outline-offset: 2px;
 }
 
+/* A setinha não "rouba" o clique: ele passa para o select (pointer-events: none). */
 .sort-select svg {
   pointer-events: none;
 }
 
 /* ---------- Filtros rápidos e chips removíveis ---------- */
+/* Fileira de atalhos. */
 .catalog-quick {
   display: flex;
   flex-wrap: wrap;
@@ -139,6 +181,7 @@
   margin-bottom: 14px;
 }
 
+/* Cada atalho: pílula contornada. */
 .catalog-quick button {
   display: inline-flex;
   align-items: center;
@@ -155,26 +198,31 @@
   cursor: pointer;
 }
 
+/* Atalho no hover: borda verde. */
 .catalog-quick button:hover {
   border-color: var(--sage);
 }
 
+/* Atalho ligado: preenchido de verde. */
 .catalog-quick button.is-active {
   border-color: var(--sage);
   background: var(--sage);
   color: var(--bg-card);
 }
 
+/* Botão "Meus favoritos" em vermelho-tijolo. */
 .catalog-quick .catalog-quick-fav {
   color: var(--brick-dark);
 }
 
+/* "Meus favoritos" ligado: preenchido de vermelho. */
 .catalog-quick .catalog-quick-fav.is-active {
   border-color: var(--brick-dark);
   background: var(--brick-dark);
   color: #ffffff;
 }
 
+/* Linha de chips de filtros ativos. */
 .active-filters {
   display: flex;
   flex-wrap: wrap;
@@ -183,6 +231,7 @@
   margin-bottom: 14px;
 }
 
+/* Cada chip (texto + X). */
 .active-filters button {
   display: flex;
   align-items: center;
@@ -198,6 +247,7 @@
   cursor: pointer;
 }
 
+/* "Limpar filtros": parece um link sublinhado. */
 .active-filters .clear-all {
   background: transparent;
   color: var(--brick-dark);
@@ -207,6 +257,7 @@
 }
 
 /* ---------- Grade ---------- */
+/* 4 colunas de cartões. */
 .catalog-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -214,20 +265,25 @@
   margin-top: 26px;
 }
 
+/* "Esqueleto": retângulo com um brilho que passa da direita para a esquerda (efeito shimmer). */
 .catalog-skeleton {
-  height: 460px;
+  height: 460px; /* altura parecida com a de um cartão */
   border-radius: 22px;
+  /* Degradê com uma faixa mais clara no meio. */
   background: linear-gradient(110deg, var(--sage-pale) 8%, var(--bg-primary) 18%, var(--sage-pale) 33%);
-  background-size: 200% 100%;
-  animation: skeleton 1.4s linear infinite;
+  background-size: 200% 100%; /* o degradê tem o dobro da largura do elemento */
+  animation: skeleton 1.4s linear infinite; /* usa a animação "skeleton" abaixo, em loop */
 }
 
+/* @keyframes define os passos de uma animação. Aqui, só o estado final ("to"):
+   o fundo desliza para a esquerda, fazendo a faixa clara atravessar o esqueleto. */
 @keyframes skeleton {
   to {
     background-position-x: -200%;
   }
 }
 
+/* Área do botão "Mostrar mais" (também é o sentinela do carregamento progressivo). */
 .catalog-load-more {
   min-height: 52px;
   padding: 28px;
@@ -235,6 +291,7 @@
 }
 
 /* ---------- Estados vazios e erro ---------- */
+/* Caixa de estado vazio: centralizada, com borda tracejada. */
 .catalog-empty {
   display: flex;
   flex-direction: column;
@@ -248,20 +305,24 @@
   text-align: center;
 }
 
+/* Ícone do estado vazio em âmbar. */
 .catalog-empty svg {
   color: var(--amber-dark);
 }
 
+/* Título do estado vazio. */
 .catalog-empty h2 {
   margin: 8px 0 0;
   font-size: 28px;
 }
 
+/* Texto do estado vazio. */
 .catalog-empty p {
   max-width: 34em;
   margin: 0 0 14px;
 }
 
+/* No erro, o ícone fica vermelho. */
 .catalog-error svg {
   color: var(--brick-dark);
 }
@@ -271,7 +332,7 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
+  justify-content: space-between; /* texto à esquerda, botões à direita */
   gap: 20px 32px;
   margin-top: 40px;
   padding: clamp(24px, 3vw, 36px);
@@ -279,17 +340,20 @@
   background: var(--sage-pale);
 }
 
+/* Título do convite. */
 .catalog-invite h2 {
   margin: 0 0 6px;
   font-size: clamp(1.6rem, 2.6vw, 2rem);
 }
 
+/* Texto do convite. */
 .catalog-invite p {
   max-width: 34em;
   margin: 0;
   color: var(--text-muted);
 }
 
+/* Botões do convite. */
 .catalog-invite-actions {
   display: flex;
   flex-wrap: wrap;
@@ -297,17 +361,20 @@
 }
 
 /* ---------- Aviso flutuante (link copiado, favoritos) ---------- */
+/* Contêiner fixo no centro, embaixo da tela. */
 .catalog-notice {
   position: fixed;
   z-index: 80;
-  left: 50%;
+  left: 50%; /* começa no meio... */
+  /* max() escolhe o MAIOR valor: 24px ou a área segura do iPhone (env(safe-area-inset-bottom)). */
   bottom: max(24px, env(safe-area-inset-bottom));
-  width: max-content;
-  max-width: calc(100vw - 32px);
-  transform: translateX(-50%);
-  pointer-events: none;
+  width: max-content; /* largura do texto */
+  max-width: calc(100vw - 32px); /* nunca maior que a tela menos 32px */
+  transform: translateX(-50%); /* ...e volta metade da própria largura (centralizado) */
+  pointer-events: none; /* não bloqueia cliques no que está por baixo */
 }
 
+/* A "pílula" do aviso. */
 .catalog-notice span {
   display: block;
   padding: 12px 18px;
@@ -317,17 +384,19 @@
   color: var(--paper);
   font-size: 14px;
   font-weight: 500;
-  overflow-wrap: anywhere;
+  overflow-wrap: anywhere; /* quebra links longos */
   text-align: center;
 }
 
 /* ---------- Responsivo ---------- */
+/* Até 1100px: 3 colunas. */
 @media (max-width: 1100px) {
   .catalog-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
+/* Até 860px: 2 colunas; busca ocupa a linha inteira e filtros/ordenação dividem a de baixo. */
 @media (max-width: 860px) {
   .catalog-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -342,6 +411,7 @@
     grid-column: 1 / -1;
   }
 
+  /* O select pode encolher e cortar o texto com "..." (ellipsis). */
   .sort-select select {
     min-width: 0;
     flex: 1;
@@ -349,6 +419,7 @@
   }
 }
 
+/* Até 560px (celulares). */
 @media (max-width: 560px) {
   .catalog-section {
     padding-top: 24px;
@@ -358,18 +429,20 @@
     margin-bottom: 20px;
   }
 
+  /* Um cartão por linha. */
   .catalog-grid {
     grid-template-columns: minmax(0, 1fr);
   }
 
   /* Filtros rápidos numa fileira deslizável, sem ocupar várias linhas. */
   .catalog-quick {
-    flex-wrap: nowrap;
-    margin: 0 -24px 14px;
+    flex-wrap: nowrap; /* não quebra linha */
+    margin: 0 -24px 14px; /* estica até as bordas da tela */
     padding: 0 24px 4px;
-    overflow-x: auto;
+    overflow-x: auto; /* rolagem horizontal */
   }
 
+  /* Cada atalho mantém seu tamanho na fileira. */
   .catalog-quick button {
     flex: 0 0 auto;
   }
@@ -379,18 +452,44 @@
     padding: 0 12px;
   }
 
+  /* Esconde o texto "Ordenar" para economizar espaço (o select tem aria-label). */
   .sort-select span {
     display: none;
   }
 
+  /* Botões do convite com largura total. */
   .catalog-invite-actions,
   .catalog-invite-actions a {
     width: 100%;
   }
 }
 
+/* Menos movimento: esqueletos sem o brilho animado. */
 @media (prefers-reduced-motion: reduce) {
   .catalog-skeleton {
     animation: none;
   }
 }
+
+/*
+ * ============================================================================
+ * RESUMO DO ARQUIVO
+ * ============================================================================
+ *
+ * COMO FUNCIONA:
+ *   A página tem cabeçalho, uma barra em grade (busca + filtros + ordenação),
+ *   atalhos em pílulas, chips removíveis e a grade de cartões (4 → 3 → 2 → 1
+ *   colunas conforme a largura). Enquanto carrega, esqueletos com brilho animado
+ *   ocupam o lugar dos cartões. Avisos aparecem numa pílula fixa no rodapé da tela.
+ *
+ * CONCEITOS IMPORTANTES PARA ESTUDAR:
+ *   - CSS Grid com minmax() e colunas "auto"; reorganização em media queries.
+ *   - :focus-within para destacar o contêiner de um campo focado.
+ *   - appearance: none para personalizar campos nativos (search, select).
+ *   - pointer-events: none.
+ *   - Animações com @keyframes e background-position (efeito shimmer).
+ *   - Funções max(), calc(), env(safe-area-inset-bottom) e unidade vw.
+ *   - text-overflow: ellipsis e rolagem horizontal no celular.
+ *   - prefers-reduced-motion.
+ * ============================================================================
+ */

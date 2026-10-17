@@ -1,204 +1,275 @@
+/*
+ * ============================================================================
+ * ARQUIVO: AnimalCard.css
+ * ============================================================================
+ *
+ * PARA QUE SERVE:
+ *   Estilos do cartão de animal (componente AnimalCard), usado na página inicial
+ *   e no catálogo: foto quadrada, selo de urgente, botão de favoritar, nome,
+ *   informações, tempo de espera, descrição, etiquetas e rodapé com link.
+ *
+ * PRINCIPAIS REGRAS:
+ *   - .animal-card (cartão) e seus estados :hover / :focus-within.
+ *   - .animal-card-photo, .animal-card-badge, .animal-card-fav (área da foto).
+ *   - .animal-card-body, -name, -meta, -waiting, -desc, -tags (corpo).
+ *   - .animal-card-footer, -link, -share (rodapé).
+ *   - @media (prefers-reduced-motion) → respeita quem prefere menos animação.
+ *
+ * CONEXÕES COM OUTROS ARQUIVOS:
+ *   - Importado por: shared/components/AnimalCard/AnimalCard.jsx.
+ *   - Ajusta o .pet-photo-placeholder de shared/components/PetPhoto/PetPhoto.css.
+ *   - Usa variáveis (--border-color, --bg-card, --sage...) de styles/globals.css.
+ * ============================================================================
+ */
+
 /* O quê: cartão de animal usado na Home e no catálogo.
   Como: foto quadrada (a imagem preenche sem esticar o cartão), corpo em coluna e rodapé com o link.
   Para quê: o mesmo visual em todo o site; o link para a ficha fica sempre no pé do cartão. */
 .animal-card {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-  border: 1px solid var(--border-color);
-  border-radius: 22px;
-  background: var(--bg-card);
-  overflow: hidden;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex; /* Flexbox... */
+  flex-direction: column; /* ...em coluna: foto em cima, corpo embaixo */
+  min-width: 0; /* deixa o cartão encolher dentro de grids/flex sem "estourar" */
+  border: 1px solid var(--border-color); /* borda fina */
+  border-radius: 22px; /* cantos bem arredondados */
+  background: var(--bg-card); /* cor de fundo do cartão */
+  overflow: hidden; /* esconde o que passar dos cantos arredondados (ex.: a foto) */
+  transition: transform 0.2s ease, box-shadow 0.2s ease; /* anima o "levantar" e a sombra */
 }
 
+/* Ao passar o mouse OU quando algo dentro do cartão recebe foco pelo teclado (:focus-within),
+   o cartão sobe um pouco e ganha sombra. */
 .animal-card:hover,
 .animal-card:focus-within {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-main);
+  transform: translateY(-4px); /* move 4px para cima */
+  box-shadow: var(--shadow-main); /* sombra definida no globals.css */
 }
 
+/* Área da foto. */
 .animal-card-photo {
-  position: relative;
-  aspect-ratio: 1 / 1;
-  background: var(--sage-pale);
-  overflow: hidden;
+  position: relative; /* referência para o selo e o botão posicionados por cima */
+  aspect-ratio: 1 / 1; /* mantém a área sempre quadrada (largura = altura) */
+  background: var(--sage-pale); /* fundo enquanto a foto carrega */
+  overflow: hidden; /* corta o que passar do quadrado */
 }
 
 /* Foto e quadro "Foto em breve" preenchem o quadrado; fotos em pé não esticam o cartão. */
 .animal-card-photo img,
 .animal-card-photo .pet-photo-placeholder {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  min-height: 0;
-  object-fit: cover;
+  position: absolute; /* posicionados em relação a .animal-card-photo */
+  inset: 0; /* atalho para top/right/bottom/left = 0 (ocupa tudo) */
+  width: 100%; /* largura total */
+  height: 100%; /* altura total */
+  min-height: 0; /* anula o min-height de 180px do PetPhoto.css aqui dentro */
+  object-fit: cover; /* a imagem cobre a área sem distorcer (corta as sobras) */
 }
 
+/* Selo "Urgente" no canto superior esquerdo da foto. */
 .animal-card-badge {
-  position: absolute;
-  z-index: 1;
-  top: 14px;
-  left: 14px;
-  padding: 5px 11px;
-  border-radius: 999px;
-  background: var(--brick-dark);
-  color: #ffffff;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  line-height: 1.3;
+  position: absolute; /* sobre a foto */
+  z-index: 1; /* fica por cima da imagem */
+  top: 14px; /* distância do topo */
+  left: 14px; /* distância da esquerda */
+  padding: 5px 11px; /* espaço interno */
+  border-radius: 999px; /* formato pílula */
+  background: var(--brick-dark); /* vermelho-tijolo escuro (cor de alerta) */
+  color: #ffffff; /* texto branco */
+  font-size: 12px; /* texto pequeno */
+  font-weight: 600; /* seminegrito */
+  letter-spacing: 0.02em; /* leve espaçamento entre letras */
+  line-height: 1.3; /* altura da linha */
 }
 
+/* Botão de favoritar (coração) no canto superior direito da foto. */
 .animal-card-fav {
-  position: absolute;
-  z-index: 1;
-  top: 10px;
-  right: 10px;
-  display: grid;
-  place-items: center;
-  width: 44px;
+  position: absolute; /* sobre a foto */
+  z-index: 1; /* por cima da imagem */
+  top: 10px; /* distância do topo */
+  right: 10px; /* distância da direita */
+  display: grid; /* grid com... */
+  place-items: center; /* ...o ícone centralizado nas duas direções */
+  width: 44px; /* área de toque confortável (44x44px) */
   height: 44px;
-  border: 0;
-  border-radius: 50%;
-  background: rgba(255, 250, 243, 0.92);
-  box-shadow: 0 6px 16px rgba(31, 42, 36, 0.16);
-  color: var(--text-main);
-  cursor: pointer;
+  border: 0; /* sem borda */
+  border-radius: 50%; /* círculo */
+  background: rgba(255, 250, 243, 0.92); /* fundo claro quase opaco, para destacar sobre a foto */
+  box-shadow: 0 6px 16px rgba(31, 42, 36, 0.16); /* sombra suave */
+  color: var(--text-main); /* cor do ícone */
+  cursor: pointer; /* mãozinha */
 }
 
+/* Coração com o mouse em cima: fica vermelho. */
 .animal-card-fav:hover {
   color: var(--brick-dark);
 }
 
+/* Coração quando o animal é favorito (classe adicionada pelo JSX). */
 .animal-card-fav.is-active {
   color: var(--brick-dark);
 }
 
+/* Corpo do cartão (abaixo da foto). */
 .animal-card-body {
-  display: flex;
-  flex: 1;
+  display: flex; /* Flexbox em coluna */
+  flex: 1; /* ocupa o espaço restante do cartão (empurra o rodapé para baixo) */
   flex-direction: column;
-  gap: 10px;
-  padding: 20px 20px 12px;
+  gap: 10px; /* espaço entre os itens */
+  padding: 20px 20px 12px; /* espaço interno: 20px em cima e nas laterais, 12px embaixo */
 }
 
+/* Nome do animal. */
 .animal-card-name {
-  margin: 0;
-  font-family: 'Fraunces', serif;
-  font-size: 26px;
-  font-weight: 600;
-  line-height: 1.1;
-  letter-spacing: -0.01em;
+  margin: 0; /* remove a margem padrão dos títulos */
+  font-family: 'Fraunces', serif; /* fonte com serifa (títulos do site) */
+  font-size: 26px; /* tamanho grande */
+  font-weight: 600; /* seminegrito */
+  line-height: 1.1; /* linhas próximas */
+  letter-spacing: -0.01em; /* letras um pouco mais juntas */
 }
 
+/* Linha de informações (espécie · sexo · idade · porte). */
 .animal-card-meta {
-  margin: 0;
-  color: var(--text-muted);
-  font-size: 14px;
+  margin: 0; /* sem margem */
+  color: var(--text-muted); /* cor mais apagada */
+  font-size: 14px; /* tamanho do texto */
 }
 
+/* "Esperando há ..." com ícone de relógio. */
 .animal-card-waiting {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  margin: 0;
+  display: inline-flex; /* ícone e texto lado a lado */
+  align-items: center; /* centralizados na vertical */
+  gap: 6px; /* espaço entre ícone e texto */
+  margin: 0; /* sem margem */
   color: #8a5214; /* âmbar escurecido: contraste AA sobre o fundo do cartão */
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 13px; /* texto pequeno */
+  font-weight: 600; /* seminegrito */
 }
 
+/* Descrição limitada a 3 linhas, com "..." no fim (técnica "line clamp"). */
 .animal-card-desc {
-  display: -webkit-box;
-  margin: 0;
-  overflow: hidden;
-  font-size: 15px;
-  line-height: 1.45;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
+  display: -webkit-box; /* modo de exibição antigo, necessário para o line-clamp */
+  margin: 0; /* sem margem */
+  overflow: hidden; /* esconde o texto que passar das 3 linhas */
+  font-size: 15px; /* tamanho do texto */
+  line-height: 1.45; /* espaçamento entre linhas */
+  -webkit-box-orient: vertical; /* organiza o conteúdo na vertical (exigido pelo line-clamp) */
+  -webkit-line-clamp: 3; /* mostra no máximo 3 linhas */
 }
 
+/* Lista de etiquetas (temperamento e cuidados). */
 .animal-card-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
+  display: flex; /* etiquetas lado a lado */
+  flex-wrap: wrap; /* quebram para a próxima linha quando falta espaço */
+  gap: 6px; /* espaço entre elas */
+  margin: 0; /* remove margem padrão da lista */
+  padding: 0; /* remove o recuo padrão da lista */
+  list-style: none; /* remove as "bolinhas" da lista */
 }
 
+/* Cada etiqueta (padrão: cuidados, em verde). */
 .animal-card-tags li {
-  padding: 4px 10px;
-  border-radius: 999px;
-  background: var(--sage-pale);
-  color: var(--sage);
-  font-size: 12px;
-  font-weight: 600;
+  padding: 4px 10px; /* espaço interno */
+  border-radius: 999px; /* formato pílula */
+  background: var(--sage-pale); /* fundo verde claro */
+  color: var(--sage); /* texto verde */
+  font-size: 12px; /* texto pequeno */
+  font-weight: 600; /* seminegrito */
 }
 
+/* Etiquetas de temperamento (classe is-trait) têm cores âmbar, para diferenciar dos cuidados. */
 .animal-card-tags li.is-trait {
-  background: #f6ead9;
-  color: #7a4a14;
+  background: #f6ead9; /* fundo bege */
+  color: #7a4a14; /* texto marrom-âmbar */
 }
 
+/* Rodapé com o link e o botão de compartilhar. */
 .animal-card-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  margin-top: auto;
+  display: flex; /* lado a lado */
+  align-items: center; /* centralizados na vertical */
+  justify-content: space-between; /* link à esquerda, botão à direita */
+  gap: 8px; /* espaço entre eles */
+  margin-top: auto; /* "margin-top: auto" num flex em coluna empurra o rodapé para o fim do cartão */
 }
 
 /* Texto e seta no mesmo fluxo: nomes longos quebram linha com a seta junto da última palavra. */
 .animal-card-link {
-  display: inline-block;
-  min-width: 0;
-  padding: 11px 0;
-  color: var(--sage);
-  font-weight: 600;
-  line-height: 1.35;
-  text-decoration: none;
+  display: inline-block; /* permite padding vertical num elemento em linha */
+  min-width: 0; /* pode encolher dentro do flex */
+  padding: 11px 0; /* aumenta a área clicável na vertical */
+  color: var(--sage); /* verde */
+  font-weight: 600; /* seminegrito */
+  line-height: 1.35; /* altura da linha */
+  text-decoration: none; /* sem sublinhado */
 }
 
+/* Nome + seta: não quebram linha entre si. */
 .animal-card-link-end {
-  white-space: nowrap;
+  white-space: nowrap; /* impede quebra de linha dentro deste trecho */
 }
 
+/* A seta (SVG) dentro do link. */
 .animal-card-link svg {
-  display: inline;
-  margin-left: 4px;
-  vertical-align: -3px;
+  display: inline; /* em linha com o texto */
+  margin-left: 4px; /* afasta um pouco do nome */
+  vertical-align: -3px; /* desce 3px para alinhar com o texto */
 }
 
+/* Link com o mouse em cima: escurece e ganha sublinhado. */
 .animal-card-link:hover {
-  color: var(--sage-dark);
-  text-decoration: underline;
-  text-underline-offset: 4px;
+  color: var(--sage-dark); /* verde mais escuro */
+  text-decoration: underline; /* sublinhado */
+  text-underline-offset: 4px; /* distância entre o texto e o sublinhado */
 }
 
+/* Botão redondo de compartilhar. */
 .animal-card-share {
-  display: grid;
-  flex: 0 0 auto;
-  place-items: center;
-  width: 44px;
+  display: grid; /* grid para... */
+  flex: 0 0 auto; /* não cresce, não encolhe, tamanho automático */
+  place-items: center; /* ...centralizar o ícone */
+  width: 44px; /* área de toque confortável */
   height: 44px;
-  border: 1px solid var(--border-color);
-  border-radius: 50%;
-  background: transparent;
-  color: var(--sage-dark);
-  cursor: pointer;
+  border: 1px solid var(--border-color); /* borda fina */
+  border-radius: 50%; /* círculo */
+  background: transparent; /* sem fundo */
+  color: var(--sage-dark); /* cor do ícone */
+  cursor: pointer; /* mãozinha */
 }
 
+/* Compartilhar com o mouse em cima: ganha fundo verde claro. */
 .animal-card-share:hover {
   background: var(--sage-pale);
 }
 
+/* Se a pessoa configurou o sistema para "reduzir movimento", tiramos a animação de "levantar". */
 @media (prefers-reduced-motion: reduce) {
   .animal-card,
   .animal-card:hover,
   .animal-card:focus-within {
-    transition: none;
-    transform: none;
+    transition: none; /* sem animação */
+    transform: none; /* sem deslocamento */
   }
 }
+
+/*
+ * ============================================================================
+ * RESUMO DO ARQUIVO
+ * ============================================================================
+ *
+ * COMO FUNCIONA:
+ *   - O cartão é uma coluna flex: foto quadrada em cima e corpo embaixo.
+ *   - A foto preenche o quadrado com object-fit: cover; selo e coração ficam
+ *     posicionados por cima (position: absolute).
+ *   - O corpo cresce (flex: 1) e o rodapé usa margin-top: auto para ficar sempre
+ *     no pé do cartão, mesmo com textos de tamanhos diferentes.
+ *   - A descrição é cortada em 3 linhas (line-clamp).
+ *   - Interações (hover/focus) levantam o cartão, exceto para quem prefere menos movimento.
+ *
+ * CONCEITOS IMPORTANTES PARA ESTUDAR:
+ *   - Flexbox em coluna e o truque margin-top: auto.
+ *   - aspect-ratio e object-fit: cover para imagens.
+ *   - position relative/absolute, inset e z-index.
+ *   - Pseudo-classes :hover e :focus-within.
+ *   - Line clamp (-webkit-line-clamp) para limitar linhas de texto.
+ *   - Listas sem marcadores (list-style: none) e etiquetas em formato "pílula".
+ *   - Acessibilidade: contraste de cores (AA), área de toque 44px e prefers-reduced-motion.
+ * ============================================================================
+ */

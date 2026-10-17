@@ -1,65 +1,94 @@
+/*
+ * ============================================================================
+ * ARQUIVO: HowItWorks.css
+ * ============================================================================
+ *
+ * PARA QUE SERVE:
+ *   Estilos da seção "Como funciona a adoção" da página inicial (componente
+ *   HowItWorks): faixa com fundo claro, texto à esquerda e etapas numeradas em
+ *   grade à direita.
+ *
+ * PRINCIPAIS REGRAS:
+ *   - .home-how, .home-how-layout, .home-steps, .home-step, .home-step-num
+ *   - @media (max-width: 640px)
+ *
+ * CONEXÕES COM OUTROS ARQUIVOS:
+ *   - Importado por: features/home/sections/HowItWorks/HowItWorks.jsx.
+ *   - Complementa .home-head de features/home/LandingPage.css.
+ * ============================================================================
+ */
+
 /* O quê: "Como funciona" da Home: chamada à esquerda e etapas numeradas à direita.
   Como: duas colunas que quebram em uma; as etapas formam uma grade de 2 colunas (1 no celular).
   Para quê: explicar o processo de adoção de forma curta, sem ocupar a tela inteira. */
 .home-how {
-  border-top: 1px solid var(--border-color);
-  border-bottom: 1px solid var(--border-color);
-  background: var(--bg-card);
+  border-top: 1px solid var(--border-color); /* linha em cima */
+  border-bottom: 1px solid var(--border-color); /* linha embaixo */
+  background: var(--bg-card); /* fundo claro, diferente das seções vizinhas */
 }
 
+/* Layout em flex com quebra: as duas colunas ficam lado a lado se couberem. */
 .home-how-layout {
   display: flex;
-  flex-wrap: wrap;
-  gap: 40px 72px;
+  flex-wrap: wrap; /* quebra para uma coluna quando não cabe */
+  gap: 40px 72px; /* 40px entre linhas, 72px entre colunas */
 }
 
+/* Coluna do texto: base de 360px, no máximo 420px. */
 .home-how-layout > .home-head {
-  flex: 1 1 360px;
+  flex: 1 1 360px; /* cresce (1), encolhe (1), base 360px */
   max-width: 420px;
 }
 
+/* Lista de etapas: grade de 2 colunas. */
 .home-steps {
   display: grid;
+  /* flex-grow 999: num espaço sobrando, esta coluna cresce MUITO mais que a do texto. */
   flex: 999 1 520px;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 36px 40px;
-  min-width: 0;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  counter-reset: none;
+  grid-template-columns: repeat(2, minmax(0, 1fr)); /* 2 colunas iguais */
+  gap: 36px 40px; /* espaços entre linhas e colunas */
+  min-width: 0; /* pode encolher dentro do flex */
+  margin: 0; /* sem margem padrão da lista */
+  padding: 0; /* sem recuo padrão */
+  list-style: none; /* sem a numeração automática (usamos a nossa, "01", "02") */
+  counter-reset: none; /* não reinicia contadores CSS */
 }
 
+/* Cada etapa: número, título e texto empilhados, com uma linha verde em cima. */
 .home-step {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  padding-top: 18px;
-  border-top: 2px solid var(--sage);
+  padding-top: 18px; /* espaço entre a linha e o número */
+  border-top: 2px solid var(--sage); /* linha verde */
 }
 
+/* Número da etapa ("01"). */
 .home-step-num {
-  color: var(--amber-dark);
-  font-family: 'Fraunces', serif;
-  font-size: 30px;
+  color: var(--amber-dark); /* âmbar escuro */
+  font-family: 'Fraunces', serif; /* serifada */
+  font-size: 30px; /* grande */
   font-weight: 600;
   line-height: 1;
 }
 
+/* Título da etapa (h3) com a fonte do texto comum, não a serifada dos títulos. */
 .home-step h3 {
   margin: 0;
   font-family: 'Inter', sans-serif;
   font-size: 18px;
   font-weight: 600;
-  letter-spacing: 0;
+  letter-spacing: 0; /* anula o letter-spacing global dos títulos */
 }
 
+/* Descrição da etapa. */
 .home-step p {
   margin: 0;
   color: var(--text-muted);
   font-size: 15px;
 }
 
+/* Celulares: texto sem limite de largura e etapas em uma coluna. */
 @media (max-width: 640px) {
   .home-how-layout > .home-head {
     max-width: none;
@@ -70,3 +99,23 @@
     gap: 24px;
   }
 }
+
+/*
+ * ============================================================================
+ * RESUMO DO ARQUIVO
+ * ============================================================================
+ *
+ * COMO FUNCIONA:
+ *   A seção tem fundo claro e bordas. Dentro, um flex com quebra coloca o texto
+ *   e as etapas lado a lado (ou um abaixo do outro, se não couber). As etapas
+ *   formam uma grade de 2 colunas (1 no celular), cada uma com linha verde, número
+ *   âmbar, título e descrição.
+ *
+ * CONCEITOS IMPORTANTES PARA ESTUDAR:
+ *   - Layout "intrínseco" com flex-wrap e flex-basis (sem media query para quebrar as colunas).
+ *   - flex-grow alto (999) para priorizar uma coluna.
+ *   - Grid dentro de flex.
+ *   - Removendo estilos padrão de listas (list-style, margin, padding).
+ *   - Contadores CSS (counter-reset).
+ * ============================================================================
+ */

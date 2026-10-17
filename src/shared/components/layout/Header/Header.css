@@ -1,242 +1,303 @@
+/*
+ * ============================================================================
+ * ARQUIVO: Header.css
+ * ============================================================================
+ *
+ * PARA QUE SERVE:
+ *   Estilos do cabeçalho do site público: barra fixa no topo com efeito de
+ *   vidro, logotipo, links do menu com sublinhado animado, botão "Quero adotar",
+ *   botão "hambúrguer" e gaveta do menu no celular. Também contém estilos de
+ *   acessibilidade (link "pular para o conteúdo") e da barra de progresso de
+ *   rolagem da página inicial.
+ *
+ * PRINCIPAIS REGRAS:
+ *   - header, header.scrolled           → a barra do topo.
+ *   - .nav, .logo, .logo-mark            → organização e logotipo.
+ *   - .nav-links, .nav-actions, .nav-cta → menu e botão de destaque.
+ *   - .menu-toggle, .bar                 → botão hambúrguer (vira "X" quando aberto).
+ *   - .mobile-drawer, .mobile-cta        → gaveta do celular.
+ *   - .skip-link, .scroll-progress       → acessibilidade e progresso de leitura.
+ *   - .floating-actions, .floating-btn   → botões flutuantes (sem uso no código atual).
+ *   - @media 1024px / 820px / 480px      → ajustes para telas menores.
+ *
+ * CONEXÕES COM OUTROS ARQUIVOS:
+ *   - Importado por: shared/components/layout/Header/Header.jsx.
+ *   - .skip-link é usado em PublicLayout.jsx e LandingPage.jsx;
+ *     .scroll-progress é usado em features/home/LandingPage.jsx.
+ *   - Usa variáveis (--bg-glass, --sage, --amber, --ink...) de styles/globals.css.
+ * ============================================================================
+ */
+
 /* O quê: fixa o cabeçalho e define sua aparência translúcida antes e depois da rolagem.
   Como: sticky, blur, sombra e a classe scrolled ajustam profundidade sem retirar o header do fluxo.
   Para quê: manter a navegação disponível durante a exploração da página. */
 header {
-  position: sticky;
-  top: 0;
-  z-index: 50;
-  background: var(--bg-glass);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--border-color);
-  transition:
+  position: sticky; /* "gruda" no topo ao rolar, mas continua ocupando seu espaço na página */
+  top: 0; /* gruda na distância 0 do topo da janela */
+  z-index: 50; /* fica por cima do conteúdo da página */
+  background: var(--bg-glass); /* fundo semitransparente ("vidro") */
+  backdrop-filter: blur(16px); /* desfoca o que está ATRÁS do cabeçalho (efeito vidro fosco) */
+  -webkit-backdrop-filter: blur(16px); /* mesma coisa, com prefixo para o Safari */
+  border-bottom: 1px solid var(--border-color); /* linha fina embaixo */
+  transition: /* anima suavemente as mudanças destas propriedades em 0,3 s */
     background 0.3s ease,
     box-shadow 0.3s ease,
     border-color 0.3s ease,
     padding 0.3s ease;
 }
 
+/* Depois de rolar a página (classe adicionada pelo Header.jsx), o cabeçalho ganha sombra. */
 header.scrolled {
-  background: var(--bg-glass);
-  box-shadow: var(--shadow-main);
-  border-color: var(--border-color);
+  background: var(--bg-glass); /* mesmo fundo de vidro */
+  box-shadow: var(--shadow-main); /* sombra para destacar do conteúdo */
+  border-color: var(--border-color); /* mesma cor de borda */
 }
 
 /* O quê: organiza logo, links e ações em uma barra de navegação.
   Como: flex distribui os grupos e as pseudo-classes criam indicadores de foco e hover.
   Para quê: oferecer navegação desktop legível e orientada a ações. */
 .nav {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 18px 24px;
-  max-width: 1180px;
-  margin: 0 auto;
-  transition: padding 0.3s ease;
+  display: flex; /* logo, links e ações lado a lado */
+  align-items: center; /* centralizados na vertical */
+  justify-content: space-between; /* logo à esquerda, ações à direita, links no meio */
+  padding: 18px 24px; /* espaço interno: 18px em cima/embaixo, 24px nas laterais */
+  max-width: 1180px; /* largura máxima do conteúdo */
+  margin: 0 auto; /* "auto" nas laterais centraliza o bloco na tela */
+  transition: padding 0.3s ease; /* anima a mudança de espaçamento */
 }
 
+/* Com a página rolada, a barra fica mais baixa (compacta). */
 header.scrolled .nav {
   padding-top: 12px;
   padding-bottom: 12px;
 }
 
+/* Logotipo (link com ícone + texto). */
 .logo {
-  position: relative;
-  font-family: "Fraunces", serif;
-  font-weight: 600;
-  font-size: 20px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--ink);
-  transition: transform 0.2s ease;
-  text-decoration: none;
+  position: relative; /* referência para posicionamentos internos */
+  font-family: "Fraunces", serif; /* fonte com serifa */
+  font-weight: 600; /* seminegrito */
+  font-size: 20px; /* tamanho do texto */
+  display: flex; /* ícone e texto lado a lado */
+  align-items: center; /* centralizados na vertical */
+  gap: 8px; /* espaço entre ícone e texto */
+  color: var(--ink); /* cor do texto (tinta escura) */
+  transition: transform 0.2s ease; /* anima o aumento no hover */
+  text-decoration: none; /* sem sublinhado */
 }
 
+/* Logotipo com o mouse em cima: cresce 2%. */
 .logo:hover {
   transform: scale(1.02);
 }
 
+/* Logotipo dentro da barra .nav: ajustes de espaço e tamanho
+   (esta regra é mais específica e vence a de .logo). */
 .nav .logo {
   gap: 10px;
   font-size: 21px;
 }
 
+/* Quadradinho verde com a pata do logotipo. */
 .nav .logo-mark {
-  display: inline-grid;
-  place-items: center;
-  width: 38px;
+  display: inline-grid; /* grid em linha, para... */
+  place-items: center; /* ...centralizar o ícone */
+  width: 38px; /* tamanho do quadrado */
   height: 38px;
-  border-radius: 11px;
-  background: var(--sage);
-  color: var(--bg-card);
+  border-radius: 11px; /* cantos arredondados */
+  background: var(--sage); /* fundo verde */
+  color: var(--bg-card); /* ícone claro */
 }
 
 
+/* Grupo de links do menu (computador). */
 .nav-links {
-  display: flex;
-  gap: 28px;
-  font-size: 14px;
-  font-weight: 500;
+  display: flex; /* links lado a lado */
+  gap: 28px; /* espaço entre os links */
+  font-size: 14px; /* tamanho do texto */
+  font-weight: 500; /* peso médio */
 }
 
+/* Cada link do menu. */
 .nav-links a {
-  position: relative;
-  text-decoration: none;
-  color: var(--ink-soft);
-  transition:
+  position: relative; /* referência para o sublinhado (::after) */
+  text-decoration: none; /* sem sublinhado padrão */
+  color: var(--ink-soft); /* cor suave */
+  transition: /* anima cor e posição */
     color 0.3s ease,
     transform 0.2s ease;
-  padding: 6px 0;
+  padding: 6px 0; /* espaço vertical (aumenta a área clicável) */
 }
 
+/* "::after" cria um pseudo-elemento depois do conteúdo do link: o sublinhado animado.
+   Ele começa com largura 0 no meio do link e cresce para os lados no hover. */
 .nav-links a::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  bottom: -4px;
-  width: 0;
-  height: 2px;
-  background: linear-gradient(90deg, var(--sage), var(--amber));
-  transition:
+  content: ""; /* obrigatório para o pseudo-elemento existir (aqui, sem texto) */
+  position: absolute; /* posicionado em relação ao link */
+  left: 50%; /* começa no meio */
+  bottom: -4px; /* um pouco abaixo do texto */
+  width: 0; /* invisível no início */
+  height: 2px; /* espessura da linha */
+  background: linear-gradient(90deg, var(--sage), var(--amber)); /* degradê verde → âmbar */
+  transition: /* anima largura e posição */
     width 0.3s ease,
     left 0.3s ease;
-  border-radius: 99px;
+  border-radius: 99px; /* pontas arredondadas */
 }
 
+/* Link com mouse em cima ou com foco pelo teclado (:focus-visible): escurece e sobe 1px. */
 .nav-links a:hover,
 .nav-links a:focus-visible {
   color: var(--sage-dark);
   transform: translateY(-1px);
 }
 
+/* Nesses mesmos estados, o sublinhado ocupa toda a largura. */
 .nav-links a:hover::after,
 .nav-links a:focus-visible::after {
   width: 100%;
   left: 0;
 }
 
+/* Link "ativo" (classe "active"), se usada: cor destacada... */
 .nav-links a.active {
   color: var(--sage-dark);
 }
 
+/* ...e sublinhado sempre visível. */
 .nav-links a.active::after {
   width: 100%;
   left: 0;
 }
 
+/* Grupo de ações à direita (botão "Quero adotar" e hambúrguer). */
 .nav-actions {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+  display: flex; /* lado a lado */
+  align-items: center; /* centralizados na vertical */
+  gap: 10px; /* espaço entre eles */
 }
 
+/* Botão de destaque "Quero adotar" (CTA = Call To Action, "chamada para ação"). */
 .nav-cta {
-  position: relative;
-  overflow: hidden;
-  display: inline-flex;
-  align-items: center;
-  min-height: 44px;
-  background: var(--sage);
-  color: var(--bg-card);
-  padding: 0 20px;
-  border-radius: 999px;
-  font-size: 15px;
-  font-weight: 600;
-  text-decoration: none;
-  white-space: nowrap;
-  box-shadow: var(--shadow-main);
-  transition:
+  position: relative; /* referência para o brilho (::before) */
+  overflow: hidden; /* esconde o brilho quando ele está fora do botão */
+  display: inline-flex; /* conteúdo alinhado por flex */
+  align-items: center; /* centraliza o texto na vertical */
+  min-height: 44px; /* área de toque confortável */
+  background: var(--sage); /* fundo verde */
+  color: var(--bg-card); /* texto claro */
+  padding: 0 20px; /* espaço nas laterais */
+  border-radius: 999px; /* formato pílula */
+  font-size: 15px; /* tamanho do texto */
+  font-weight: 600; /* seminegrito */
+  text-decoration: none; /* sem sublinhado */
+  white-space: nowrap; /* o texto não quebra linha */
+  box-shadow: var(--shadow-main); /* sombra */
+  transition: /* anima posição, sombra e brilho */
     transform 0.2s ease,
     box-shadow 0.2s ease,
     filter 0.2s ease;
 }
 
+/* "::before": faixa de brilho diagonal que atravessa o botão no hover.
+   Começa escondida à esquerda (translateX(-130%)). */
 .nav-cta::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
+  content: ""; /* pseudo-elemento vazio */
+  position: absolute; /* sobre o botão */
+  inset: 0; /* ocupa o botão inteiro */
+  background: linear-gradient( /* degradê inclinado: transparente → claro → transparente */
     120deg,
     transparent 0%,
     var(--bg-glass) 35%,
     transparent 70%
   );
-  transform: translateX(-130%);
-  transition: transform 0.7s ease;
+  transform: translateX(-130%); /* fora do botão, à esquerda */
+  transition: transform 0.7s ease; /* anima o deslizamento em 0,7 s */
 }
 
+/* Botão com o mouse em cima: sobe 2px e fica um pouco mais claro. */
 .nav-cta:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-main);
-  filter: brightness(1.04);
+  filter: brightness(1.04); /* 4% mais brilhante */
 }
 
+/* No hover, o brilho desliza para fora pela direita (atravessando o botão). */
 .nav-cta:hover::before {
   transform: translateX(130%);
 }
 
+/* Botão pressionado: encolhe um pouco. */
 .nav-cta:active {
   transform: scale(0.98);
 }
 
+/* Botão hambúrguer: escondido no computador (display: none); aparece na media query de 820px. */
 .menu-toggle {
-  display: none;
-  position: relative;
-  background: var(--bg-glass);
-  border: 1px solid var(--border-color);
-  border-radius: 10px;
-  width: 42px;
+  display: none; /* invisível por padrão */
+  position: relative; /* referência para posicionar as barrinhas */
+  background: var(--bg-glass); /* fundo de vidro */
+  border: 1px solid var(--border-color); /* borda fina */
+  border-radius: 10px; /* cantos arredondados */
+  width: 42px; /* tamanho do botão */
   height: 42px;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition:
+  align-items: center; /* (valem quando display vira flex) centraliza na vertical */
+  justify-content: center; /* centraliza na horizontal */
+  cursor: pointer; /* mãozinha */
+  transition: /* anima escala, fundo e borda */
     transform 0.2s ease,
     background 0.2s ease,
     border-color 0.2s ease;
 }
 
+/* Hambúrguer com o mouse em cima: fundo verde claro. */
 .menu-toggle:hover {
   background: var(--sage-pale);
   border-color: var(--border-color);
 }
 
+/* Hambúrguer pressionado: encolhe um pouco. */
 .menu-toggle:active {
   transform: scale(0.96);
 }
 
+/* Cada uma das 3 barrinhas do ícone. */
 .menu-toggle .bar {
-  position: absolute;
-  width: 18px;
-  height: 2px;
-  border-radius: 99px;
-  background: black;
-  transition:
+  position: absolute; /* posicionadas dentro do botão */
+  width: 18px; /* comprimento da barra */
+  height: 2px; /* espessura da barra */
+  border-radius: 99px; /* pontas arredondadas */
+  background: black; /* cor preta */
+  transition: /* anima giro, sumiço e posição (para virar "X") */
     transform 0.28s ease,
     opacity 0.2s ease,
     top 0.28s ease;
 }
 
+/* ":nth-child(n)" seleciona o n-ésimo filho: posiciona cada barra numa altura. */
 .menu-toggle .bar:nth-child(1) {
-  top: 14px;
+  top: 14px; /* barra de cima */
 }
 .menu-toggle .bar:nth-child(2) {
-  top: 20px;
+  top: 20px; /* barra do meio */
 }
 .menu-toggle .bar:nth-child(3) {
-  top: 26px;
+  top: 26px; /* barra de baixo */
 }
 
+/* Seletor de atributo [aria-expanded="true"]: quando o menu está ABERTO, as barras viram um "X".
+   A barra de cima desce ao meio e gira 45°... */
 .menu-toggle[aria-expanded="true"] .bar:nth-child(1) {
   top: 20px;
   transform: rotate(45deg);
 }
 
+/* ...a do meio desaparece... */
 .menu-toggle[aria-expanded="true"] .bar:nth-child(2) {
   opacity: 0;
 }
 
+/* ...e a de baixo sobe ao meio e gira -45°. */
 .menu-toggle[aria-expanded="true"] .bar:nth-child(3) {
   top: 20px;
   transform: rotate(-45deg);
@@ -246,69 +307,82 @@ header.scrolled .nav {
   Como: display, opacity, transform e aria-expanded trabalham junto com o estado React.
   Para quê: preservar acesso aos destinos em telas estreitas. */
 .mobile-drawer {
-  display: none;
-  flex-direction: column;
-  gap: 6px;
-  background: var(--bg-glass);
-  border-bottom: 1px solid var(--border-color);
-  padding: 0 24px 18px;
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  transform-origin: top;
-  transition:
+  display: none; /* escondida até receber a classe "open" */
+  flex-direction: column; /* itens empilhados */
+  gap: 6px; /* espaço entre os itens */
+  background: var(--bg-glass); /* fundo de vidro */
+  border-bottom: 1px solid var(--border-color); /* linha embaixo */
+  padding: 0 24px 18px; /* espaço interno */
+  backdrop-filter: blur(14px); /* desfoque do fundo */
+  -webkit-backdrop-filter: blur(14px); /* prefixo para Safari */
+  transform-origin: top; /* animações partem do topo */
+  transition: /* anima opacidade e posição */
     opacity 0.24s ease,
     transform 0.24s ease;
-  opacity: 0;
-  transform: translateY(-10px);
+  opacity: 0; /* começa invisível */
+  transform: translateY(-10px); /* e 10px acima */
 }
 
+/* Gaveta aberta (classe "open"): aparece no lugar. */
 .mobile-drawer.open {
-  display: flex;
-  opacity: 1;
-  transform: translateY(0);
+  display: flex; /* passa a ser exibida */
+  opacity: 1; /* totalmente visível */
+  transform: translateY(0); /* na posição normal */
 }
 
+/* Links dentro da gaveta: começam invisíveis e um pouco acima. */
 .mobile-drawer a {
   opacity: 0;
   transform: translateY(-10px);
   transition:
     opacity 0.22s ease,
     transform 0.22s ease;
-  padding: 12px 0;
-  text-decoration: none;
-  color: var(--ink-soft);
-  font-size: 15px;
-  font-weight: 500;
-  border-bottom: 1px solid var(--border-color);
+  padding: 12px 0; /* espaço vertical */
+  text-decoration: none; /* sem sublinhado */
+  color: var(--ink-soft); /* cor suave */
+  font-size: 15px; /* tamanho do texto */
+  font-weight: 500; /* peso médio */
+  border-bottom: 1px solid var(--border-color); /* separador entre itens */
 }
 
+/* Com a gaveta aberta, os links aparecem. */
 .mobile-drawer.open a {
   opacity: 1;
   transform: translateY(0);
 }
 
+/* ":last-child": o último link não tem separador embaixo. */
 .mobile-drawer a:last-child {
   border-bottom: none;
 }
 
+/* Botão "Quero adotar →" da gaveta: cor e peso de destaque.
+   "!important" força este valor por cima de outras regras (use com moderação). */
 .mobile-cta {
   color: var(--sage-dark) !important;
   font-weight: 700;
 }
 
+/* ATENÇÃO (para estudo): as três regras abaixo REPETEM seletores já declarados acima.
+   Pela "cascata" do CSS, quando dois seletores têm a mesma especificidade, vale o que
+   aparece por último. Então, para .mobile-drawer a, o padding passa a ser 12px 4px e a
+   borda usa var(--line), substituindo os valores anteriores. As demais propriedades
+   repetidas têm o mesmo valor e não mudam nada. */
 .mobile-drawer a {
-  padding: 12px 4px;
+  padding: 12px 4px; /* substitui o "12px 0" de cima */
   text-decoration: none;
   color: var(--ink-soft);
   font-size: 15px;
   font-weight: 500;
-  border-bottom: 1px solid var(--line);
+  border-bottom: 1px solid var(--line); /* substitui a cor de borda de cima */
 }
 
+/* Repetição da regra do último link (mesmo efeito). */
 .mobile-drawer a:last-child {
   border-bottom: none;
 }
 
+/* Repetição da regra do botão da gaveta (mesmo efeito). */
 .mobile-cta {
   color: var(--sage-dark) !important;
   font-weight: 700;
@@ -317,104 +391,145 @@ header.scrolled .nav {
 /* O quê: define acessibilidade e feedback de rolagem.
   Como: skip-link fica fora da tela até foco e scroll-progress expõe largura percentual.
   Para quê: facilitar teclado e percepção de progresso na landing page. */
+/* Link "Pular para o conteúdo": fica escondido FORA da tela (left: -999px)... */
 .skip-link {
-  position: absolute;
-  left: -999px;
+  position: absolute; /* tirado do fluxo normal */
+  left: -999px; /* muito à esquerda, fora da área visível */
   top: auto;
-  background: var(--sage-dark);
-  color: var(--bg-card);
-  padding: 12px 18px;
-  border-radius: 0 0 8px 0;
-  z-index: 999;
-  font-size: 14px;
-  text-decoration: none;
+  background: var(--sage-dark); /* fundo verde-escuro */
+  color: var(--bg-card); /* texto claro */
+  padding: 12px 18px; /* espaço interno */
+  border-radius: 0 0 8px 0; /* só o canto inferior direito arredondado */
+  z-index: 999; /* acima de tudo */
+  font-size: 14px; /* tamanho do texto */
+  text-decoration: none; /* sem sublinhado */
 }
 
+/* ...e aparece no canto superior esquerdo quando recebe foco (primeiro Tab da página). */
 .skip-link:focus {
   left: 0;
   top: 0;
 }
 
+/* Barra de progresso de rolagem (usada na página inicial): fixa no topo da janela. */
 .scroll-progress {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 4px;
-  z-index: 100;
-  background: var(--accent-glow);
-  opacity: 0;
-  transform: translateY(-100%);
-  transition:
+  position: fixed; /* fixa em relação à janela (não rola junto) */
+  top: 0; /* no topo */
+  left: 0; /* começa na esquerda */
+  width: 100%; /* largura total */
+  height: 4px; /* bem fina */
+  z-index: 100; /* acima do cabeçalho */
+  background: var(--accent-glow); /* fundo da trilha */
+  opacity: 0; /* começa invisível */
+  transform: translateY(-100%); /* e escondida acima da tela */
+  transition: /* anima a aparição */
     opacity 0.2s ease,
     transform 0.2s ease;
 }
 
+/* Quando visível (classe adicionada pela LandingPage), desce para o lugar. */
 .scroll-progress.visible {
   opacity: 1;
   transform: translateY(0);
 }
 
+/* A parte preenchida da barra; sua largura (%) é definida pelo JavaScript conforme a rolagem. */
 .scroll-progress-bar {
-  height: 100%;
-  width: 0;
-  background: linear-gradient(90deg, var(--amber), var(--sage));
-  border-radius: 999px;
-  transition: width 0.15s ease-out;
+  height: 100%; /* mesma altura da trilha */
+  width: 0; /* começa vazia (o JS muda via style) */
+  background: linear-gradient(90deg, var(--amber), var(--sage)); /* degradê âmbar → verde */
+  border-radius: 999px; /* pontas arredondadas */
+  transition: width 0.15s ease-out; /* anima o crescimento */
 }
 
+/* Botões flutuantes no canto inferior direito.
+   (Observação: estas classes não são usadas por nenhum componente atualmente.) */
 .floating-actions {
-  position: fixed;
-  right: 18px;
-  bottom: 18px;
-  display: flex;
+  position: fixed; /* fixo na janela */
+  right: 18px; /* distância da direita */
+  bottom: 18px; /* distância de baixo */
+  display: flex; /* em coluna... */
   flex-direction: column;
-  gap: 10px;
-  z-index: 40;
+  gap: 10px; /* ...com espaço entre os botões */
+  z-index: 40; /* acima do conteúdo, abaixo do cabeçalho */
 }
 
+/* Botão flutuante padrão. */
 .floating-btn {
-  border: none;
-  border-radius: 999px;
-  padding: 10px 16px;
-  background: var(--sage);
-  color: var(--bg-card);
-  font-weight: 700;
-  cursor: pointer;
-  box-shadow: var(--shadow-main);
+  border: none; /* sem borda */
+  border-radius: 999px; /* pílula */
+  padding: 10px 16px; /* espaço interno */
+  background: var(--sage); /* verde */
+  color: var(--bg-card); /* texto claro */
+  font-weight: 700; /* negrito */
+  cursor: pointer; /* mãozinha */
+  box-shadow: var(--shadow-main); /* sombra */
 }
 
+/* Variação secundária do botão flutuante (âmbar). */
 .floating-btn.secondary {
   background: var(--amber);
   color: var(--text-main);
 }
 
 /* Cinco links + botão: aperta o espaçamento antes de o menu virar gaveta. */
+/* Telas com até 1024px de largura. */
 @media (max-width: 1024px) {
   .nav-links {
-    gap: 20px;
+    gap: 20px; /* menos espaço entre os links */
   }
 }
 
+/* Telas com até 820px (tablets e celulares): troca o menu pela gaveta. */
 @media (max-width: 820px) {
   .menu-toggle {
-    display: flex;
+    display: flex; /* mostra o hambúrguer */
   }
 
   .nav-links {
-    display: none;
+    display: none; /* esconde os links em linha */
   }
 
+  /* Classe auxiliar para esconder elementos no celular (sem uso no código atual). */
   .nav-mobile-hide-cta {
     display: none;
   }
+  /* Esconde o "Quero adotar" da barra (a gaveta já tem o seu). */
   .nav-cta{
     display: none;
   }
 }
 
+/* Telas com até 480px (celulares pequenos). Repete a regra auxiliar acima. */
 @media (max-width: 480px) {
   .nav-mobile-hide-cta {
     display: none;
   }
 }
+
+/*
+ * ============================================================================
+ * RESUMO DO ARQUIVO
+ * ============================================================================
+ *
+ * COMO FUNCIONA:
+ *   - O <header> fica grudado no topo (sticky) com efeito de vidro fosco; ao rolar,
+ *     a classe "scrolled" adiciona sombra e deixa a barra mais baixa.
+ *   - No computador, os links ficam em linha, com um sublinhado animado (::after).
+ *   - Abaixo de 820px, os links somem e aparece o botão hambúrguer; ao abrir, as 3
+ *     barras viram um "X" (seletor [aria-expanded="true"]) e a gaveta aparece (.open).
+ *   - O skip-link fica fora da tela até receber foco pelo teclado.
+ *   - A barra de progresso aparece na home e cresce conforme a rolagem.
+ *
+ * CONCEITOS IMPORTANTES PARA ESTUDAR:
+ *   - position: sticky, fixed, absolute e relative; z-index.
+ *   - backdrop-filter (efeito vidro) e prefixos de navegador (-webkit-).
+ *   - Pseudo-elementos ::before e ::after (content: "").
+ *   - Pseudo-classes :hover, :active, :focus, :focus-visible, :nth-child, :last-child.
+ *   - Seletores de atributo ([aria-expanded="true"]) ligando CSS ao estado de acessibilidade.
+ *   - transform, transition e linear-gradient.
+ *   - Cascata e especificidade (regras repetidas, !important).
+ *   - Media queries e design responsivo (mobile x desktop).
+ *   - Acessibilidade: skip link, foco visível e área de toque.
+ * ============================================================================
+ */

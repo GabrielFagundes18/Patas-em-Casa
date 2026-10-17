@@ -1,157 +1,222 @@
+/*
+ * ============================================================================
+ * ARQUIVO: Footer.css
+ * ============================================================================
+ *
+ * PARA QUE SERVE:
+ *   Estilos do rodapé do site público (componente Footer): fundo verde-escuro,
+ *   grade com marca, grupos de links e contato, e a linha final com o ano e o
+ *   link "Área da equipe".
+ *
+ * PRINCIPAIS REGRAS:
+ *   - .footer, .footer-top, .footer-brand, .footer-logo, .footer-logo-mark
+ *   - .footer-nav, .footer-heading, listas e links
+ *   - .footer-contact, .footer-bottom
+ *   - @media 960px e 560px → grade de 3 colunas vira 2 e depois 1.
+ *
+ * CONEXÕES COM OUTROS ARQUIVOS:
+ *   - Importado por: shared/components/layout/Footer/Footer.jsx.
+ *   - Usa variáveis (--sage-dark, --bg-primary, --amber-light) de styles/globals.css.
+ * ============================================================================
+ */
+
 /* O quê: rodapé verde-escuro com marca, dois grupos de links, contato e a linha final.
   Como: grade de 4 colunas que vira 2 e depois 1; todas as regras ficam dentro de .footer.
   Para quê: fechar as páginas com as informações da ONG sem interferir no resto do site. */
+/* (Observação: na prática a grade de cima tem 3 colunas: marca, links e contato.) */
 .footer {
-  padding: 64px 0 28px;
-  background: var(--sage-dark);
-  color: var(--bg-primary);
+  padding: 64px 0 28px; /* 64px em cima, 0 nas laterais (o .wrap cuida delas), 28px embaixo */
+  background: var(--sage-dark); /* fundo verde-escuro */
+  color: var(--bg-primary); /* texto claro */
 }
 
+/* Parte de cima do rodapé: CSS Grid com 3 colunas. */
 .footer-top {
-  display: grid;
+  display: grid; /* ativa o Grid */
+  /* Três colunas proporcionais (fr = fração do espaço livre): 1.4 / 2 / 1.3.
+     minmax(0, ...) permite que as colunas encolham sem "estourar" com textos longos. */
   grid-template-columns: minmax(0, 1.4fr) minmax(0, 2fr) minmax(0, 1.3fr);
-  gap: 40px 56px;
-  padding-bottom: 40px;
-  border-bottom: 1px solid rgba(243, 239, 230, 0.16);
+  gap: 40px 56px; /* 40px entre linhas, 56px entre colunas */
+  padding-bottom: 40px; /* espaço antes da linha divisória */
+  border-bottom: 1px solid rgba(243, 239, 230, 0.16); /* linha divisória clara e sutil */
 }
 
+/* Coluna da marca: itens empilhados. */
 .footer-brand {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+  display: flex; /* Flexbox... */
+  flex-direction: column; /* ...em coluna */
+  gap: 16px; /* espaço entre logo e textos */
 }
 
+/* Logotipo do rodapé (link). */
 .footer-logo {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  color: var(--bg-primary);
-  font-family: 'Fraunces', serif;
-  font-size: 22px;
-  font-weight: 600;
-  text-decoration: none;
+  display: inline-flex; /* ícone e texto lado a lado */
+  align-items: center; /* centralizados na vertical */
+  gap: 10px; /* espaço entre eles */
+  color: var(--bg-primary); /* texto claro */
+  font-family: 'Fraunces', serif; /* fonte com serifa */
+  font-size: 22px; /* tamanho */
+  font-weight: 600; /* seminegrito */
+  text-decoration: none; /* sem sublinhado */
 }
 
+/* Quadradinho com a pata (cores invertidas em relação ao cabeçalho). */
 .footer-logo-mark {
-  display: inline-grid;
-  place-items: center;
-  width: 40px;
+  display: inline-grid; /* grid em linha... */
+  place-items: center; /* ...para centralizar o ícone */
+  width: 40px; /* tamanho */
   height: 40px;
-  border-radius: 12px;
-  background: var(--bg-primary);
-  color: var(--sage-dark);
+  border-radius: 12px; /* cantos arredondados */
+  background: var(--bg-primary); /* fundo claro */
+  color: var(--sage-dark); /* ícone verde-escuro */
 }
 
+/* Parágrafos do rodapé. */
 .footer p {
-  max-width: 24rem;
-  margin: 0;
-  color: rgba(243, 239, 230, 0.78);
-  font-size: 15px;
+  max-width: 24rem; /* largura máxima (rem = relativo ao tamanho de fonte da raiz) */
+  margin: 0; /* sem margem */
+  color: rgba(243, 239, 230, 0.78); /* texto claro com 78% de opacidade */
+  font-size: 15px; /* tamanho */
 }
 
+/* Linha do CNPJ em fonte monoespaçada. */
 .footer .footer-cnpj {
   font-family: 'IBM Plex Mono', monospace;
   font-size: 13px;
 }
 
+/* Área dos grupos de links: 2 colunas iguais. */
 .footer-nav {
   display: grid;
+  /* repeat(2, ...) = duas colunas com a mesma regra; 1fr = partes iguais. */
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 32px;
+  gap: 32px; /* espaço entre os grupos */
 }
 
+/* Títulos dos grupos ("ADOTE", "AJUDE", "CONTATO"). */
 .footer .footer-heading {
-  margin: 0 0 14px;
-  color: var(--amber-light);
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+  margin: 0 0 14px; /* 14px abaixo */
+  color: var(--amber-light); /* âmbar claro */
+  font-family: 'IBM Plex Mono', monospace; /* monoespaçada */
+  font-size: 12px; /* pequeno */
+  font-weight: 500; /* peso médio */
+  letter-spacing: 0.14em; /* letras espaçadas */
+  text-transform: uppercase; /* em maiúsculas */
 }
 
+/* Listas do rodapé (links e contatos). */
 .footer ul {
-  display: flex;
+  display: flex; /* coluna flex... */
   flex-direction: column;
-  gap: 4px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
+  gap: 4px; /* ...com pequeno espaço entre itens */
+  margin: 0; /* sem margem padrão */
+  padding: 0; /* sem recuo padrão */
+  list-style: none; /* sem marcadores */
 }
 
+/* Links dos grupos. */
 .footer-nav a {
-  display: inline-flex;
-  align-items: center;
-  min-height: 36px;
-  color: var(--bg-primary);
-  font-size: 15px;
-  text-decoration: none;
+  display: inline-flex; /* permite altura mínima e alinhamento */
+  align-items: center; /* texto centralizado na vertical */
+  min-height: 36px; /* área clicável confortável */
+  color: var(--bg-primary); /* claro */
+  font-size: 15px; /* tamanho */
+  text-decoration: none; /* sem sublinhado */
 }
 
+/* Links com o mouse em cima: âmbar e sublinhados. */
 .footer-nav a:hover {
   color: var(--amber-light);
   text-decoration: underline;
-  text-underline-offset: 4px;
+  text-underline-offset: 4px; /* distância do sublinhado */
 }
 
+/* Cada item de contato: ícone + texto. */
 .footer-contact li {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  padding: 5px 0;
-  font-size: 15px;
-  overflow-wrap: anywhere;
+  display: flex; /* lado a lado */
+  align-items: flex-start; /* alinhados pelo topo (textos podem ter 2 linhas) */
+  gap: 10px; /* espaço entre ícone e texto */
+  padding: 5px 0; /* espaço vertical */
+  font-size: 15px; /* tamanho */
+  overflow-wrap: anywhere; /* quebra textos longos (como e-mails) */
 }
 
+/* Ícones de contato. */
 .footer-contact svg {
-  flex: 0 0 auto;
-  margin-top: 3px;
-  color: var(--amber-light);
+  flex: 0 0 auto; /* não crescem nem encolhem */
+  margin-top: 3px; /* descem um pouco para alinhar com a primeira linha do texto */
+  color: var(--amber-light); /* âmbar claro */
 }
 
+/* Link de contato (e-mail). */
 .footer-contact a {
   color: var(--bg-primary);
 }
 
+/* Linha final (ano e "Área da equipe"). */
 .footer-bottom {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 12px;
-  padding-top: 24px;
-  color: rgba(243, 239, 230, 0.72);
-  font-size: 13px;
+  display: flex; /* lado a lado */
+  flex-wrap: wrap; /* quebram em telas estreitas */
+  justify-content: space-between; /* um em cada ponta */
+  gap: 12px; /* espaço quando quebram */
+  padding-top: 24px; /* espaço depois da linha divisória */
+  color: rgba(243, 239, 230, 0.72); /* texto claro um pouco apagado */
+  font-size: 13px; /* pequeno */
 }
 
+/* Link "Área da equipe". */
 .footer-bottom a {
   color: rgba(243, 239, 230, 0.85);
 }
 
+/* Contorno de foco (teclado) dos links do rodapé em âmbar, para contrastar com o fundo escuro. */
 .footer a:focus-visible {
   outline-color: var(--amber-light);
 }
 
+/* Telas até 960px: a grade de cima vira 2 colunas e a marca ocupa a linha inteira. */
 @media (max-width: 960px) {
   .footer-top {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   }
 
   .footer-brand {
-    grid-column: 1 / -1;
+    grid-column: 1 / -1; /* da primeira à última linha de coluna = largura total */
   }
 }
 
+/* Telas até 560px (celulares): tudo em uma coluna e espaços menores. */
 @media (max-width: 560px) {
   .footer {
     padding-top: 48px;
   }
 
   .footer-top {
-    grid-template-columns: minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr); /* uma coluna */
     gap: 32px;
   }
 
   .footer-nav {
-    gap: 24px 16px;
+    gap: 24px 16px; /* 24px entre linhas, 16px entre colunas */
   }
 }
+
+/*
+ * ============================================================================
+ * RESUMO DO ARQUIVO
+ * ============================================================================
+ *
+ * COMO FUNCIONA:
+ *   O rodapé tem fundo verde-escuro. A parte de cima é uma grade de 3 colunas
+ *   (marca, links, contato) separada da linha final por uma borda. Em telas
+ *   menores, a grade passa para 2 colunas (com a marca no topo) e depois para 1.
+ *
+ * CONCEITOS IMPORTANTES PARA ESTUDAR:
+ *   - CSS Grid: grid-template-columns, fr, minmax(), repeat(), grid-column: 1 / -1.
+ *   - Flexbox em coluna e em linha com flex-wrap.
+ *   - Cores com transparência (rgba) sobre fundo escuro.
+ *   - Unidades rem e em.
+ *   - Estados :hover e :focus-visible (contorno de foco acessível).
+ *   - Media queries e layout responsivo.
+ * ============================================================================
+ */

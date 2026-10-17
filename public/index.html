@@ -1,18 +1,70 @@
 <!DOCTYPE html>
+<!--
+  ============================================================================
+  ARQUIVO: public/index.html
+  ============================================================================
+
+  PARA QUE SERVE:
+    É a ÚNICA página HTML do site. Como o projeto é uma SPA (Single Page
+    Application), o navegador sempre carrega este arquivo, e o React desenha
+    todas as telas dentro do <div id="root">.
+
+  PRINCIPAIS ITENS:
+    - <head>: informações da página (idioma, ícone, título, descrição para o Google etc.).
+    - <div id="root">: o "lugar" onde o React vai desenhar a aplicação.
+
+  CONEXÕES COM OUTROS ARQUIVOS:
+    - src/index.js: procura o elemento #root deste arquivo para iniciar o React.
+    - public/favicon.svg: o ícone mostrado na aba do navegador.
+    - No "npm run build", o react-scripts copia este arquivo para build/index.html e
+      insere automaticamente as tags <script> e <link> com o código e os estilos.
+  ============================================================================
+-->
+<!-- lang="pt-BR" informa o idioma da página (ajuda leitores de tela, tradutores e buscadores). -->
 <html lang="pt-BR">
+  <!-- <head> guarda informações SOBRE a página; nada aqui aparece diretamente no conteúdo. -->
   <head>
+    <!-- Codificação de caracteres UTF-8: permite acentos (ã, é, ç) sem erros. -->
     <meta charset="utf-8" />
+    <!-- Ícone da aba (favicon). %PUBLIC_URL% é trocado pelo react-scripts pelo endereço da pasta public. -->
     <link rel="icon" href="%PUBLIC_URL%/favicon.svg" type="image/svg+xml" />
+    <!-- Faz o site se adaptar à largura da tela (essencial para celulares). -->
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Cor usada pelo navegador do celular na barra de cima (verde da marca). -->
     <meta name="theme-color" content="#2f5a4b" />
+    <!-- Descrição usada por buscadores (Google) e ao compartilhar o link. -->
     <meta
       name="description"
       content="Patas em Casa: adoção responsável de cães e gatos. Conheça os animais que esperam por um lar, veja como funciona a adoção e ajude a ONG."
     />
+    <!-- Título mostrado na aba do navegador e nos resultados de busca. -->
     <title>Patas em Casa — adoção responsável de cães e gatos</title>
   </head>
+  <!-- <body> é o conteúdo visível da página. -->
   <body>
+    <!-- <noscript> só aparece se o JavaScript estiver desligado (sem JS, o React não funciona). -->
     <noscript>Ative o JavaScript para usar o site da Patas em Casa.</noscript>
+    <!-- Elemento vazio onde o React desenha toda a aplicação (veja src/index.js). -->
     <div id="root"></div>
   </body>
 </html>
+<!--
+  ============================================================================
+  RESUMO DO ARQUIVO
+  ============================================================================
+
+  COMO O FLUXO FUNCIONA:
+    1. O navegador baixa este HTML.
+    2. Lê o <head> (título, ícone, descrição, configurações de tela).
+    3. Encontra o <div id="root"> vazio.
+    4. Executa o JavaScript gerado pelo build, que começa em src/index.js.
+    5. O React preenche o #root com as telas do site.
+
+  CONCEITOS IMPORTANTES PARA ESTUDAR:
+    - Estrutura básica de um documento HTML (doctype, html, head, body).
+    - Meta tags: charset, viewport, description, theme-color.
+    - SPA (Single Page Application): uma única página HTML, várias "telas" desenhadas pelo JS.
+    - Pasta "public" e a variável %PUBLIC_URL% do Create React App.
+    - Acessibilidade e SEO: atributo lang, título e descrição.
+  ============================================================================
+-->

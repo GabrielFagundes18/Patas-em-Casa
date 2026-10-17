@@ -1,85 +1,118 @@
+/*
+ * ============================================================================
+ * ARQUIVO: VolunteerSignup.css
+ * ============================================================================
+ *
+ * PARA QUE SERVE:
+ *   Estilos da seção de voluntariado da página inicial (componente
+ *   VolunteerSignup): fundo verde claro, texto à esquerda e formulário em cartão
+ *   à direita, campos em grade, campo-isca escondido e áreas em formato de pílula.
+ *
+ * PRINCIPAIS REGRAS:
+ *   - .home-volunteer, .home-volunteer-layout, .home-volunteer-card
+ *   - .home-volunteer-fields, .home-volunteer-trap
+ *   - .home-volunteer-areas (pílulas com checkbox), .home-volunteer-actions
+ *   - @media (max-width: 640px)
+ *
+ * CONEXÕES COM OUTROS ARQUIVOS:
+ *   - Importado por: features/volunteers/VolunteerSignup/VolunteerSignup.jsx.
+ *   - Complementa .home-field, .home-btn e .home-head de features/home/LandingPage.css.
+ * ============================================================================
+ */
+
 /* O quê: seção de voluntariado da Home: chamada à esquerda, formulário em cartão à direita.
   Como: duas colunas que empilham no celular; as áreas são caixas de seleção em formato de pílula.
   Para quê: inscrição rápida, com áreas fáceis de tocar no celular. */
 .home-volunteer {
-  background: var(--sage-pale);
+  background: var(--sage-pale); /* fundo verde claro */
 }
 
+/* Duas colunas flexíveis com quebra. */
 .home-volunteer-layout {
   display: flex;
   flex-wrap: wrap;
-  align-items: flex-start;
+  align-items: flex-start; /* alinhadas pelo topo */
   gap: 40px 72px;
 }
 
+/* Coluna do texto. */
 .home-volunteer-layout > .home-head {
   flex: 1 1 360px;
   max-width: 440px;
 }
 
+/* Cartão do formulário. */
 .home-volunteer-card {
-  position: relative;
+  position: relative; /* referência para o campo-isca (absolute) */
   display: flex;
-  flex: 999 1 520px;
+  flex: 999 1 520px; /* cresce bem mais que a coluna de texto */
   flex-direction: column;
   gap: 20px;
   min-width: 0;
-  padding: clamp(22px, 3vw, 36px);
+  padding: clamp(22px, 3vw, 36px); /* espaço interno fluido */
   border: 1px solid rgba(31, 42, 36, 0.1);
   border-radius: 28px;
   background: var(--bg-card);
 }
 
+/* Campos de texto em grade de 2 colunas. */
 .home-volunteer-fields {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px;
 }
 
+/* O campo "Nome completo" (classe is-wide) ocupa a linha inteira. */
 .home-volunteer-fields .is-wide {
   grid-column: 1 / -1;
 }
 
+/* Campo-isca anti-robô: jogado para fora da tela (pessoas não veem; robôs que leem o HTML preenchem). */
 .home-volunteer-trap {
   position: absolute;
-  left: -10000px;
+  left: -10000px; /* muito à esquerda, fora da tela */
   width: 1px;
   height: 1px;
   overflow: hidden;
 }
 
+/* Áreas: pílulas lado a lado que quebram linha. */
 .home-volunteer-areas {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
 }
 
+/* Cada área: rótulo em formato de pílula com o checkbox dentro. */
 .home-volunteer-areas label {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  min-height: 44px;
+  gap: 8px; /* espaço entre a caixinha e o texto */
+  min-height: 44px; /* fácil de tocar */
   padding: 0 14px;
   border: 1.5px solid rgba(31, 42, 36, 0.2);
-  border-radius: 999px;
+  border-radius: 999px; /* pílula */
   background: #ffffff;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
 }
 
+/* Área marcada: borda e fundo verdes. */
 .home-volunteer-areas label.is-selected {
   border-color: var(--sage);
   background: var(--sage-pale);
 }
 
+/* O checkbox em si (aqui ele continua visível). */
 .home-volunteer-areas input {
   width: 16px;
   height: 16px;
   margin: 0;
-  accent-color: var(--sage);
+  accent-color: var(--sage); /* "accent-color" pinta o checkbox marcado com a cor da marca */
 }
 
+/* Linha com o botão e a observação. */
 .home-volunteer-actions {
   display: flex;
   flex-wrap: wrap;
@@ -89,25 +122,50 @@
   font-size: 13px;
 }
 
+/* Botão desabilitado (enquanto envia). */
 .home-volunteer-actions .home-btn:disabled {
   opacity: 0.7;
-  cursor: progress;
+  cursor: progress; /* cursor de "processando" */
 }
 
+/* Celulares. */
 @media (max-width: 640px) {
   .home-volunteer-layout > .home-head {
     max-width: none;
   }
 
+  /* Campos em uma coluna. */
   .home-volunteer-fields {
     grid-template-columns: minmax(0, 1fr);
   }
 
+  /* Botão com a largura toda. */
   .home-volunteer-actions .home-btn {
     width: 100%;
   }
 
+  /* Pílulas um pouco mais estreitas. */
   .home-volunteer-areas label {
     padding: 0 12px;
   }
 }
+
+/*
+ * ============================================================================
+ * RESUMO DO ARQUIVO
+ * ============================================================================
+ *
+ * COMO FUNCIONA:
+ *   A seção (fundo verde claro) tem texto e cartão lado a lado (ou empilhados).
+ *   No cartão, os campos ficam em grade (nome ocupando a linha toda); o campo-isca
+ *   fica fora da tela; as áreas são pílulas clicáveis com checkbox colorido pela
+ *   cor da marca; o botão ocupa a largura toda no celular.
+ *
+ * CONCEITOS IMPORTANTES PARA ESTUDAR:
+ *   - Esconder elementos fora da tela (position: absolute + left negativo).
+ *   - accent-color para personalizar checkboxes e rádios.
+ *   - grid-column: 1 / -1 para ocupar a linha inteira.
+ *   - Estilos de estado (:disabled, cursor: progress).
+ *   - Layout flexível com flex-wrap e flex-grow.
+ * ============================================================================
+ */
